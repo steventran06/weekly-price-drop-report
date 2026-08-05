@@ -8,9 +8,10 @@ const RECIPIENT =
 export async function sendWeeklyReport(
   gmail: gmail_v1.Gmail,
   analysis: WeeklyAnalysis,
+  reportUrl: string,
 ): Promise<string> {
   const subject = createSubject();
-  const body = createEmailBody(analysis);
+  const body = createEmailBody(analysis, reportUrl);
 
   const mimeMessage = [
     `To: ${RECIPIENT}`,
@@ -58,6 +59,7 @@ function createSubject(): string {
 
 function createEmailBody(
   analysis: WeeklyAnalysis,
+  reportUrl: string,
 ): string {
   const listings = [...analysis.selectedListings]
     .sort((a, b) => a.rank - b.rank)
@@ -81,6 +83,15 @@ function createEmailBody(
     analysis.title,
     "",
     analysis.summary,
+    "",
+    "RMLS LISTING REPORT",
+    "===================",
+    "",
+    "Open the full report for listing photos, details and price-drop research:",
+    reportUrl,
+    "",
+    "Note: RMLS says this link is available for 30 days or 100 views,",
+    "whichever comes first.",
     "",
     "TOP PICKS",
     "=========",

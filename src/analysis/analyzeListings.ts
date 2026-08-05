@@ -129,10 +129,14 @@ Requirements:
 - Keep concern concise. Use "None obvious from listing data" if needed.
 - currentPrice must match the provided data exactly.
 - The reelScript must contain [ADD EXACT DROP] for each selected home.
-- The reelScript must be between 80 and 95 words.
-- Do not describe a listing as a deal, bargain, great buy or
-  definitively underpriced.
-- Do not include more than two property details per home.
+- The reelScript must be between 110 and 140 words.
+- The reelScript should begin with a short hook.
+- Use natural transitions between properties.
+- Avoid starting every property sentence with the address.
+- Include one or two strong details from the public remarks for each property.
+- Do not describe a listing as a deal, bargain, great buy or definitively underpriced.
+- End with this exact sentence:
+  "If any of these homes caught your attention, call or text me and I’ll send you the details."
 - Do not include fields outside the requested structure.
 `,
   });
@@ -226,9 +230,9 @@ function validateWeeklyAnalysis(
     .split(/\s+/)
     .filter(Boolean).length;
 
-  if (wordCount < 75 || wordCount > 100) {
+  if (wordCount < 105 || wordCount > 150) {
     throw new Error(
-      `Generated reel script has ${wordCount} words. Expected approximately 80 to 95.`,
+      `Generated reel script has ${wordCount} words. Expected approximately 110 to 140.`,
     );
   }
 

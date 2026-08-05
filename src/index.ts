@@ -103,7 +103,11 @@ async function main(): Promise<void> {
   console.log("");
 console.log("Emailing weekly report...");
 
-await sendWeeklyReport(gmail, analysis);
+await sendWeeklyReport(
+  gmail,
+  analysis,
+  reportLink,
+);
 
 console.log(
   "Weekly report emailed to " +
