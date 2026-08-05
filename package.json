@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "weekly": "tsx src/index.ts",
-    "build": "tsc",
+    "auth:export": "tsx src/exportAuth.ts",
     "inspect": "tsx src/inspect.ts",
     "parse": "tsx src/parse.ts",
+    "build": "tsc",
     "clean": "rm -rf dist"
   },
   "dependencies": {
