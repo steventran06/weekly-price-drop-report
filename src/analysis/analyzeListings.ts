@@ -1,6 +1,9 @@
 import OpenAI from "openai";
 import type { RmlsListing } from "../rmls/parseListings.js";
-import type { WeeklyAnalysis } from "./types.js";
+import type {
+  SelectedListing,
+  WeeklyAnalysis,
+} from "./types.js";
 
 const DEFAULT_MODEL = "gpt-5-mini";
 
@@ -67,32 +70,42 @@ export async function analyzeListings(
     opportunities for general homebuyer interest.
 
     Primary goals:
-    - Favor desirable Portland-metro locations.
-    - Favor strong apparent value relative to size, features, neighborhood
-      and current price.
-    - Favor homes that are visually or verbally interesting for social media.
-    - Consider price per square foot, layout, lot, updates, year built,
-      neighborhood, remarks and general buyer appeal.
-    - Do not claim that a home is definitively underpriced, a great buy,
-      an investment opportunity or guaranteed to sell quickly without
-      supporting comparable-sales data.
-    - Use phrases such as "worth a look," "stands out," "interesting option,"
-      or "appears competitively priced."
-    - Do not invent facts, amenities, schools, condition or price history.
-    - Every listing in this data came from an RMLS search for homes that had
-      a price change of at least $20,000 within the prior seven days.
-    - The exact prior price and exact reduction are not available.
-    - Use the literal placeholder "[ADD EXACT DROP]" wherever Steven should
-      manually insert the exact price reduction.
-    - The final reel script must be 80 to 95 spoken words.
-    - Cover 4 or 5 homes very quickly.
-    - Mention only the most compelling one or two details per home.
-    - Do not include greetings, disclaimers, emojis or stage directions.
-    - Avoid phrases like "hot deals," "great buys," "huge value,"
-      "dream home" or other exaggerated sales language.
-    - Write in a direct, natural, conversational Realtor voice.
-    - End with one simple engagement question.
-    - Return valid JSON only. Do not wrap it in Markdown.
+    - Read and use the public remarks for every listing.
+    - Pull out specific, buyer-relevant details from the remarks, including
+      renovations, system updates, outdoor spaces, flexible rooms, views,
+      garages, lot features, newer construction and distinctive design.
+    - Favor concrete listing details over generic adjectives.
+    - The reel script should sound conversational when spoken aloud.
+    - Use natural transitions and varied sentence structures.
+    - The reel script should be approximately 110 to 150 spoken words.
+    - End every reel script with this exact CTA:
+      "If any of these homes caught your attention, call or text me and I’ll send you the details."
+
+    - Create an Instagram caption for the Portland Metro Price Alert series.
+    - Begin the Instagram caption with a concise hook.
+    - List every selected home on its own line with its full address and
+      current price.
+    - Add a short CTA inviting viewers to call or text Steven.
+    - Use only a small number of useful emojis.
+    - Keep the Instagram caption natural and easy to scan.
+    - Add 5 hashtags that are relevant to Portland Housing and the provided information.
+
+    - Create one compelling YouTube Shorts title.
+    - Keep the YouTube title under 70 characters.
+    - The title should clearly reference Portland Metro price drops.
+    - Avoid clickbait claims that are not supported by the listing data.
+
+    - Create a YouTube Shorts description.
+    - Begin with a concise explanation of the weekly series.
+    - List each selected home with its full address and current price.
+    - Include Steven's exact contact block supplied in the required output.
+    - Do not use long dashes.
+    - Do not use phrases such as "no fluff."
+
+    - Create YouTube keywords as one comma-separated string.
+    - Include relevant city, neighborhood, Portland Metro, real estate,
+      homes-for-sale and price-drop search terms.
+    - Do not use hashtags in the keyword string.
     `,
     input: `
 Analyze these listings:
@@ -117,26 +130,47 @@ Return JSON matching this exact structure:
     }
   ],
   "reelScript": "string",
+  "instagramCaption": "string",
+  "youtubeShortsTitle": "string",
+  "youtubeShortsDescription": "string",
+  "youtubeKeywords": "string",
   "factCheckNotes": [
     "string"
   ]
 }
 
 Requirements:
-- Select 4 or 5 listings.
+- mlsNumber must contain only the exact numeric MLS number from the input.
+- Never put an address, street name or any other value in mlsNumber.
+- Copy both mlsNumber and address exactly from the corresponding input listing.
+- Select exactly 5 listings when at least 5 suitable listings are available.
+- Otherwise, select 4 listings.
 - Use only MLS numbers found in the input.
-- Keep shortReason to one concise, fact-based sentence.
+- currentPrice must exactly match the provided listing data.
+- Keep shortReason concise and based on the listing facts or public remarks.
 - Keep concern concise. Use "None obvious from listing data" if needed.
-- currentPrice must match the provided data exactly.
-- The reelScript must contain [ADD EXACT DROP] for each selected home.
-- The reelScript must be between 110 and 140 words.
-- The reelScript should begin with a short hook.
-- Use natural transitions between properties.
-- Avoid starting every property sentence with the address.
-- Include one or two strong details from the public remarks for each property.
-- Do not describe a listing as a deal, bargain, great buy or definitively underpriced.
-- End with this exact sentence:
+- Use "[ADD EXACT DROP]" for every selected listing.
+- The reelScript should be approximately 110 to 150 words.
+- The reelScript must begin with a short conversational hook.
+- Include one or two compelling public-remarks details per home.
+- Use natural transitions rather than reading a repetitive list.
+- End the reelScript with this exact sentence:
   "If any of these homes caught your attention, call or text me and I’ll send you the details."
+- The Instagram caption must list all selected addresses and current prices.
+- The YouTube Shorts title must be 70 characters or fewer.
+- The YouTube description must list every selected address and price.
+- End the YouTube description with this exact contact block:
+
+Connect With Me
+📞 Call / Text: (971) 285-2002
+📧 Email: steven@diverserg.com
+Instagram: https://instagram.com/steventranpdx
+Facebook: https://www.facebook.com/StevenTranPDXRealtor/
+
+📅 Schedule a call with me here:
+👉 https://calendly.com/steven-diverserg/new-meeting
+
+- youtubeKeywords must be one comma-separated string.
 - Do not include fields outside the requested structure.
 `,
   });
@@ -185,6 +219,10 @@ function validateWeeklyAnalysis(
     typeof result.title !== "string" ||
     typeof result.summary !== "string" ||
     typeof result.reelScript !== "string" ||
+    typeof result.instagramCaption !== "string" ||
+    typeof result.youtubeShortsTitle !== "string" ||
+    typeof result.youtubeShortsDescription !== "string" ||
+    typeof result.youtubeKeywords !== "string" ||
     !Array.isArray(result.selectedListings) ||
     !Array.isArray(result.factCheckNotes)
   ) {
@@ -209,18 +247,62 @@ function validateWeeklyAnalysis(
     ]),
   );
 
+  const sourceByAddress = new Map(
+    sourceListings
+      .filter(
+        (listing): listing is RmlsListing & { address: string } =>
+          Boolean(listing.address),
+      )
+      .map((listing) => [
+        normalizeAddress(listing.address),
+        listing,
+      ]),
+  );
+
   for (const selection of result.selectedListings) {
-    const source = sourceByMls.get(selection.mlsNumber);
+    let source = sourceByMls.get(selection.mlsNumber);
+
+    /*
+     * Occasionally the model places an address in the mlsNumber field.
+     * Recover by matching the selected address to the source listing.
+     */
+    if (!source && selection.address) {
+      source = sourceByAddress.get(
+        normalizeAddress(selection.address),
+      );
+
+      if (source) {
+        selection.mlsNumber = source.mlsNumber;
+      }
+    }
+
+    /*
+     * Also try the malformed mlsNumber value as an address.
+     */
+    if (!source && selection.mlsNumber) {
+      source = sourceByAddress.get(
+        normalizeAddress(selection.mlsNumber),
+      );
+
+      if (source) {
+        selection.mlsNumber = source.mlsNumber;
+        selection.address = source.address ?? selection.address;
+      }
+    }
 
     if (!source) {
       throw new Error(
-        `Analysis selected unknown MLS ${selection.mlsNumber}.`,
+        `Analysis selected an unknown listing: ` +
+          `${selection.mlsNumber} / ${selection.address}.`,
       );
     }
 
+    selection.address = source.address ?? selection.address;
+    selection.currentPrice = source.currentPrice ?? selection.currentPrice;
+
     if (selection.currentPrice !== source.currentPrice) {
       throw new Error(
-        `Analysis changed the price for MLS ${selection.mlsNumber}.`,
+        `Analysis changed the price for MLS ${source.mlsNumber}.`,
       );
     }
   }
@@ -230,10 +312,56 @@ function validateWeeklyAnalysis(
     .split(/\s+/)
     .filter(Boolean).length;
 
-  if (wordCount < 105 || wordCount > 150) {
+  if (wordCount < 100 || wordCount > 165) {
     throw new Error(
-      `Generated reel script has ${wordCount} words. Expected approximately 110 to 140.`,
+      `Generated reel script has ${wordCount} words. Expected approximately 110 to 150.`,
     );
+  }
+
+  if (result.youtubeShortsTitle.length > 70) {
+    throw new Error(
+      `YouTube Shorts title has ${result.youtubeShortsTitle.length} characters. Maximum is 70.`,
+    );
+  }
+
+  const selectedListings =
+    result.selectedListings as SelectedListing[];
+
+  for (const listing of selectedListings) {
+    const formattedPrice = listing.currentPrice.toLocaleString(
+      "en-US",
+      {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0,
+      },
+    );
+
+    if (
+      !result.youtubeShortsDescription.includes(
+        listing.address,
+      )
+    ) {
+      throw new Error(
+        `YouTube description is missing ${listing.address}.`,
+      );
+    }
+  }
+
+  function normalizeAddress(value: string): string {
+    return value
+      .toUpperCase()
+      .replace(/[.,#]/g, " ")
+      .replace(/\bSTREET\b/g, "ST")
+      .replace(/\bAVENUE\b/g, "AVE")
+      .replace(/\bPLACE\b/g, "PL")
+      .replace(/\bDRIVE\b/g, "DR")
+      .replace(/\bLANE\b/g, "LN")
+      .replace(/\bCOURT\b/g, "CT")
+      .replace(/\bROAD\b/g, "RD")
+      .replace(/\bWAY\b/g, "WAY")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
   return result as WeeklyAnalysis;

@@ -14,5 +14,9 @@ export interface WeeklyAnalysis {
   summary: string;
   selectedListings: SelectedListing[];
   reelScript: string;
+  instagramCaption: string;
+  youtubeShortsTitle: string;
+  youtubeShortsDescription: string;
+  youtubeKeywords: string;
   factCheckNotes: string[];
 }

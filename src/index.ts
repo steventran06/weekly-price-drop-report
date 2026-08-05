@@ -120,6 +120,8 @@ console.log(
   console.log(`- ${analysisPaths.jsonPath}`);
   console.log(`- ${analysisPaths.reportPath}`);
   console.log(`- ${analysisPaths.scriptPath}`);
+  console.log(`- ${analysisPaths.instagramPath}`);
+  console.log(`- ${analysisPaths.youtubePath}`);
 
   console.log("");
   console.log("Selected listings");

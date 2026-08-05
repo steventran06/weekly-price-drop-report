@@ -6,6 +6,8 @@ export interface AnalysisOutputPaths {
   jsonPath: string;
   reportPath: string;
   scriptPath: string;
+  instagramPath: string;
+  youtubePath: string;
 }
 
 export async function writeAnalysisFiles(
@@ -19,6 +21,16 @@ export async function writeAnalysisFiles(
   await fs.mkdir(outputDirectory, {
     recursive: true,
   });
+
+  const instagramPath = path.join(
+    outputDirectory,
+    "instagram-caption.txt",
+  );
+
+  const youtubePath = path.join(
+    outputDirectory,
+    "youtube-shorts.txt",
+  );
 
   const jsonPath = path.join(
     outputDirectory,
@@ -51,12 +63,24 @@ export async function writeAnalysisFiles(
       `${analysis.reelScript.trim()}\n`,
       "utf8",
     ),
+    fs.writeFile(
+      instagramPath,
+      `${analysis.instagramCaption.trim()}\n`,
+      "utf8",
+    ),
+    fs.writeFile(
+      youtubePath,
+      createYoutubeFile(analysis),
+      "utf8",
+    ),
   ]);
 
   return {
     jsonPath,
     reportPath,
     scriptPath,
+    instagramPath,
+    youtubePath,
   };
 }
 
@@ -89,13 +113,29 @@ ${analysis.summary}
 
 ${listingSections}
 
-# 45-Second Script
+# Reel Script
 
 ${analysis.reelScript}
 
 # Final Fact Check
 
 ${factChecks}
+
+# Instagram Caption
+
+${analysis.instagramCaption}
+
+# YouTube Shorts Title
+
+${analysis.youtubeShortsTitle}
+
+# YouTube Shorts Description
+
+${analysis.youtubeShortsDescription}
+
+# YouTube Keywords
+
+${analysis.youtubeKeywords}
 `;
 }
 
@@ -105,4 +145,26 @@ function formatCurrency(value: number): string {
     currency: "USD",
     maximumFractionDigits: 0,
   });
+}
+
+function createYoutubeFile(
+  analysis: WeeklyAnalysis,
+): string {
+  return [
+    "YOUTUBE SHORTS TITLE",
+    "====================",
+    "",
+    analysis.youtubeShortsTitle,
+    "",
+    "YOUTUBE SHORTS DESCRIPTION",
+    "==========================",
+    "",
+    analysis.youtubeShortsDescription,
+    "",
+    "KEYWORDS",
+    "========",
+    "",
+    analysis.youtubeKeywords,
+    "",
+  ].join("\n");
 }

@@ -7,3 +7,5 @@ output/*.json
 output/*.html
 output/*.md
 output/*.txt
+output/instagram-caption.txt
+output/youtube-shorts.txt
