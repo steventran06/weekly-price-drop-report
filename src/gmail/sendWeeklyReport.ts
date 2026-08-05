@@ -79,6 +79,10 @@ function createEmailBody(
     .map((note) => `- ${note}`)
     .join("\n");
 
+  const commaSeparatedMls = analysis.selectedListings
+    .map((listing) => listing.mlsNumber)
+    .join(", ");
+
   return [
     "PORTLAND METRO PRICE ALERT",
     "",
@@ -94,6 +98,12 @@ function createEmailBody(
     "=========",
     "",
     listings,
+    "",
+    "MLS NUMBERS (Copy & Paste into RMLS)",
+    "====================================",
+    "",
+    commaSeparatedMls,
+    "",
     "REEL SCRIPT",
     "===========",
     "",

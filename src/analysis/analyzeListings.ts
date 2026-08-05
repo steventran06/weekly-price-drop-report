@@ -80,7 +80,7 @@ export async function analyzeListings(
     - For each listing, the script should mention the price drop. Since we do not know what that is, please put "it is down [EMPTY PRICE DROP]"" in the script for me to fill in.
     - The reel script should be approximately 110 to 150 spoken words.
     - End every reel script with this exact CTA:
-      "Comment price drop if any of these homes interest you, or you call or text me and I’ll send you the details."
+      "Comment price drop if any of these homes interest you, or you can call or text me and I’ll send you the details."
 
     - Create an Instagram caption for the Portland Metro Price Alert series.
     - Begin the Instagram caption with a concise hook.
@@ -156,7 +156,7 @@ Requirements:
 - Include one or two compelling public-remarks details per home.
 - Use natural transitions rather than reading a repetitive list.
 - End the reelScript with this exact sentence:
-  "If any of these homes caught your attention, call or text me and I’ll send you the details."
+  "Comment price drop if any of these homes interest you, or you can call or text me and I’ll send you the details."
 - The Instagram caption must list all selected addresses and current prices.
 - The YouTube Shorts title must be 70 characters or fewer.
 - The YouTube description must list every selected address and price.
