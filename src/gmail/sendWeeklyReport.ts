@@ -67,7 +67,8 @@ function createEmailBody(
       (listing) => [
         `${listing.rank}. ${listing.address}`,
         `Current price: ${formatCurrency(listing.currentPrice)}`,
-        `Exact reduction: ${listing.exactDropPlaceholder}`,
+        `Original price: ${formatNullableCurrency(listing.originalPrice)}`,
+        `Total reduction: ${formatReduction(listing.totalPriceReduction)}`,
         `Why it made the cut: ${listing.shortReason}`,
         `Concern: ${listing.concern}`,
         "",
@@ -145,4 +146,32 @@ function formatCurrency(value: number): string {
     currency: "USD",
     maximumFractionDigits: 0,
   });
+}
+
+function formatNullableCurrency(
+  value: number | null,
+): string {
+  if (value === null) {
+    return "Verify in RMLS";
+  }
+
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  });
+}
+
+function formatReduction(
+  value: number | null,
+): string {
+  if (value === null || value <= 0) {
+    return "Verify price history in RMLS";
+  }
+
+  return `${value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  })} from original list price`;
 }

@@ -34,6 +34,8 @@ export async function analyzeListings(
   );
 
   const listingData = listings.map((listing) => ({
+    originalPrice: listing.originalPrice,
+    totalPriceReduction: listing.totalPriceReduction,
     mlsNumber: listing.mlsNumber,
     address: listing.address,
     currentPrice: listing.currentPrice,
@@ -77,7 +79,11 @@ export async function analyzeListings(
     - Favor concrete listing details over generic adjectives.
     - The reel script should sound conversational when spoken aloud.
     - Use natural transitions and varied sentence structures.
-    - For each listing, the script should mention the price drop. Since we do not know what that is, please put "it is down [EMPTY PRICE DROP]"" in the script for me to fill in.
+    - originalPrice is the original RMLS list price.
+    - totalPriceReduction is the difference between originalPrice and currentPrice.
+    - Use the exact totalPriceReduction provided.
+    - Do not call this the most recent price change.
+    - Phrase it as "down $X from the original list price."
     - The reel script should be approximately 110 to 150 spoken words.
     - End every reel script with this exact CTA:
       "Comment price drop if any of these homes interest you, or you can call or text me and I’ll send you the details."
@@ -124,7 +130,8 @@ Return JSON matching this exact structure:
       "mlsNumber": "string",
       "address": "string",
       "currentPrice": 0,
-      "exactDropPlaceholder": "[ADD EXACT DROP]",
+      "originalPrice": 0,
+      "totalPriceReduction": 0,
       "shortReason": "string",
       "concern": "string",
       "spokenLine": "string"
@@ -150,7 +157,6 @@ Requirements:
 - currentPrice must exactly match the provided listing data.
 - Keep shortReason concise and based on the listing facts or public remarks.
 - Keep concern concise. Use "None obvious from listing data" if needed.
-- Use "[ADD EXACT DROP]" for every selected listing.
 - The reelScript should be approximately 110 to 150 words.
 - The reelScript must begin with a short conversational hook.
 - Include one or two compelling public-remarks details per home.
@@ -328,6 +334,25 @@ function validateWeeklyAnalysis(
   const selectedListings =
     result.selectedListings as SelectedListing[];
 
+  const exactListingLines = selectedListings
+    .sort((a, b) => a.rank - b.rank)
+    .map((listing) => {
+      const currentPrice = formatCurrency(
+        listing.currentPrice,
+      );
+
+      const reduction =
+        listing.totalPriceReduction !== null &&
+        listing.totalPriceReduction > 0
+          ? `Down ${formatCurrency(
+              listing.totalPriceReduction,
+            )} from the original list price`
+          : "Price history should be verified in RMLS";
+
+      return `🏡 ${listing.address} — ${currentPrice}\n${reduction}`;
+    })
+    .join("\n\n");
+
   for (const listing of selectedListings) {
     const formattedPrice = listing.currentPrice.toLocaleString(
       "en-US",
@@ -337,16 +362,6 @@ function validateWeeklyAnalysis(
         maximumFractionDigits: 0,
       },
     );
-
-    if (
-      !result.youtubeShortsDescription.includes(
-        listing.address,
-      )
-    ) {
-      throw new Error(
-        `YouTube description is missing ${listing.address}.`,
-      );
-    }
   }
 
   function normalizeAddress(value: string): string {
@@ -365,5 +380,26 @@ function validateWeeklyAnalysis(
       .trim();
   }
 
+  function formatCurrency(value: number): string {
+    return value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    });
+  }
+
+  result.youtubeShortsTitle = createWeeklyYoutubeTitle();
+
   return result as WeeklyAnalysis;
+}
+
+function createWeeklyYoutubeTitle(): string {
+  const date = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date());
+
+  return `Portland Metro Price Drops | ${date}`;
 }

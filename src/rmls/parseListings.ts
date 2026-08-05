@@ -21,6 +21,8 @@ export interface RmlsListing {
   neighborhood: string | null;
   remarks: string | null;
   imageUrl: string | null;
+  originalPrice: number | null;
+  totalPriceReduction: number | null;
 }
 
 interface ListingChunk {
@@ -101,10 +103,23 @@ function parseListingChunk(
 
   const bedBath = parseBedBathSqft(bedBathText);
 
+  const currentPrice = parseCurrency(priceText);
+
+  const originalPrice = extractOriginalPrice($);
+
+  const totalPriceReduction =
+    currentPrice !== null &&
+    originalPrice !== null &&
+    originalPrice >= currentPrice
+      ? originalPrice - currentPrice
+      : null;
+
   return {
     mlsNumber: chunk.mlsNumber,
     address: addressText || null,
-    currentPrice: parseCurrency(priceText),
+    currentPrice,
+    originalPrice,
+    totalPriceReduction,
     bedrooms: bedBath.bedrooms,
     fullBathrooms: bedBath.fullBathrooms,
     partialBathrooms: bedBath.partialBathrooms,
@@ -215,12 +230,16 @@ function extractLabeledValue(
   followingLabels: string[],
 ): string | null {
   const escapedLabel = escapeRegExp(label);
-  const stoppingLabels = followingLabels
-    .map(escapeRegExp)
-    .join("|");
+
+  const lookahead =
+    followingLabels.length > 0
+      ? `(?=(?:${followingLabels
+          .map(escapeRegExp)
+          .join("|")}):|$)`
+      : "$";
 
   const pattern = new RegExp(
-    `${escapedLabel}:\\s*(.*?)\\s*(?=(?:${stoppingLabels}):|$)`,
+    `${escapedLabel}:\\s*(.*?)\\s*${lookahead}`,
     "i",
   );
 
@@ -304,4 +323,25 @@ function escapeRegExp(value: string): string {
     /[.*+?^${}()|[\]\\]/g,
     "\\$&",
   );
+}
+
+function extractOriginalPrice(
+  $: cheerio.CheerioAPI,
+): number | null {
+  const originalPriceLabel = $("label")
+    .filter((_, element) => {
+      return cleanText($(element).text())
+        .toLowerCase() === "original price:";
+    })
+    .first();
+
+  if (originalPriceLabel.length === 0) {
+    return null;
+  }
+
+  const priceText = cleanText(
+    originalPriceLabel.next(".data").first().text(),
+  );
+
+  return parseCurrency(priceText);
 }

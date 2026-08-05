@@ -95,7 +95,8 @@ function createMarkdownReport(
 
 - **MLS:** ${listing.mlsNumber}
 - **Current price:** ${formatCurrency(listing.currentPrice)}
-- **Exact price reduction:** ${listing.exactDropPlaceholder}
+- **Original price:** ${formatNullableCurrency(listing.originalPrice)}
+- **Total reduction:** ${formatReduction(listing.totalPriceReduction)}
 - **Why it made the cut:** ${listing.shortReason}
 - **Concern:** ${listing.concern}
 - **Suggested line:** ${listing.spokenLine}
@@ -167,4 +168,24 @@ function createYoutubeFile(
     analysis.youtubeKeywords,
     "",
   ].join("\n");
+}
+
+function formatNullableCurrency(
+  value: number | null,
+): string {
+  if (value === null) {
+    return "Verify in RMLS";
+  }
+
+  return formatCurrency(value);
+}
+
+function formatReduction(
+  value: number | null,
+): string {
+  if (value === null || value <= 0) {
+    return "Verify price history in RMLS";
+  }
+
+  return `${formatCurrency(value)} from original list price`;
 }

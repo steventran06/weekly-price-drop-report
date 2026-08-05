@@ -3,7 +3,8 @@ export interface SelectedListing {
   mlsNumber: string;
   address: string;
   currentPrice: number;
-  exactDropPlaceholder: string;
+  originalPrice: number;
+  totalPriceReduction: number;
   shortReason: string;
   concern: string;
   spokenLine: string;

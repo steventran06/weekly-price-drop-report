@@ -76,7 +76,7 @@ async function main(): Promise<void> {
   console.log("-------------------------");
 
   for (const [index, listing] of listings.entries()) {
-    const price = listing.currentPrice
+    const currentPrice = listing.currentPrice
       ? listing.currentPrice.toLocaleString("en-US", {
           style: "currency",
           currency: "USD",
@@ -84,8 +84,26 @@ async function main(): Promise<void> {
         })
       : "Unknown price";
 
+    const originalPrice = listing.originalPrice
+      ? listing.originalPrice.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+          maximumFractionDigits: 0,
+        })
+      : "Unknown";
+
+    const reduction = listing.totalPriceReduction
+      ? listing.totalPriceReduction.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+          maximumFractionDigits: 0,
+        })
+      : "Unknown";
+
     console.log(
-      `${index + 1}. ${listing.address ?? "Unknown address"} — ${price}`,
+      `${index + 1}. ${listing.address ?? "Unknown address"} ` +
+        `— Current: ${currentPrice}, Original: ${originalPrice}, ` +
+        `Reduction: ${reduction}`,
     );
   }
 
