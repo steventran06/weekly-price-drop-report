@@ -1,0 +1,27 @@
+{
+  "name": "weekly-price-drop-report",
+  "version": "1.0.0",
+  "description": "Weekly RMLS Price Drop Report Generator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "weekly": "tsx src/index.ts",
+    "build": "tsc",
+    "inspect": "tsx src/inspect.ts",
+    "parse": "tsx src/parse.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
+    "cheerio": "^1.1.2",
+    "dotenv": "^17.2.1",
+    "googleapis": "^105.0.0",
+    "openai": "^7.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

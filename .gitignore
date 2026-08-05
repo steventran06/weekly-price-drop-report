@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+credentials.json
+token.json
+output/*.json
+output/*.html
+output/*.md
+output/*.txt
