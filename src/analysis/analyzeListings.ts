@@ -81,7 +81,17 @@ export async function analyzeListings(
     - Use natural transitions and varied sentence structures.
     - originalPrice is the original RMLS list price.
     - totalPriceReduction is the difference between originalPrice and currentPrice.
-    - Use the exact totalPriceReduction provided.
+    - When talking about a price reduction in the reel script,
+      Instagram caption or YouTube description,
+      round the reduction to the nearest $1,000.
+
+      Examples:
+      $75,100 -> "about $75,000"
+      $50,995 -> "about $51,000"
+      $91,000 -> "about $91,000"
+
+    Do not use exact values like "$75,100."
+    Say "about $75,000 below the original list price."
     - Do not call this the most recent price change.
     - Phrase it as "down $X from the original list price."
     - The reel script should be approximately 110 to 150 spoken words.

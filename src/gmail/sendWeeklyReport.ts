@@ -169,9 +169,12 @@ function formatReduction(
     return "Verify price history in RMLS";
   }
 
-  return `${value.toLocaleString("en-US", {
+  const rounded =
+    Math.round(value / 5000) * 5000;
+
+  return `About ${rounded.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
-  })} from original list price`;
+  })} below the original list price`;
 }
