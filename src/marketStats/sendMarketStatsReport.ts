@@ -18,9 +18,14 @@ import type {
   MarketStatsBlogPost,
 } from "./generateMarketStatsBlog.js";
 
-const RECIPIENT =
+const PRIMARY_RECIPIENT =
   process.env.REPORT_RECIPIENT?.trim() ||
   "steven@diverserg.com";
+
+const RECIPIENTS = [
+  PRIMARY_RECIPIENT,
+  "alex@diverserg.com",
+];
 
 export async function sendMarketStatsReport(
   gmail: gmail_v1.Gmail,
@@ -54,8 +59,8 @@ export async function sendMarketStatsReport(
     `weekly-market-stats-${Date.now()}`;
 
   const mimeMessage = [
-    `To: ${RECIPIENT}`,
-    `From: ${RECIPIENT}`,
+    `To: ${RECIPIENTS.join(", ")}`,
+    `From: ${PRIMARY_RECIPIENT}`,
     `Subject: ${subject}`,
     "MIME-Version: 1.0",
     `Content-Type: multipart/alternative; boundary="${boundary}"`,
