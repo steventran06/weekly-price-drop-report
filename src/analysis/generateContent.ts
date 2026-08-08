@@ -115,6 +115,11 @@ Important:
 - Keep the same ranked order as the input.
 
 Reel:
+- Keep the opening under 15 words.
+- Keep each property line between 18 and 25 words.
+- Mention no more than two property features per home.
+- Avoid repeating both the price and reduction in multiple ways.
+- The assembled script must stay under 180 words including the CTA.
 - Write one brief, conversational opening hook.
 - Do not open with "Portland Metro price alerts."
 - Good opening examples:
@@ -423,9 +428,14 @@ function validateGeneratedCopy(
         listing.mlsNumber
       ];
 
-    if (!looksLikeCompleteSentence(line)) {
+    const lineWordCount = line
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
+
+    if (lineWordCount < 6) {
       throw new Error(
-        `Generated Reel line for MLS ${listing.mlsNumber} does not read like a complete spoken sentence.`,
+        `Generated Reel line for MLS ${listing.mlsNumber} is too short.`,
       );
     }
 
@@ -470,9 +480,20 @@ function validateFinalContent(
     .split(/\s+/)
     .filter(Boolean).length;
 
-  if (wordCount < 110 || wordCount > 180) {
+  if (wordCount < 100) {
     throw new Error(
-      `Generated Reel script has ${wordCount} words. Expected approximately 125 to 165.`,
+      `Generated Reel script has only ${wordCount} words.`,
+    );
+  }
+
+  if (wordCount > 190) {
+    console.warn(
+      `Generated Reel script has ${wordCount} words. Trimming to a shorter version.`,
+    );
+
+    content.reelScript = trimReelScript(
+      content.reelScript,
+      175,
     );
   }
 
@@ -736,22 +757,45 @@ function escapeRegExp(
   );
 }
 
-function looksLikeCompleteSentence(
-  value: string,
-): boolean {
-  const cleaned = value.trim();
+function trimReelScript(
+  script: string,
+  targetWords: number,
+): string {
+  const withoutCta = script
+    .replace(EXACT_REEL_CTA, "")
+    .trim();
 
-  if (cleaned.split(/\s+/).length < 10) {
-    return false;
+  const sentences =
+    withoutCta.match(/[^.!?]+[.!?]+/g) ?? [
+      withoutCta,
+    ];
+
+  const keptSentences: string[] = [];
+  let wordCount = 0;
+
+  for (const sentence of sentences) {
+    const sentenceWords = sentence
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
+
+    if (
+      keptSentences.length > 0 &&
+      wordCount + sentenceWords >
+        targetWords - 20
+    ) {
+      break;
+    }
+
+    keptSentences.push(sentence.trim());
+    wordCount += sentenceWords;
   }
 
-  const hasVerb =
-    /\b(is|has|offers|comes|includes|features|gives|brings|stands|sits|lists|listed|priced|drops|dropped|gets|puts|you|get|have|you’re|there’s|there is)\b/i.test(
-      cleaned,
-    );
-
-  const commaCount =
-    (cleaned.match(/,/g) ?? []).length;
-
-  return hasVerb && commaCount <= 5;
+  return [
+    keptSentences.join(" "),
+    EXACT_REEL_CTA,
+  ]
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
 }

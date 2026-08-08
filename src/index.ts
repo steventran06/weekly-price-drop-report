@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 import { google } from "googleapis";
 import { authorize } from "./gmail/auth.js";
+import { generateBlogPost } from "./blog/generateBlogPost.js";
+import { writeBlogPost } from "./output/writeBlogPost.js";
 import { analyzeListings } from "./analysis/analyzeListings.js";
 import { findPriceDropEmails } from "./gmail/findPriceDropEmails.js";
 import { sendWeeklyReport } from "./gmail/sendWeeklyReport.js";
@@ -112,6 +114,20 @@ async function main(): Promise<void> {
 
   const analysis = await analyzeListings(listings);
 
+  console.log("");
+  console.log("Generating weekly blog post...");
+
+  const blogPost = await generateBlogPost(
+    analysis,
+    listings,
+  );
+
+  const blogPath = await writeBlogPost(
+    blogPost,
+  );
+
+  console.log(`Generated blog post: ${blogPath}`);
+
   console.log(
     `Selected ${analysis.selectedListings.length} listing(s).`,
   );
@@ -119,19 +135,19 @@ async function main(): Promise<void> {
   const analysisPaths = await writeAnalysisFiles(analysis);
 
   console.log("");
-console.log("Emailing weekly report...");
+  console.log("Emailing weekly report...");
 
-await sendWeeklyReport(
-  gmail,
-  analysis,
-  reportLink,
-);
+  await sendWeeklyReport(
+    gmail,
+    analysis,
+    reportLink,
+  );
 
-console.log(
-  "Weekly report emailed to " +
-    (process.env.REPORT_RECIPIENT ||
-      "steven@diverserg.com"),
-);
+  console.log(
+    "Weekly report emailed to " +
+      (process.env.REPORT_RECIPIENT ||
+        "steven@diverserg.com"),
+  );
 
   console.log("");
   console.log("Generated AI deliverables:");
