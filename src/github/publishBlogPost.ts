@@ -24,22 +24,24 @@ export async function publishBlogPost(
     process.env.BLOG_GITHUB_TOKEN?.trim();
 
   const owner =
-    process.env.WEBSITE_GITHUB_OWNER?.trim() ||
+    process.env.BLOG_GITHUB_OWNER?.trim() ||
     "steventran06";
 
   const repo =
-    process.env.WEBSITE_GITHUB_REPO?.trim() ||
+    process.env.BLOG_GITHUB_REPO?.trim() ||
     "steventranrealestate-blog";
 
   const branch =
-    process.env.WEBSITE_GITHUB_BRANCH?.trim() ||
+    process.env.BLOG_GITHUB_BRANCH?.trim() ||
     "main";
 
   const postsPath =
-    process.env.WEBSITE_POSTS_PATH?.trim() ||
+    process.env.BLOG_POSTS_PATH?.trim() ||
     "src/content/blog";
 
-  if (!token) {
+  if (
+    !token
+  ) {
     throw new Error(
       "BLOG_GITHUB_TOKEN is missing.",
     );
