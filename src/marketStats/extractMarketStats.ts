@@ -19,22 +19,27 @@ export interface MarketStats {
   pendingListings: number | null;
   pendingActiveRatio: number | null;
   monthsOfInventory: number | null;
-  expiredListingsThreeMonths: number | null;
-  closedListingsThreeMonths: number | null;
 
-  averageOriginalListPrice: number | null;
-  averageFinalListPrice: number | null;
-  averageSalePrice: number | null;
+  expiredListingsThreeMonths:
+    number | null;
 
-  /*
-   * We are intentionally not using this metric.
-   * Keeping it here as null maintains compatibility
-   * with the existing analysis types.
-   */
-  listToSalesRatio: number | null;
+  closedListingsThreeMonths:
+    number | null;
 
-  averageDaysOnMarketSold: number | null;
-  averageDaysOnMarketActive: number | null;
+  averageOriginalListPrice:
+    number | null;
+
+  averageFinalListPrice:
+    number | null;
+
+  averageSalePrice:
+    number | null;
+
+  averageDaysOnMarketSold:
+    number | null;
+
+  averageDaysOnMarketActive:
+    number | null;
 }
 
 export interface ExtractedMarketStats {
@@ -47,49 +52,74 @@ export async function extractMarketStats(
   pdfPath: string,
 ): Promise<ExtractedMarketStats> {
   console.log("");
-  console.log("Extracting market stats from PDF...");
-  console.log(`PDF: ${pdfPath}`);
+  console.log(
+    "Extracting market stats from PDF...",
+  );
+
+  console.log(
+    `PDF: ${pdfPath}`,
+  );
 
   const pdfBuffer =
-    await fs.readFile(pdfPath);
+    await fs.readFile(
+      pdfPath,
+    );
 
   const pdf =
     await pdfjsLib.getDocument({
-      data: new Uint8Array(pdfBuffer),
+      data:
+        new Uint8Array(
+          pdfBuffer,
+        ),
     }).promise;
 
   console.log(
     `PDF contains ${pdf.numPages} page(s).`,
   );
 
-  const markets: MarketStats[] = [];
+  const markets:
+    MarketStats[] = [];
 
   for (
     let pageNumber = 1;
-    pageNumber <= pdf.numPages;
+    pageNumber <=
+    pdf.numPages;
     pageNumber++
   ) {
     const page =
-      await pdf.getPage(pageNumber);
+      await pdf.getPage(
+        pageNumber,
+      );
 
     const textContent =
       await page.getTextContent();
 
-    const pageText = textContent.items
-      .map((item) => {
-        if (
-          "str" in item &&
-          typeof item.str === "string"
-        ) {
-          return item.str;
-        }
+    const pageText =
+      textContent.items
+        .map(
+          (item) => {
+            if (
+              "str" in item &&
+              typeof item.str ===
+                "string"
+            ) {
+              return item.str;
+            }
 
-        return "";
-      })
-      .filter(Boolean)
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim();
+            return "";
+          },
+        )
+        .filter(
+          Boolean,
+        )
+        .join(
+          " ",
+        )
+        .replace(
+          /\s+/g,
+          " ",
+        )
+        .trim();
 
     const market =
       parseMarketPage(
@@ -97,7 +127,9 @@ export async function extractMarketStats(
         pageNumber,
       );
 
-    if (!market) {
+    if (
+      !market
+    ) {
       console.warn(
         `Could not parse market totals on page ${pageNumber}.`,
       );
@@ -105,7 +137,9 @@ export async function extractMarketStats(
       continue;
     }
 
-    markets.push(market);
+    markets.push(
+      market,
+    );
 
     console.log(
       `${pageNumber}. ${market.area} — ` +
@@ -114,15 +148,19 @@ export async function extractMarketStats(
     );
   }
 
-  const result: ExtractedMarketStats = {
-    sourcePdf:
-      path.basename(pdfPath),
+  const result:
+    ExtractedMarketStats = {
+      sourcePdf:
+        path.basename(
+          pdfPath,
+        ),
 
-    extractedAt:
-      new Date().toISOString(),
+      extractedAt:
+        new Date()
+          .toISOString(),
 
-    markets,
-  };
+      markets,
+    };
 
   const outputDirectory =
     path.join(
@@ -155,6 +193,7 @@ export async function extractMarketStats(
   );
 
   console.log("");
+
   console.log(
     `Extracted ${markets.length} market(s).`,
   );
@@ -171,23 +210,39 @@ function parseMarketPage(
   pageNumber: number,
 ): MarketStats | null {
   const heading =
-    parsePageHeading(pageText);
+    parsePageHeading(
+      pageText,
+    );
 
   const totals =
-    parseMarketTotals(pageText);
+    parseMarketTotals(
+      pageText,
+    );
 
-  if (!totals) {
+  if (
+    !totals
+  ) {
     return null;
   }
 
   return {
-    page: pageNumber,
-    area: heading.area,
-    areaNumber: heading.areaNumber,
+    page:
+      pageNumber,
+
+    area:
+      normalizeAreaName(
+        heading.area,
+      ),
+
+    areaNumber:
+      heading.areaNumber,
+
     propertyType:
       heading.propertyType,
+
     reportDate:
       heading.reportDate,
+
     ...totals,
   };
 }
@@ -196,105 +251,320 @@ function parsePageHeading(
   text: string,
 ): {
   area: string;
-  areaNumber: number | null;
+
+  areaNumber:
+    number | null;
+
   propertyType:
     | "Single Family Residential"
     | "Condominiums"
     | "Unknown";
-  reportDate: string | null;
+
+  reportDate:
+    string | null;
 } {
   let propertyType:
     | "Single Family Residential"
     | "Condominiums"
     | "Unknown" =
-      "Unknown";
+    "Unknown";
 
   if (
-    /\(Single Family Residential\)/i.test(
+    /Single Family Residential/i.test(
       text,
     )
   ) {
     propertyType =
       "Single Family Residential";
   } else if (
-    /\(Condominiums\)/i.test(text)
+    /Condominiums/i.test(
+      text,
+    )
   ) {
     propertyType =
       "Condominiums";
   }
 
-  let area =
-    "Unknown Area";
-
-  let areaNumber:
-    number | null = null;
-
-  /*
-   * Greater Portland aggregate pages.
-   */
-  const greaterPortlandMatch =
-    text.match(
-      /Greater Portland Areas\s+141-152,\s*155,\s*156,\s*170\+/i,
+  const reportDate =
+    extractReportDate(
+      text,
     );
 
-  if (greaterPortlandMatch) {
+  /*
+   * Greater Portland aggregate.
+   */
+  if (
+    /Greater Portland Areas\s+141-152,\s*155,\s*156,\s*170\+/i.test(
+      text,
+    )
+  ) {
     return {
       area:
         "Greater Portland Areas",
-      areaNumber: null,
+
+      areaNumber:
+        null,
+
       propertyType,
-      reportDate:
-        extractReportDate(text),
+
+      reportDate,
     };
   }
 
   /*
-   * Standard numbered market areas.
+   * Explicit fallbacks for headings
+   * that pdf.js has previously mangled.
+   *
+   * These checks happen before the
+   * generic area parser.
    */
-  const areaMatches = [
-    ...text.matchAll(
-      /([A-Za-z][A-Za-z\s,/&'-]{2,100}?\sArea)\s+(\d{3})/gi,
-    ),
+
+  const knownAreas: Array<{
+    pattern: RegExp;
+    area: string;
+  }> = [
+    {
+      pattern:
+        /North Portland(?:\s+Area)?/i,
+
+      area:
+        "North Portland Area",
+    },
+
+    {
+      pattern:
+        /Northeast Portland(?:\s+Area)?/i,
+
+      area:
+        "Northeast Portland Area",
+    },
+
+    {
+      pattern:
+        /Southeast Portland(?:\s+Area)?/i,
+
+      area:
+        "Southeast Portland Area",
+    },
+
+    {
+      pattern:
+        /Gresham\/Troutdale(?:\s+Area)?/i,
+
+      area:
+        "Gresham/Troutdale Area",
+    },
+
+    {
+      pattern:
+        /Milwaukie\/Clackamas(?:\s+Area)?/i,
+
+      area:
+        "Milwaukie/Clackamas Area",
+    },
+
+    {
+      pattern:
+        /Oregon City\/Canby(?:\s+Area)?/i,
+
+      area:
+        "Oregon City/Canby Area",
+    },
+
+    {
+      pattern:
+        /Lake Oswego\/West Linn(?:\s+Area)?/i,
+
+      area:
+        "Lake Oswego/West Linn Area",
+    },
+
+    {
+      pattern:
+        /West Portland(?:\s+Area)?/i,
+
+      area:
+        "West Portland Area",
+    },
+
+    {
+      pattern:
+        /NW Portland(?:\s+Area)?/i,
+
+      area:
+        "NW Portland Area",
+    },
+
+    {
+      pattern:
+        /Beaverton(?:\s+Area)?/i,
+
+      area:
+        "Beaverton Area",
+    },
+
+    {
+      pattern:
+        /Tigard,\s*Tualatin,\s*Sherwood\s+and\s+(?:Wilsonville|Winsonville)(?:\s+Area)?/i,
+
+      area:
+        "Tigard, Tualatin, Sherwood and Wilsonville Area",
+    },
+
+    {
+      pattern:
+        /Hillsboro\/Forest Grove(?:\s+Area)?/i,
+
+      area:
+        "Hillsboro/Forest Grove Area",
+    },
+
+    {
+      pattern:
+        /Columbia County(?:\s+Area)?/i,
+
+      area:
+        "Columbia County Area",
+    },
+
+    {
+      pattern:
+        /Yamhill County(?:\s+Area)?/i,
+
+      area:
+        "Yamhill County Area",
+    },
+
+    {
+      pattern:
+        /Marion County(?:\s+Area)?/i,
+
+      area:
+        "Marion County Area",
+    },
   ];
 
-  if (areaMatches.length > 0) {
-    const match =
-      areaMatches[
-        areaMatches.length - 1
-      ];
+  for (
+    const knownArea
+    of knownAreas
+  ) {
+    if (
+      knownArea.pattern.test(
+        text,
+      )
+    ) {
+      return {
+        area:
+          knownArea.area,
 
-    area =
-      cleanAreaName(
-        match[1],
-      );
+        areaNumber:
+          extractAreaNumber(
+            text,
+            knownArea.pattern,
+          ),
 
-    areaNumber =
-      Number(match[2]);
-  }
+        propertyType,
 
-  /*
-   * County pages do not always have an
-   * "Area ###" heading.
-   */
-  if (area === "Unknown Area") {
-    const countyMatch =
-      text.match(
-        /\b([A-Za-z]+(?:\s+[A-Za-z]+)*)\s+County\b/i,
-      );
-
-    if (countyMatch) {
-      area =
-        `${countyMatch[1].trim()} County`;
+        reportDate,
+      };
     }
   }
 
+  /*
+   * Generic fallback.
+   *
+   * Handles normal headings such as:
+   *
+   * North Portland Area 141
+   * Hillsboro/Forest Grove Area 152
+   */
+  const areaMatches = [
+    ...text.matchAll(
+      /([A-Za-z][A-Za-z\s,/&'-]{2,80}?\sArea)\s+(\d{3})/gi,
+    ),
+  ];
+
+  if (
+    areaMatches.length >
+    0
+  ) {
+    const match =
+      areaMatches[
+        areaMatches.length -
+          1
+      ];
+
+    const rawArea =
+      match[1];
+
+    const rawAreaNumber =
+      match[2];
+
+    return {
+      area:
+        normalizeAreaName(
+          cleanAreaName(
+            rawArea,
+          ),
+        ),
+
+      areaNumber:
+        rawAreaNumber
+          ? Number(
+              rawAreaNumber,
+            )
+          : null,
+
+      propertyType,
+
+      reportDate,
+    };
+  }
+
   return {
-    area,
-    areaNumber,
+    area:
+      "Unknown Area",
+
+    areaNumber:
+      null,
+
     propertyType,
-    reportDate:
-      extractReportDate(text),
+
+    reportDate,
   };
+}
+
+function extractAreaNumber(
+  text: string,
+  areaPattern: RegExp,
+): number | null {
+  const pattern =
+    new RegExp(
+      `${areaPattern.source}\\s+(\\d{3})`,
+      "i",
+    );
+
+  const match =
+    text.match(
+      pattern,
+    );
+
+  if (
+    !match?.[1]
+  ) {
+    return null;
+  }
+
+  const value =
+    Number(
+      match[1],
+    );
+
+  return Number.isFinite(
+    value,
+  )
+    ? value
+    : null;
 }
 
 function extractReportDate(
@@ -305,7 +575,10 @@ function extractReportDate(
       /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b/i,
     );
 
-  return dateMatch?.[0] ?? null;
+  return (
+    dateMatch?.[0] ??
+    null
+  );
 }
 
 function parseMarketTotals(
@@ -324,7 +597,8 @@ function parseMarketTotals(
     );
 
   if (
-    marketTotalsIndex === -1
+    marketTotalsIndex ===
+    -1
   ) {
     return null;
   }
@@ -333,7 +607,8 @@ function parseMarketTotals(
     text
       .slice(
         marketTotalsIndex,
-        marketTotalsIndex + 700,
+        marketTotalsIndex +
+          700,
       )
       .replace(
         /Market\s+Totals/i,
@@ -342,16 +617,22 @@ function parseMarketTotals(
       .trim();
 
   /*
-   * Pull all numeric/currency/percentage/N/A
-   * values from the Market Totals row.
+   * TMO currently includes a
+   * sale-to-list percentage in the
+   * source row.
+   *
+   * We still consume that token so
+   * every field after it stays aligned,
+   * but we intentionally do not store it.
    */
   const tokens =
     totalsText.match(
-      /\$\s*\d{1,3}(?:,\d{3})*(?:\.\d+)?|N\/A|\d{1,3}(?:,\d{3})*(?:\.\d+)?\s*%|\d{1,3}(?:,\d{3})*(?:\.\d+)?/gi,
+      /\$\s*\d{1,3}(?:,\d{3})*(?:\.\d+)?|N\/A|\d{1,3}(?:,\d{3})*(?:\.\d+)?%|\d{1,3}(?:,\d{3})*(?:\.\d+)?/gi,
     ) ?? [];
 
   if (
-    tokens.length < 12
+    tokens.length <
+    12
   ) {
     console.warn(
       "Market Totals row did not contain enough values:",
@@ -361,31 +642,22 @@ function parseMarketTotals(
     return null;
   }
 
-  /*
-   * Expected order:
-   *
-   * 0  Active listings
-   * 1  Pending listings
-   * 2  Pending/active ratio
-   * 3  Months inventory
-   * 4  Expired listings
-   * 5  Closed listings
-   * 6  Average original list price
-   * 7  Average final list price
-   * 8  Average sale price
-   * 9  Sale/list ratio - intentionally ignored
-   * 10 Average DOM sold
-   * 11 Average DOM active
-   */
   const values =
-    tokens.slice(0, 12);
+    tokens.slice(
+      0,
+      12,
+    );
 
   return {
     activeListings:
-      parseNumber(values[0]),
+      parseNumber(
+        values[0],
+      ),
 
     pendingListings:
-      parseNumber(values[1]),
+      parseNumber(
+        values[1],
+      ),
 
     pendingActiveRatio:
       parsePercentage(
@@ -393,13 +665,19 @@ function parseMarketTotals(
       ),
 
     monthsOfInventory:
-      parseNumber(values[3]),
+      parseNumber(
+        values[3],
+      ),
 
     expiredListingsThreeMonths:
-      parseNumber(values[4]),
+      parseNumber(
+        values[4],
+      ),
 
     closedListingsThreeMonths:
-      parseNumber(values[5]),
+      parseNumber(
+        values[5],
+      ),
 
     averageOriginalListPrice:
       parseCurrency(
@@ -417,29 +695,33 @@ function parseMarketTotals(
       ),
 
     /*
-     * We aren't using sale-to-list.
+     * values[9] is the TMO
+     * sale-to-list percentage.
+     *
+     * Intentionally ignored.
      */
-    listToSalesRatio: null,
 
-    /*
-     * Still skip over values[9], because that position
-     * belongs to the sale-to-list ratio in the PDF.
-     */
     averageDaysOnMarketSold:
-      parseNumber(values[10]),
+      parseNumber(
+        values[10],
+      ),
 
     averageDaysOnMarketActive:
-      parseNumber(values[11]),
+      parseNumber(
+        values[11],
+      ),
   };
 }
 
 function parseNumber(
-  value: string | undefined,
+  value:
+    string |
+    undefined,
 ): number | null {
   if (
     !value ||
     /^N\/A$/i.test(
-      value.trim(),
+      value,
     )
   ) {
     return null;
@@ -447,26 +729,28 @@ function parseNumber(
 
   const parsed =
     Number(
-      value
-        .replace(
-          /,/g,
-          "",
-        )
-        .trim(),
+      value.replace(
+        /,/g,
+        "",
+      ),
     );
 
-  return Number.isFinite(parsed)
+  return Number.isFinite(
+    parsed,
+  )
     ? parsed
     : null;
 }
 
 function parseCurrency(
-  value: string | undefined,
+  value:
+    string |
+    undefined,
 ): number | null {
   if (
     !value ||
     /^N\/A$/i.test(
-      value.trim(),
+      value,
     )
   ) {
     return null;
@@ -486,18 +770,22 @@ function parseCurrency(
         .trim(),
     );
 
-  return Number.isFinite(parsed)
+  return Number.isFinite(
+    parsed,
+  )
     ? parsed
     : null;
 }
 
 function parsePercentage(
-  value: string | undefined,
+  value:
+    string |
+    undefined,
 ): number | null {
   if (
     !value ||
     /^N\/A$/i.test(
-      value.trim(),
+      value,
     )
   ) {
     return null;
@@ -513,11 +801,12 @@ function parsePercentage(
         .replace(
           /,/g,
           "",
-        )
-        .trim(),
+        ),
     );
 
-  return Number.isFinite(parsed)
+  return Number.isFinite(
+    parsed,
+  )
     ? parsed
     : null;
 }
@@ -525,27 +814,51 @@ function parsePercentage(
 function cleanAreaName(
   value: string,
 ): string {
+  return value
+    .replace(
+      /^.*?TMOReport\.com\s*/i,
+      "",
+    )
+    .replace(
+      /^com\s+/i,
+      "",
+    )
+    .replace(
+      /^Copyright.*?\s(?=[A-Z])/i,
+      "",
+    )
+    .replace(
+      /^for the period.*?\s(?=[A-Z])/i,
+      "",
+    )
+    .replace(
+      /^Based on information.*?\s(?=[A-Z])/i,
+      "",
+    )
+    .replace(
+      /\s+/g,
+      " ",
+    )
+    .trim();
+}
+
+function normalizeAreaName(
+  value: string,
+): string {
   const cleaned =
-    value
-      .replace(
-        /^.*?TMOReport\.com\s*/i,
-        "",
-      )
+    cleanAreaName(
+      value,
+    );
+
+  const normalized =
+    cleaned
       .replace(
         /^com\s+/i,
         "",
       )
       .replace(
-        /^Copyright.*?\s(?=[A-Z])/i,
-        "",
-      )
-      .replace(
-        /^for the period.*?\s(?=[A-Z])/i,
-        "",
-      )
-      .replace(
-        /^Based on information.*?\s(?=[A-Z])/i,
-        "",
+        /\bWinsonville\b/gi,
+        "Wilsonville",
       )
       .replace(
         /\s+/g,
@@ -553,11 +866,40 @@ function cleanAreaName(
       )
       .trim();
 
-  /*
-   * Fix typo contained in the source PDF.
-   */
-  return cleaned.replace(
-    /\bWinsonville\b/gi,
-    "Wilsonville",
+  if (
+    /Marion County/i.test(
+      normalized,
+    )
+  ) {
+    return "Marion County Area";
+  }
+
+  if (
+    /Yamhill County/i.test(
+      normalized,
+    )
+  ) {
+    return "Yamhill County Area";
+  }
+
+  if (
+    /Columbia County/i.test(
+      normalized,
+    )
+  ) {
+    return "Columbia County Area";
+  }
+
+  if (
+    /Tigard.*Tualatin.*Sherwood.*Wilsonville/i.test(
+      normalized,
+    )
+  ) {
+    return "Tigard, Tualatin, Sherwood and Wilsonville Area";
+  }
+
+  return (
+    normalized ||
+    "Unknown Area"
   );
 }

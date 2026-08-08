@@ -10,6 +10,7 @@ output/*.txt
 output/instagram-caption.txt
 output/youtube-shorts.txt
 output/blog/
+output/monthly-buyer-report/
 output/market-stats/*.json
 output/market-stats/*.html
 output/market-stats/*.md

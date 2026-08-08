@@ -8,6 +8,7 @@
     "dev": "tsx watch src/index.ts",
     "weekly": "tsx src/index.ts",
     "market-stats": "tsx src/marketStats/index.ts",
+    "monthly-buyer-report": "tsx src/monthlyBuyerReport/index.ts",
     "auth:export": "tsx src/exportAuth.ts",
     "inspect": "tsx src/inspect.ts",
     "parse": "tsx src/parse.ts",

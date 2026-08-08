@@ -1,30 +1,76 @@
 import dotenv from "dotenv";
 import { google } from "googleapis";
 
-import { authorize } from "../gmail/auth.js";
-import { publishBlogPost } from "../github/publishBlogPost.js";
+import {
+  authorize,
+} from "../gmail/auth.js";
 
-import { downloadMarketStatsPdf } from "./downloadMarketStatsPdf.js";
-import { extractMarketStats } from "./extractMarketStats.js";
-import { analyzeMarketStats } from "./analyzeMarketStats.js";
-import { writeMarketAnalysis } from "./writeMarketAnalysis.js";
-import { generateMarketStatsContent } from "./generateMarketStatsContent.js";
-import { generateMarketStatsBlog } from "./generateMarketStatsBlog.js";
-import { writeMarketStatsContent } from "./writeMarketStatsContent.js";
-import { sendMarketStatsReport } from "./sendMarketStatsReport.js";
+import {
+  publishBlogPost,
+} from "../github/publishBlogPost.js";
+
+import {
+  publishHistoricalSnapshot,
+} from "../github/publishHistoricalSnapshot.js";
+
+import {
+  saveHistoricalSnapshot,
+} from "../history/saveHistoricalSnapshot.js";
+
+import {
+  downloadMarketStatsPdf,
+} from "./downloadMarketStatsPdf.js";
+
+import {
+  extractMarketStats,
+} from "./extractMarketStats.js";
+
+import {
+  analyzeMarketStats,
+} from "./analyzeMarketStats.js";
+
+import {
+  writeMarketAnalysis,
+} from "./writeMarketAnalysis.js";
+
+import {
+  generateMarketStatsContent,
+} from "./generateMarketStatsContent.js";
+
+import {
+  generateMarketStatsBlog,
+} from "./generateMarketStatsBlog.js";
+
+import {
+  writeMarketStatsContent,
+} from "./writeMarketStatsContent.js";
+
+import {
+  sendMarketStatsReport,
+} from "./sendMarketStatsReport.js";
 
 dotenv.config();
 
 async function main(): Promise<void> {
-  console.log("================================");
-  console.log(" Portland Metro Market Stats");
-  console.log("================================");
+  console.log(
+    "================================",
+  );
+
+  console.log(
+    " Portland Metro Market Stats",
+  );
+
+  console.log(
+    "================================",
+  );
 
   /*
    * Step 1:
-   * Authenticate with Gmail.
+   * Authenticate.
    */
-  console.log("Authenticating...");
+  console.log(
+    "Authenticating...",
+  );
 
   const auth =
     await authorize();
@@ -35,17 +81,15 @@ async function main(): Promise<void> {
 
   const gmail =
     google.gmail({
-      version: "v1",
+      version:
+        "v1",
+
       auth,
     });
 
   /*
    * Step 2:
-   * Find and download the newest TMO Reports PDF.
-   *
-   * downloadMarketStatsPdf() should return null when
-   * no matching email exists within the configured
-   * Gmail search window.
+   * Find and download newest TMO report.
    */
   const pdf =
     await downloadMarketStatsPdf(
@@ -53,21 +97,13 @@ async function main(): Promise<void> {
     );
 
   /*
-   * IMPORTANT:
-   * No current TMO email means there is nothing to process.
-   *
-   * Exit successfully so Render does NOT treat this as a
-   * failed cron job.
-   *
-   * Nothing below this point will run:
-   * - PDF extraction
-   * - OpenAI
-   * - blog generation
-   * - GitHub publishing
-   * - report email
+   * Missing source data is not an error.
    */
-  if (!pdf) {
+  if (
+    !pdf
+  ) {
     console.log("");
+
     console.log(
       "No TMO Reports email found in the last 5 days.",
     );
@@ -76,15 +112,11 @@ async function main(): Promise<void> {
       "Skipping weekly market stats workflow.",
     );
 
-    console.log("");
-    console.log(
-      "Market stats workflow completed with no source data.",
-    );
-
     return;
   }
 
   console.log("");
+
   console.log(
     "PDF download completed.",
   );
@@ -95,28 +127,25 @@ async function main(): Promise<void> {
 
   /*
    * Step 3:
-   * Extract structured market data
-   * from every page of the PDF.
+   * Extract structured market data.
    */
   const stats =
     await extractMarketStats(
       pdf.outputPath,
     );
 
-  /*
-   * Safety check:
-   * Don't generate content from an empty extraction.
-   */
   if (
-    stats.markets.length === 0
+    stats.markets.length ===
+    0
   ) {
     console.log("");
+
     console.log(
       "No market data was extracted from the TMO report.",
     );
 
     console.log(
-      "Skipping content generation and publishing.",
+      "Skipping market stats workflow.",
     );
 
     return;
@@ -124,33 +153,81 @@ async function main(): Promise<void> {
 
   /*
    * Step 4:
-   * Analyze and rank the markets.
+   * Save a permanent historical snapshot.
+   *
+   * IMPORTANT:
+   * This structure intentionally mirrors
+   * the monthly backfill snapshots.
+   */
+  const snapshotDate =
+    getPortlandDate();
+
+  const historicalSnapshot = {
+    snapshotDate,
+
+    source: {
+      gmailMessageId:
+        null,
+
+      subject:
+        null,
+
+      internalDate:
+        null,
+
+      attachmentFilename:
+        pdf.filename,
+
+      source:
+        "weekly-market-stats-workflow",
+    },
+
+    report:
+      stats,
+  };
+
+  const historicalPath =
+    await saveHistoricalSnapshot(
+      "market-stats",
+      historicalSnapshot,
+    );
+
+  const historicalGitHubUrl =
+    await publishHistoricalSnapshot(
+      "market-stats",
+      historicalPath,
+    );
+
+  console.log(
+    `Published historical market stats: ${historicalGitHubUrl}`,
+  );
+
+  /*
+   * Step 5:
+   * Analyze markets.
    */
   const analysis =
     analyzeMarketStats(
       stats,
     );
 
-  /*
-   * Step 5:
-   * Save structured market-analysis JSON.
-   */
   const analysisPath =
     await writeMarketAnalysis(
       analysis,
     );
 
   console.log("");
+
   console.log(
     `Saved market analysis to: ${analysisPath}`,
   );
 
   /*
    * Step 6:
-   * Generate blog, Reel, Instagram
-   * and YouTube content.
+   * Generate content.
    */
   console.log("");
+
   console.log(
     "Generating market stats content...",
   );
@@ -163,7 +240,7 @@ async function main(): Promise<void> {
 
   /*
    * Step 7:
-   * Assemble the Markdown blog.
+   * Assemble blog Markdown.
    */
   const blog =
     generateMarketStatsBlog(
@@ -174,7 +251,7 @@ async function main(): Promise<void> {
 
   /*
    * Step 8:
-   * Save generated deliverables locally.
+   * Save generated content locally.
    */
   const contentPaths =
     await writeMarketStatsContent(
@@ -183,6 +260,7 @@ async function main(): Promise<void> {
     );
 
   console.log("");
+
   console.log(
     "Generated market content:",
   );
@@ -209,10 +287,10 @@ async function main(): Promise<void> {
 
   /*
    * Step 9:
-   * Publish the Markdown post to the
-   * real-estate blog GitHub repository.
+   * Publish blog.
    */
   console.log("");
+
   console.log(
     "Publishing market stats blog to website repository...",
   );
@@ -228,9 +306,10 @@ async function main(): Promise<void> {
 
   /*
    * Step 10:
-   * Email the complete market package.
+   * Email finished report.
    */
   console.log("");
+
   console.log(
     "Emailing market stats report...",
   );
@@ -252,9 +331,10 @@ async function main(): Promise<void> {
   );
 
   /*
-   * Console analysis summary.
+   * Console summary.
    */
   console.log("");
+
   console.log(
     "Market Analysis",
   );
@@ -264,6 +344,7 @@ async function main(): Promise<void> {
   );
 
   console.log("");
+
   console.log(
     "Most Competitive Single-Family Markets",
   );
@@ -287,6 +368,7 @@ async function main(): Promise<void> {
   }
 
   console.log("");
+
   console.log(
     "Strongest Single-Family Buyer Opportunities",
   );
@@ -310,6 +392,7 @@ async function main(): Promise<void> {
   }
 
   console.log("");
+
   console.log(
     "Most Competitive Condo Markets",
   );
@@ -333,6 +416,7 @@ async function main(): Promise<void> {
   }
 
   console.log("");
+
   console.log(
     "Strongest Condo Buyer Opportunities",
   );
@@ -356,46 +440,7 @@ async function main(): Promise<void> {
   }
 
   console.log("");
-  console.log(
-    "Fastest Single-Family Markets",
-  );
 
-  for (
-    const market
-    of analysis.fastestSingleFamilyMarkets
-  ) {
-    console.log(
-      `${market.rank}. ${market.area} — ` +
-        `${formatDays(
-          market.averageDaysOnMarketSold,
-        )} DOM, ` +
-        `${formatInventory(
-          market.monthsOfInventory,
-        )}`,
-    );
-  }
-
-  console.log("");
-  console.log(
-    "Slowest Single-Family Markets",
-  );
-
-  for (
-    const market
-    of analysis.slowestSingleFamilyMarkets
-  ) {
-    console.log(
-      `${market.rank}. ${market.area} — ` +
-        `${formatDays(
-          market.averageDaysOnMarketSold,
-        )} DOM, ` +
-        `${formatInventory(
-          market.monthsOfInventory,
-        )}`,
-    );
-  }
-
-  console.log("");
   console.log(
     "Largest Condo vs Single-Family Inventory Gaps",
   );
@@ -415,207 +460,94 @@ async function main(): Promise<void> {
         `Condo: ${formatInventory(
           comparison.condoInventory,
         )}, ` +
-        `Gap: ${formatInventoryGap(
+        `Gap: ${formatInventory(
           comparison.inventoryGap,
         )}`,
     );
   }
 
-  /*
-   * Greater Portland aggregate.
-   */
-  if (
-    analysis.metroAggregate
-  ) {
-    const metro =
-      analysis.metroAggregate;
-
-    console.log("");
-    console.log(
-      "Greater Portland Single-Family Aggregate",
-    );
-
-    console.log(
-      "----------------------------------------",
-    );
-
-    console.log(
-      [
-        `Active: ${formatNumber(
-          metro.activeListings,
-        )}`,
-
-        `Pending: ${formatNumber(
-          metro.pendingListings,
-        )}`,
-
-        `Pending Ratio: ${formatPercent(
-          metro.pendingActiveRatio,
-        )}`,
-
-        `Inventory: ${formatInventory(
-          metro.monthsOfInventory,
-        )}`,
-
-        `Avg Original List: ${formatCurrency(
-          metro.averageOriginalListPrice,
-        )}`,
-
-        `Avg Final List: ${formatCurrency(
-          metro.averageFinalListPrice,
-        )}`,
-
-        `Avg Sale: ${formatCurrency(
-          metro.averageSalePrice,
-        )}`,
-
-        `Sold DOM: ${formatDays(
-          metro.averageDaysOnMarketSold,
-        )}`,
-
-        `Active DOM: ${formatDays(
-          metro.averageDaysOnMarketActive,
-        )}`,
-      ].join(" | "),
-    );
-  }
-
-  /*
-   * Print the entire extracted dataset
-   * for debugging / Render logs.
-   */
   console.log("");
+
   console.log(
-    "Full Market Summary",
+    "Historical Snapshot",
   );
 
   console.log(
     "-------------------",
   );
 
-  for (
-    const market
-    of stats.markets
-  ) {
-    console.log(
-      [
-        market.area,
-
-        market.propertyType,
-
-        `Active: ${formatNumber(
-          market.activeListings,
-        )}`,
-
-        `Pending: ${formatNumber(
-          market.pendingListings,
-        )}`,
-
-        `Pending Ratio: ${formatPercent(
-          market.pendingActiveRatio,
-        )}`,
-
-        `Inventory: ${formatInventory(
-          market.monthsOfInventory,
-        )}`,
-
-        `Closed: ${formatNumber(
-          market.closedListingsThreeMonths,
-        )}`,
-
-        `Avg Original: ${formatCurrency(
-          market.averageOriginalListPrice,
-        )}`,
-
-        `Avg Final: ${formatCurrency(
-          market.averageFinalListPrice,
-        )}`,
-
-        `Avg Sale: ${formatCurrency(
-          market.averageSalePrice,
-        )}`,
-
-        `Sold DOM: ${formatDays(
-          market.averageDaysOnMarketSold,
-        )}`,
-
-        `Active DOM: ${formatDays(
-          market.averageDaysOnMarketActive,
-        )}`,
-      ].join(" | "),
-    );
-  }
-
-  console.log("");
   console.log(
-    "Analysis Summary",
+    `Date: ${snapshotDate}`,
   );
 
   console.log(
-    "----------------",
+    `Local: ${historicalPath}`,
   );
 
   console.log(
-    `Report date: ${
-      analysis.reportDate ??
-      "Unknown"
-    }`,
-  );
-
-  console.log(
-    `Markets analyzed: ${analysis.summary.totalMarketsAnalyzed}`,
-  );
-
-  console.log(
-    `Single-family markets: ${analysis.summary.singleFamilyMarketsAnalyzed}`,
-  );
-
-  console.log(
-    `Condo markets: ${analysis.summary.condoMarketsAnalyzed}`,
+    `GitHub: ${historicalGitHubUrl}`,
   );
 
   console.log("");
+
   console.log(
     "Market stats workflow completed.",
   );
 }
 
-function formatCurrency(
-  value: number | null,
-): string {
+function getPortlandDate(): string {
+  const parts =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone:
+          "America/Los_Angeles",
+
+        year:
+          "numeric",
+
+        month:
+          "2-digit",
+
+        day:
+          "2-digit",
+      },
+    ).formatToParts(
+      new Date(),
+    );
+
+  const year =
+    parts.find(
+      (part) =>
+        part.type ===
+        "year",
+    )?.value;
+
+  const month =
+    parts.find(
+      (part) =>
+        part.type ===
+        "month",
+    )?.value;
+
+  const day =
+    parts.find(
+      (part) =>
+        part.type ===
+        "day",
+    )?.value;
+
   if (
-    value === null
+    !year ||
+    !month ||
+    !day
   ) {
-    return "N/A";
+    throw new Error(
+      "Could not determine Portland date.",
+    );
   }
 
-  return value.toLocaleString(
-    "en-US",
-    {
-      style:
-        "currency",
-
-      currency:
-        "USD",
-
-      maximumFractionDigits:
-        0,
-    },
-  );
-}
-
-function formatNumber(
-  value: number | null,
-): string {
-  if (
-    value === null
-  ) {
-    return "N/A";
-  }
-
-  return value.toLocaleString(
-    "en-US",
-  );
+  return `${year}-${month}-${day}`;
 }
 
 function formatPercent(
@@ -642,18 +574,6 @@ function formatInventory(
   return `${value} mo`;
 }
 
-function formatInventoryGap(
-  value: number | null,
-): string {
-  if (
-    value === null
-  ) {
-    return "N/A";
-  }
-
-  return `${value} mo`;
-}
-
 function formatDays(
   value: number | null,
 ): string {
@@ -667,8 +587,12 @@ function formatDays(
 }
 
 main().catch(
-  (error: unknown) => {
+  (
+    error:
+      unknown,
+  ) => {
     console.error("");
+
     console.error(
       "Application failed:",
     );
@@ -689,6 +613,7 @@ main().catch(
       );
     }
 
-    process.exitCode = 1;
+    process.exitCode =
+      1;
   },
 );
