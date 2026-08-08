@@ -137,10 +137,23 @@ function createTextEmailBody(
       )
       .join(", ");
 
+  const blogUrl =
+    createPriceDropBlogUrl();
+
+  const storyBlurb =
+    createPriceDropStoryBlurb(
+      analysis,
+    );
+
   return [
     "PORTLAND METRO PRICE ALERT",
     "",
     analysis.summary,
+    "",
+    "PUBLISHED BLOG",
+    "==============",
+    "",
+    blogUrl,
     "",
     "RMLS LISTING REPORT",
     "===================",
@@ -157,6 +170,11 @@ function createTextEmailBody(
     "====================================",
     "",
     commaSeparatedMls,
+    "",
+    "INSTAGRAM STORY BLURB",
+    "=====================",
+    "",
+    storyBlurb,
     "",
     "REEL SCRIPT",
     "===========",
@@ -296,6 +314,14 @@ function createHtmlEmailBody(
       )
       .join("");
 
+  const blogUrl =
+    createPriceDropBlogUrl();
+
+  const storyBlurb =
+    createPriceDropStoryBlurb(
+      analysis,
+    );
+
   return `
 <!DOCTYPE html>
 <html>
@@ -323,6 +349,31 @@ function createHtmlEmailBody(
     ${escapeHtml(
       analysis.summary,
     )}
+  </p>
+
+  <hr style="
+    border: 0;
+    border-top: 1px solid #dddddd;
+    margin: 28px 0;
+  ">
+
+  <h2>Published Blog</h2>
+
+  <p>
+    <a
+      href="${escapeHtml(
+        blogUrl,
+      )}"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="
+        color: #1155cc;
+        text-decoration: underline;
+        font-weight: 600;
+      "
+    >
+      Open this week's Portland Metro Price Drops article
+    </a>
   </p>
 
   <hr style="
@@ -391,16 +442,23 @@ function createHtmlEmailBody(
     margin: 28px 0;
   ">
 
+  <h2>Instagram Story Blurb</h2>
+
+  ${createCopyBox(
+    storyBlurb,
+  )}
+
+  <hr style="
+    border: 0;
+    border-top: 1px solid #dddddd;
+    margin: 28px 0;
+  ">
+
   <h2>Reel Script</h2>
 
-  <div style="
-    white-space: pre-wrap;
-    background: #f7f7f7;
-    padding: 16px;
-    border-radius: 6px;
-  ">${escapeHtml(
+  ${createCopyBox(
     analysis.reelScript,
-  )}</div>
+  )}
 
   <hr style="
     border: 0;
@@ -410,14 +468,9 @@ function createHtmlEmailBody(
 
   <h2>Instagram Caption</h2>
 
-  <div style="
-    white-space: pre-wrap;
-    background: #f7f7f7;
-    padding: 16px;
-    border-radius: 6px;
-  ">${escapeHtml(
+  ${createCopyBox(
     analysis.instagramCaption,
-  )}</div>
+  )}
 
   <hr style="
     border: 0;
@@ -435,14 +488,9 @@ function createHtmlEmailBody(
 
   <h2>YouTube Shorts Description</h2>
 
-  <div style="
-    white-space: pre-wrap;
-    background: #f7f7f7;
-    padding: 16px;
-    border-radius: 6px;
-  ">${escapeHtml(
+  ${createCopyBox(
     analysis.youtubeShortsDescription,
-  )}</div>
+  )}
 
   <h2>YouTube Keywords</h2>
 
@@ -488,6 +536,94 @@ function createHtmlEmailBody(
 `;
 }
 
+function createPriceDropStoryBlurb(
+  analysis: WeeklyAnalysis,
+): string {
+  const listings =
+    [...analysis.selectedListings]
+      .sort(
+        (a, b) =>
+          a.rank - b.rank,
+      );
+
+  const validReductions =
+    listings
+      .map(
+        (listing) =>
+          listing.totalPriceReduction,
+      )
+      .filter(
+        (
+          value,
+        ): value is number =>
+          value !== null &&
+          value > 0,
+      );
+
+  const largestReduction =
+    validReductions.length > 0
+      ? Math.max(
+          ...validReductions,
+        )
+      : null;
+
+  const reductionLine =
+    largestReduction !== null
+      ? `This week's featured homes include price reductions of up to about ${formatRoundedCurrency(
+          largestReduction,
+        )}.`
+      : "I pulled out a few Portland Metro listings worth taking a closer look at this week.";
+
+  return [
+    "New Portland Metro Price Drop update is live 🏡",
+    "",
+    reductionLine,
+    "",
+    "I picked out the homes that stood out most based on price changes, features and overall value.",
+    "",
+    "See the full breakdown at steventranrealestate.com.",
+  ].join("\n");
+}
+
+function createPriceDropBlogUrl(): string {
+  const displayDate =
+    new Intl.DateTimeFormat(
+      "en-US",
+      {
+        timeZone:
+          "America/Los_Angeles",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      },
+    ).format(new Date());
+
+  const slugDate =
+    displayDate
+      .toLowerCase()
+      .replace(/,/g, "")
+      .replace(/\s+/g, "-");
+
+  return (
+    "https://blog.steventranrealestate.com/posts/" +
+    `portland-metro-price-drops-${slugDate}/`
+  );
+}
+
+function createCopyBox(
+  value: string,
+): string {
+  return `
+<div style="
+  white-space: pre-wrap;
+  background: #f7f7f7;
+  padding: 16px;
+  border-radius: 6px;
+">${escapeHtml(
+    value,
+  )}</div>`;
+}
+
 function createZillowUrl(
   address: string,
 ): string {
@@ -525,6 +661,19 @@ function formatCurrency(
       currency: "USD",
       maximumFractionDigits: 0,
     },
+  );
+}
+
+function formatRoundedCurrency(
+  value: number,
+): string {
+  const rounded =
+    Math.round(
+      value / 1000,
+    ) * 1000;
+
+  return formatCurrency(
+    rounded,
   );
 }
 

@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 import { google } from "googleapis";
 
 import { authorize } from "../gmail/auth.js";
+import { publishBlogPost } from "../github/publishBlogPost.js";
+
 import { downloadMarketStatsPdf } from "./downloadMarketStatsPdf.js";
 import { extractMarketStats } from "./extractMarketStats.js";
 import { analyzeMarketStats } from "./analyzeMarketStats.js";
@@ -9,7 +11,7 @@ import { writeMarketAnalysis } from "./writeMarketAnalysis.js";
 import { generateMarketStatsContent } from "./generateMarketStatsContent.js";
 import { generateMarketStatsBlog } from "./generateMarketStatsBlog.js";
 import { writeMarketStatsContent } from "./writeMarketStatsContent.js";
-import { publishBlogPost } from "../github/publishBlogPost.js";
+import { sendMarketStatsReport } from "./sendMarketStatsReport.js";
 
 dotenv.config();
 
@@ -18,31 +20,81 @@ async function main(): Promise<void> {
   console.log(" Portland Metro Market Stats");
   console.log("================================");
 
-  console.log("Authenticating...");
-
-  const auth = await authorize();
-
-  console.log("Authentication completed.");
-
-  const gmail = google.gmail({
-    version: "v1",
-    auth,
-  });
-
   /*
    * Step 1:
-   * Download the newest TMO Reports PDF.
+   * Authenticate with Gmail.
    */
-  const pdf = await downloadMarketStatsPdf(
-    gmail,
+  console.log("Authenticating...");
+
+  const auth =
+    await authorize();
+
+  console.log(
+    "Authentication completed.",
   );
 
-  console.log("");
-  console.log("PDF download completed.");
-  console.log(`File: ${pdf.filename}`);
+  const gmail =
+    google.gmail({
+      version: "v1",
+      auth,
+    });
 
   /*
    * Step 2:
+   * Find and download the newest TMO Reports PDF.
+   *
+   * downloadMarketStatsPdf() should return null when
+   * no matching email exists within the configured
+   * Gmail search window.
+   */
+  const pdf =
+    await downloadMarketStatsPdf(
+      gmail,
+    );
+
+  /*
+   * IMPORTANT:
+   * No current TMO email means there is nothing to process.
+   *
+   * Exit successfully so Render does NOT treat this as a
+   * failed cron job.
+   *
+   * Nothing below this point will run:
+   * - PDF extraction
+   * - OpenAI
+   * - blog generation
+   * - GitHub publishing
+   * - report email
+   */
+  if (!pdf) {
+    console.log("");
+    console.log(
+      "No TMO Reports email found in the last 5 days.",
+    );
+
+    console.log(
+      "Skipping weekly market stats workflow.",
+    );
+
+    console.log("");
+    console.log(
+      "Market stats workflow completed with no source data.",
+    );
+
+    return;
+  }
+
+  console.log("");
+  console.log(
+    "PDF download completed.",
+  );
+
+  console.log(
+    `File: ${pdf.filename}`,
+  );
+
+  /*
+   * Step 3:
    * Extract structured market data
    * from every page of the PDF.
    */
@@ -52,7 +104,26 @@ async function main(): Promise<void> {
     );
 
   /*
-   * Step 3:
+   * Safety check:
+   * Don't generate content from an empty extraction.
+   */
+  if (
+    stats.markets.length === 0
+  ) {
+    console.log("");
+    console.log(
+      "No market data was extracted from the TMO report.",
+    );
+
+    console.log(
+      "Skipping content generation and publishing.",
+    );
+
+    return;
+  }
+
+  /*
+   * Step 4:
    * Analyze and rank the markets.
    */
   const analysis =
@@ -61,8 +132,8 @@ async function main(): Promise<void> {
     );
 
   /*
-   * Step 4:
-   * Save the structured analysis JSON.
+   * Step 5:
+   * Save structured market-analysis JSON.
    */
   const analysisPath =
     await writeMarketAnalysis(
@@ -75,8 +146,9 @@ async function main(): Promise<void> {
   );
 
   /*
-   * Step 5:
-   * Generate blog, Reel and social content.
+   * Step 6:
+   * Generate blog, Reel, Instagram
+   * and YouTube content.
    */
   console.log("");
   console.log(
@@ -90,8 +162,8 @@ async function main(): Promise<void> {
     );
 
   /*
-   * Step 6:
-   * Assemble Markdown blog.
+   * Step 7:
+   * Assemble the Markdown blog.
    */
   const blog =
     generateMarketStatsBlog(
@@ -101,8 +173,8 @@ async function main(): Promise<void> {
     );
 
   /*
-   * Step 7:
-   * Write all generated files.
+   * Step 8:
+   * Save generated deliverables locally.
    */
   const contentPaths =
     await writeMarketStatsContent(
@@ -135,6 +207,11 @@ async function main(): Promise<void> {
     `- JSON: ${contentPaths.contentJsonPath}`,
   );
 
+  /*
+   * Step 9:
+   * Publish the Markdown post to the
+   * real-estate blog GitHub repository.
+   */
   console.log("");
   console.log(
     "Publishing market stats blog to website repository...",
@@ -150,15 +227,45 @@ async function main(): Promise<void> {
   );
 
   /*
-   * Analysis output.
+   * Step 10:
+   * Email the complete market package.
    */
   console.log("");
-  console.log("Market Analysis");
-  console.log("---------------");
+  console.log(
+    "Emailing market stats report...",
+  );
+
+  await sendMarketStatsReport(
+    gmail,
+    stats,
+    analysis,
+    generatedContent,
+    blog,
+  );
+
+  console.log(
+    "Market stats report emailed to " +
+      (
+        process.env.REPORT_RECIPIENT ||
+        "steven@diverserg.com"
+      ),
+  );
+
+  /*
+   * Console analysis summary.
+   */
+  console.log("");
+  console.log(
+    "Market Analysis",
+  );
+
+  console.log(
+    "---------------",
+  );
 
   console.log("");
   console.log(
-    "Hottest Single-Family Markets",
+    "Most Competitive Single-Family Markets",
   );
 
   for (
@@ -374,7 +481,8 @@ async function main(): Promise<void> {
   }
 
   /*
-   * Full extracted-market summary.
+   * Print the entire extracted dataset
+   * for debugging / Render logs.
    */
   console.log("");
   console.log(
@@ -438,9 +546,6 @@ async function main(): Promise<void> {
     );
   }
 
-  /*
-   * Final summary.
-   */
   console.log("");
   console.log(
     "Analysis Summary",
@@ -478,16 +583,23 @@ async function main(): Promise<void> {
 function formatCurrency(
   value: number | null,
 ): string {
-  if (value === null) {
+  if (
+    value === null
+  ) {
     return "N/A";
   }
 
   return value.toLocaleString(
     "en-US",
     {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
+      style:
+        "currency",
+
+      currency:
+        "USD",
+
+      maximumFractionDigits:
+        0,
     },
   );
 }
@@ -495,7 +607,9 @@ function formatCurrency(
 function formatNumber(
   value: number | null,
 ): string {
-  if (value === null) {
+  if (
+    value === null
+  ) {
     return "N/A";
   }
 
@@ -507,7 +621,9 @@ function formatNumber(
 function formatPercent(
   value: number | null,
 ): string {
-  if (value === null) {
+  if (
+    value === null
+  ) {
     return "N/A";
   }
 
@@ -517,7 +633,9 @@ function formatPercent(
 function formatInventory(
   value: number | null,
 ): string {
-  if (value === null) {
+  if (
+    value === null
+  ) {
     return "N/A";
   }
 
@@ -527,7 +645,9 @@ function formatInventory(
 function formatInventoryGap(
   value: number | null,
 ): string {
-  if (value === null) {
+  if (
+    value === null
+  ) {
     return "N/A";
   }
 
@@ -537,7 +657,9 @@ function formatInventoryGap(
 function formatDays(
   value: number | null,
 ): string {
-  if (value === null) {
+  if (
+    value === null
+  ) {
     return "N/A";
   }
 
