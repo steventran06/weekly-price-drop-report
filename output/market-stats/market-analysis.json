@@ -1,0 +1,453 @@
+{
+  "reportDate": "August 2, 2026",
+  "metroAggregate": {
+    "page": 26,
+    "area": "Greater Portland Areas",
+    "areaNumber": null,
+    "propertyType": "Single Family Residential",
+    "reportDate": "May 02, 2026",
+    "activeListings": 5953,
+    "pendingListings": 2347,
+    "pendingActiveRatio": 28.3,
+    "monthsOfInventory": 2.5,
+    "expiredListingsThreeMonths": 443,
+    "closedListingsThreeMonths": 6280,
+    "averageOriginalListPrice": 685348,
+    "averageFinalListPrice": 672490,
+    "averageSalePrice": 671320,
+    "listToSalesRatio": null,
+    "averageDaysOnMarketSold": 43,
+    "averageDaysOnMarketActive": 87
+  },
+  "hottestSingleFamily": [
+    {
+      "rank": 1,
+      "area": "Northeast Portland Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 1.5,
+      "pendingActiveRatio": 37.3,
+      "averageDaysOnMarketSold": 28,
+      "listToSalesRatio": null,
+      "averageSalePrice": 654869
+    },
+    {
+      "rank": 2,
+      "area": "North Portland Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 1.6,
+      "pendingActiveRatio": 35.9,
+      "averageDaysOnMarketSold": 29,
+      "listToSalesRatio": null,
+      "averageSalePrice": 549821
+    },
+    {
+      "rank": 3,
+      "area": "Southeast Portland Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 1.9,
+      "pendingActiveRatio": 31.4,
+      "averageDaysOnMarketSold": 28,
+      "listToSalesRatio": null,
+      "averageSalePrice": 580947
+    },
+    {
+      "rank": 4,
+      "area": "Tigard, Tualatin, Sherwood and Wilsonville Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 2.4,
+      "pendingActiveRatio": 34,
+      "averageDaysOnMarketSold": 48,
+      "listToSalesRatio": null,
+      "averageSalePrice": 678002
+    },
+    {
+      "rank": 5,
+      "area": "Milwaukie/Clackamas Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 2.6,
+      "pendingActiveRatio": 33.5,
+      "averageDaysOnMarketSold": 47,
+      "listToSalesRatio": null,
+      "averageSalePrice": 637502
+    }
+  ],
+  "strongestBuyerOpportunities": [
+    {
+      "rank": 1,
+      "area": "Columbia County Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 4.4,
+      "pendingActiveRatio": 20.1,
+      "averageDaysOnMarketSold": 73,
+      "listToSalesRatio": null,
+      "averageSalePrice": 512072
+    },
+    {
+      "rank": 2,
+      "area": "Yamhill County Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 4.2,
+      "pendingActiveRatio": 23.4,
+      "averageDaysOnMarketSold": 62,
+      "listToSalesRatio": null,
+      "averageSalePrice": 615443
+    },
+    {
+      "rank": 3,
+      "area": "Marion County",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 4.2,
+      "pendingActiveRatio": 27.6,
+      "averageDaysOnMarketSold": 54,
+      "listToSalesRatio": null,
+      "averageSalePrice": 504742
+    },
+    {
+      "rank": 4,
+      "area": "Lake Oswego/West Linn Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 3.8,
+      "pendingActiveRatio": 21.5,
+      "averageDaysOnMarketSold": 37,
+      "listToSalesRatio": null,
+      "averageSalePrice": 1211365
+    },
+    {
+      "rank": 5,
+      "area": "West Portland Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 3.3,
+      "pendingActiveRatio": 22.8,
+      "averageDaysOnMarketSold": 37,
+      "listToSalesRatio": null,
+      "averageSalePrice": 933740
+    }
+  ],
+  "hottestCondoMarkets": [
+    {
+      "rank": 1,
+      "area": "Southeast Portland Area",
+      "propertyType": "Condominiums",
+      "monthsOfInventory": 5.1,
+      "pendingActiveRatio": 22.6,
+      "averageDaysOnMarketSold": 64,
+      "listToSalesRatio": null,
+      "averageSalePrice": 361893
+    },
+    {
+      "rank": 2,
+      "area": "Hillsboro/Forest Grove Area",
+      "propertyType": "Condominiums",
+      "monthsOfInventory": 5.1,
+      "pendingActiveRatio": 11.1,
+      "averageDaysOnMarketSold": 62,
+      "listToSalesRatio": null,
+      "averageSalePrice": 326782
+    },
+    {
+      "rank": 3,
+      "area": "Tigard, Tualatin, Sherwood and Wilsonville Area",
+      "propertyType": "Condominiums",
+      "monthsOfInventory": 5.4,
+      "pendingActiveRatio": 12.6,
+      "averageDaysOnMarketSold": 67,
+      "listToSalesRatio": null,
+      "averageSalePrice": 307742
+    },
+    {
+      "rank": 4,
+      "area": "Gresham/Troutdale Area",
+      "propertyType": "Condominiums",
+      "monthsOfInventory": 5.7,
+      "pendingActiveRatio": 6.4,
+      "averageDaysOnMarketSold": 83,
+      "listToSalesRatio": null,
+      "averageSalePrice": 222532
+    },
+    {
+      "rank": 5,
+      "area": "Northeast Portland Area",
+      "propertyType": "Condominiums",
+      "monthsOfInventory": 6.3,
+      "pendingActiveRatio": 14.3,
+      "averageDaysOnMarketSold": 113,
+      "listToSalesRatio": null,
+      "averageSalePrice": 314873
+    }
+  ],
+  "strongestCondoBuyerOpportunities": [
+    {
+      "rank": 1,
+      "area": "North Portland Area",
+      "propertyType": "Condominiums",
+      "monthsOfInventory": 9.8,
+      "pendingActiveRatio": 9,
+      "averageDaysOnMarketSold": 112,
+      "listToSalesRatio": null,
+      "averageSalePrice": 343554
+    },
+    {
+      "rank": 2,
+      "area": "Lake Oswego/West Linn Area",
+      "propertyType": "Condominiums",
+      "monthsOfInventory": 9.3,
+      "pendingActiveRatio": 17.5,
+      "averageDaysOnMarketSold": 84,
+      "listToSalesRatio": null,
+      "averageSalePrice": 377650
+    },
+    {
+      "rank": 3,
+      "area": "Beaverton Area",
+      "propertyType": "Condominiums",
+      "monthsOfInventory": 8.1,
+      "pendingActiveRatio": 17.7,
+      "averageDaysOnMarketSold": 78,
+      "listToSalesRatio": null,
+      "averageSalePrice": 272313
+    },
+    {
+      "rank": 4,
+      "area": "NW Portland Area",
+      "propertyType": "Condominiums",
+      "monthsOfInventory": 7.9,
+      "pendingActiveRatio": 15.1,
+      "averageDaysOnMarketSold": 98,
+      "listToSalesRatio": null,
+      "averageSalePrice": 339500
+    },
+    {
+      "rank": 5,
+      "area": "West Portland Area",
+      "propertyType": "Condominiums",
+      "monthsOfInventory": 7.3,
+      "pendingActiveRatio": 12.1,
+      "averageDaysOnMarketSold": 91,
+      "listToSalesRatio": null,
+      "averageSalePrice": 439249
+    }
+  ],
+  "fastestSingleFamilyMarkets": [
+    {
+      "rank": 1,
+      "area": "Northeast Portland Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 1.5,
+      "pendingActiveRatio": 37.3,
+      "averageDaysOnMarketSold": 28,
+      "listToSalesRatio": null,
+      "averageSalePrice": 654869
+    },
+    {
+      "rank": 2,
+      "area": "Southeast Portland Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 1.9,
+      "pendingActiveRatio": 31.4,
+      "averageDaysOnMarketSold": 28,
+      "listToSalesRatio": null,
+      "averageSalePrice": 580947
+    },
+    {
+      "rank": 3,
+      "area": "North Portland Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 1.6,
+      "pendingActiveRatio": 35.9,
+      "averageDaysOnMarketSold": 29,
+      "listToSalesRatio": null,
+      "averageSalePrice": 549821
+    },
+    {
+      "rank": 4,
+      "area": "Lake Oswego/West Linn Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 3.8,
+      "pendingActiveRatio": 21.5,
+      "averageDaysOnMarketSold": 37,
+      "listToSalesRatio": null,
+      "averageSalePrice": 1211365
+    },
+    {
+      "rank": 5,
+      "area": "West Portland Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 3.3,
+      "pendingActiveRatio": 22.8,
+      "averageDaysOnMarketSold": 37,
+      "listToSalesRatio": null,
+      "averageSalePrice": 933740
+    }
+  ],
+  "slowestSingleFamilyMarkets": [
+    {
+      "rank": 1,
+      "area": "Columbia County Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 4.4,
+      "pendingActiveRatio": 20.1,
+      "averageDaysOnMarketSold": 73,
+      "listToSalesRatio": null,
+      "averageSalePrice": 512072
+    },
+    {
+      "rank": 2,
+      "area": "Yamhill County Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 4.2,
+      "pendingActiveRatio": 23.4,
+      "averageDaysOnMarketSold": 62,
+      "listToSalesRatio": null,
+      "averageSalePrice": 615443
+    },
+    {
+      "rank": 3,
+      "area": "Marion County",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 4.2,
+      "pendingActiveRatio": 27.6,
+      "averageDaysOnMarketSold": 54,
+      "listToSalesRatio": null,
+      "averageSalePrice": 504742
+    },
+    {
+      "rank": 4,
+      "area": "Hillsboro/Forest Grove Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 2.9,
+      "pendingActiveRatio": 25.1,
+      "averageDaysOnMarketSold": 51,
+      "listToSalesRatio": null,
+      "averageSalePrice": 590018
+    },
+    {
+      "rank": 5,
+      "area": "Oregon City/Canby Area",
+      "propertyType": "Single Family Residential",
+      "monthsOfInventory": 3.3,
+      "pendingActiveRatio": 28.5,
+      "averageDaysOnMarketSold": 50,
+      "listToSalesRatio": null,
+      "averageSalePrice": 671941
+    }
+  ],
+  "highestSingleFamilySaleToList": [],
+  "lowestSingleFamilySaleToList": [],
+  "condoVsSingleFamily": [
+    {
+      "area": "North Portland Area",
+      "singleFamilyInventory": 1.6,
+      "condoInventory": 9.8,
+      "inventoryGap": 8.2,
+      "singleFamilyPendingRatio": 35.9,
+      "condoPendingRatio": 9,
+      "singleFamilyDom": 29,
+      "condoDom": 112
+    },
+    {
+      "area": "Lake Oswego/West Linn Area",
+      "singleFamilyInventory": 3.8,
+      "condoInventory": 9.3,
+      "inventoryGap": 5.5,
+      "singleFamilyPendingRatio": 21.5,
+      "condoPendingRatio": 17.5,
+      "singleFamilyDom": 37,
+      "condoDom": 84
+    },
+    {
+      "area": "Beaverton Area",
+      "singleFamilyInventory": 2.7,
+      "condoInventory": 8.1,
+      "inventoryGap": 5.4,
+      "singleFamilyPendingRatio": 31.4,
+      "condoPendingRatio": 17.7,
+      "singleFamilyDom": 44,
+      "condoDom": 78
+    },
+    {
+      "area": "NW Portland Area",
+      "singleFamilyInventory": 3,
+      "condoInventory": 7.9,
+      "inventoryGap": 4.9,
+      "singleFamilyPendingRatio": 24.9,
+      "condoPendingRatio": 15.1,
+      "singleFamilyDom": 39,
+      "condoDom": 98
+    },
+    {
+      "area": "Northeast Portland Area",
+      "singleFamilyInventory": 1.5,
+      "condoInventory": 6.3,
+      "inventoryGap": 4.8,
+      "singleFamilyPendingRatio": 37.3,
+      "condoPendingRatio": 14.3,
+      "singleFamilyDom": 28,
+      "condoDom": 113
+    },
+    {
+      "area": "West Portland Area",
+      "singleFamilyInventory": 3.3,
+      "condoInventory": 7.3,
+      "inventoryGap": 4,
+      "singleFamilyPendingRatio": 22.8,
+      "condoPendingRatio": 12.1,
+      "singleFamilyDom": 37,
+      "condoDom": 91
+    },
+    {
+      "area": "Milwaukie/Clackamas Area",
+      "singleFamilyInventory": 2.6,
+      "condoInventory": 6.5,
+      "inventoryGap": 3.9,
+      "singleFamilyPendingRatio": 33.5,
+      "condoPendingRatio": 11.9,
+      "singleFamilyDom": 47,
+      "condoDom": 96
+    },
+    {
+      "area": "Southeast Portland Area",
+      "singleFamilyInventory": 1.9,
+      "condoInventory": 5.1,
+      "inventoryGap": 3.2,
+      "singleFamilyPendingRatio": 31.4,
+      "condoPendingRatio": 22.6,
+      "singleFamilyDom": 28,
+      "condoDom": 64
+    },
+    {
+      "area": "Tigard, Tualatin, Sherwood and Wilsonville Area",
+      "singleFamilyInventory": 2.4,
+      "condoInventory": 5.4,
+      "inventoryGap": 3,
+      "singleFamilyPendingRatio": 34,
+      "condoPendingRatio": 12.6,
+      "singleFamilyDom": 48,
+      "condoDom": 67
+    },
+    {
+      "area": "Gresham/Troutdale Area",
+      "singleFamilyInventory": 3.3,
+      "condoInventory": 5.7,
+      "inventoryGap": 2.4,
+      "singleFamilyPendingRatio": 26.6,
+      "condoPendingRatio": 6.4,
+      "singleFamilyDom": 45,
+      "condoDom": 83
+    },
+    {
+      "area": "Hillsboro/Forest Grove Area",
+      "singleFamilyInventory": 2.9,
+      "condoInventory": 5.1,
+      "inventoryGap": 2.2,
+      "singleFamilyPendingRatio": 25.1,
+      "condoPendingRatio": 11.1,
+      "singleFamilyDom": 51,
+      "condoDom": 62
+    }
+  ],
+  "summary": {
+    "totalMarketsAnalyzed": 26,
+    "singleFamilyMarketsAnalyzed": 15,
+    "condoMarketsAnalyzed": 11
+  }
+}

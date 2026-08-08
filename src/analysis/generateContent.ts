@@ -27,6 +27,9 @@ export interface GeneratedContent {
 const INSTAGRAM_HASHTAGS =
   "#PortlandRealEstate #PortlandMetro #BeavertonRealEstate #HomesForSale #PriceDrop";
 
+const INSTAGRAM_BLOG_LINE =
+  "Find more details on these price drops and my latest Portland Metro market stats at steventranrealestate.com.";
+
 const CONTACT_BLOCK = `Connect With Me
 📞 Call / Text: (971) 285-2002
 📧 Email: steven@diverserg.com
@@ -64,23 +67,37 @@ export async function generateContent(
       mlsNumber: listing.mlsNumber,
       fullAddress: listing.address,
       locationLabel: createLocationLabel(listing),
+
       currentPrice: listing.currentPrice,
-      formattedCurrentPrice: formatCurrency(
-        listing.currentPrice,
-      ),
-      originalPrice: listing.originalPrice,
+
+      formattedCurrentPrice:
+        formatCurrency(
+          listing.currentPrice,
+        ),
+
+      originalPrice:
+        listing.originalPrice,
+
       formattedOriginalPrice:
         listing.originalPrice !== null
-          ? formatCurrency(listing.originalPrice)
+          ? formatCurrency(
+              listing.originalPrice,
+            )
           : null,
+
       totalPriceReduction:
         listing.totalPriceReduction,
+
       roundedReductionText:
         formatRoundedReduction(
           listing.totalPriceReduction,
         ),
-      shortReason: listing.shortReason,
-      spokenLine: listing.spokenLine,
+
+      shortReason:
+        listing.shortReason,
+
+      spokenLine:
+        listing.spokenLine,
     }),
   );
 
@@ -88,10 +105,12 @@ export async function generateContent(
     `Generating content for ${rankedListings.length} selected listing(s)...`,
   );
 
-  const response = await client.responses.create({
-    model,
-    store: false,
-    instructions: `
+  const response =
+    await client.responses.create({
+      model,
+      store: false,
+
+      instructions: `
 You are writing content for Steven Tran's recurring Portland Metro
 Price Alert video series.
 
@@ -104,6 +123,7 @@ You may use ONLY the supplied listings.
 
 Important:
 - The application adds full addresses to Instagram and YouTube itself.
+- The application adds the blog/website information itself.
 - Do not recreate complete property lists.
 - Do not include MLS numbers in public-facing copy.
 - Do not mention internal fact-checking language.
@@ -149,13 +169,15 @@ Reel:
 - Do not number the properties aloud.
 - Do not begin every property with "Next."
 - The final assembled Reel should be approximately 125 to 165 words.
-- Do not write the final CTA. The application adds it exactly.
+- Do not write the final Reel CTA. The application adds it exactly.
 
 Instagram:
 - Write only a brief hook before the property list.
 - Write only a brief CTA after the property list.
 - Do not generate the actual property list.
 - Do not generate hashtags.
+- Do not mention the blog or website.
+- The application adds the website reference itself.
 - Keep it casual, useful and easy to scan.
 
 YouTube Shorts:
@@ -163,6 +185,8 @@ YouTube Shorts:
 - Write only a short closing CTA after the property list.
 - Do not generate the actual property list.
 - Do not generate the contact block.
+- Do not generate or mention the blog URL.
+- The application adds the direct weekly blog URL itself.
 - Explain that these are selected Portland Metro listings with
   noteworthy reductions from their original list prices.
 
@@ -175,10 +199,15 @@ Keywords:
 
 Return valid JSON only.
 `,
-    input: `
+
+      input: `
 Create copy using only these selected listings:
 
-${JSON.stringify(contentInput, null, 2)}
+${JSON.stringify(
+  contentInput,
+  null,
+  2,
+)}
 
 Return JSON matching this exact structure:
 
@@ -217,7 +246,7 @@ Requirements:
 - Keep factCheckNotes internal and concise.
 - Do not include fields outside this structure.
 `,
-  });
+    });
 
   const generatedCopy =
     parseOpenAIJson<GeneratedCopy>(
@@ -230,10 +259,11 @@ Requirements:
     rankedListings,
   );
 
-  const reelScript = buildReelScript(
-    generatedCopy,
-    rankedListings,
-  );
+  const reelScript =
+    buildReelScript(
+      generatedCopy,
+      rankedListings,
+    );
 
   const instagramCaption =
     buildInstagramCaption(
@@ -257,8 +287,10 @@ Requirements:
     instagramCaption,
     youtubeShortsDescription,
     youtubeKeywords,
+
     factCheckNotes:
-      generatedCopy.factCheckNotes ?? [],
+      generatedCopy.factCheckNotes ??
+      [],
   };
 
   validateFinalContent(
@@ -273,29 +305,39 @@ function buildReelScript(
   copy: GeneratedCopy,
   listings: SelectedListing[],
 ): string {
-  const propertyLines = listings.map(
-    (listing) => {
-      const generatedLine =
-        copy.reelListingLines[listing.mlsNumber];
+  const propertyLines =
+    listings.map(
+      (listing) => {
+        const generatedLine =
+          copy.reelListingLines[
+            listing.mlsNumber
+          ];
 
-      if (!generatedLine) {
-        throw new Error(
-          `Generated Reel copy is missing MLS ${listing.mlsNumber}.`,
+        if (!generatedLine) {
+          throw new Error(
+            `Generated Reel copy is missing MLS ${listing.mlsNumber}.`,
+          );
+        }
+
+        return cleanSentence(
+          generatedLine,
         );
-      }
-
-      return cleanSentence(generatedLine);
-    },
-  );
+      },
+    );
 
   return [
-    cleanSentence(copy.reelIntro),
+    cleanSentence(
+      copy.reelIntro,
+    ),
     ...propertyLines,
     EXACT_REEL_CTA,
   ]
     .filter(Boolean)
     .join(" ")
-    .replace(/\s+/g, " ")
+    .replace(
+      /\s+/g,
+      " ",
+    )
     .trim();
 }
 
@@ -303,39 +345,54 @@ function buildInstagramCaption(
   copy: GeneratedCopy,
   listings: SelectedListing[],
 ): string {
-  const listingLines = listings
-    .map((listing) => {
-      const reduction =
-        formatRoundedReduction(
-          listing.totalPriceReduction,
-        );
+  const listingLines =
+    listings
+      .map(
+        (listing) => {
+          const reduction =
+            formatRoundedReduction(
+              listing.totalPriceReduction,
+            );
 
-      const priceLine = reduction
-        ? `${formatCurrency(
-            listing.currentPrice,
-          )} | ${capitalize(reduction)}`
-        : formatCurrency(
-            listing.currentPrice,
-          );
+          const priceLine =
+            reduction
+              ? `${formatCurrency(
+                  listing.currentPrice,
+                )} | ${capitalize(
+                  reduction,
+                )}`
+              : formatCurrency(
+                  listing.currentPrice,
+                );
 
-      return [
-        `🏡 ${listing.address}`,
-        priceLine,
-      ].join("\n");
-    })
-    .join("\n\n");
+          return [
+            `🏡 ${listing.address}`,
+            priceLine,
+          ].join("\n");
+        },
+      )
+      .join("\n\n");
 
   return [
-    cleanParagraph(copy.instagramIntro),
+    cleanParagraph(
+      copy.instagramIntro,
+    ),
     "",
     listingLines,
     "",
-    cleanParagraph(copy.instagramClosing),
+    cleanParagraph(
+      copy.instagramClosing,
+    ),
+    "",
+    INSTAGRAM_BLOG_LINE,
     "",
     INSTAGRAM_HASHTAGS,
   ]
     .join("\n")
-    .replace(/\n{3,}/g, "\n\n")
+    .replace(
+      /\n{3,}/g,
+      "\n\n",
+    )
     .trim();
 }
 
@@ -343,43 +400,100 @@ function buildYoutubeDescription(
   copy: GeneratedCopy,
   listings: SelectedListing[],
 ): string {
-  const listingLines = listings
-    .map((listing) => {
-      const reduction =
-        formatRoundedReduction(
-          listing.totalPriceReduction,
-        );
+  const listingLines =
+    listings
+      .map(
+        (listing) => {
+          const reduction =
+            formatRoundedReduction(
+              listing.totalPriceReduction,
+            );
 
-      return [
-        `• ${listing.address}`,
-        `Current price: ${formatCurrency(
-          listing.currentPrice,
-        )}`,
-        reduction
-          ? `Price reduction: ${capitalize(
-              reduction,
-            )}`
-          : null,
-      ]
-        .filter(Boolean)
-        .join("\n");
-    })
-    .join("\n\n");
+          return [
+            `• ${listing.address}`,
+
+            `Current price: ${formatCurrency(
+              listing.currentPrice,
+            )}`,
+
+            reduction
+              ? `Price reduction: ${capitalize(
+                  reduction,
+                )}`
+              : null,
+          ]
+            .filter(Boolean)
+            .join("\n");
+        },
+      )
+      .join("\n\n");
+
+  const blogUrl =
+    createPriceDropBlogUrl();
 
   return [
-    cleanParagraph(copy.youtubeIntro),
+    cleanParagraph(
+      copy.youtubeIntro,
+    ),
     "",
     "Homes featured:",
     "",
     listingLines,
     "",
-    cleanParagraph(copy.youtubeClosing),
+    cleanParagraph(
+      copy.youtubeClosing,
+    ),
+    "",
+    "See all of this week’s Portland Metro price drops:",
+    blogUrl,
     "",
     CONTACT_BLOCK,
   ]
     .join("\n")
-    .replace(/\n{3,}/g, "\n\n")
+    .replace(
+      /\n{3,}/g,
+      "\n\n",
+    )
     .trim();
+}
+
+function createPriceDropBlogUrl(): string {
+  const displayDate =
+    new Intl.DateTimeFormat(
+      "en-US",
+      {
+        timeZone:
+          "America/Los_Angeles",
+
+        month:
+          "long",
+
+        day:
+          "numeric",
+
+        year:
+          "numeric",
+      },
+    ).format(
+      new Date(),
+    );
+
+  const slugDate =
+    displayDate
+      .toLowerCase()
+      .replace(
+        /,/g,
+        "",
+      )
+      .replace(
+        /\s+/g,
+        "-",
+      );
+
+  return (
+    "https://blog.steventranrealestate.com/posts/" +
+    `portland-metro-price-drops-${slugDate}/`
+  );
 }
 
 function validateGeneratedCopy(
@@ -389,29 +503,39 @@ function validateGeneratedCopy(
   if (
     !copy ||
     typeof copy !== "object" ||
-    typeof copy.reelIntro !== "string" ||
-    typeof copy.instagramIntro !== "string" ||
-    typeof copy.instagramClosing !== "string" ||
-    typeof copy.youtubeIntro !== "string" ||
-    typeof copy.youtubeClosing !== "string" ||
-    typeof copy.youtubeKeywords !== "string" ||
+    typeof copy.reelIntro !==
+      "string" ||
+    typeof copy.instagramIntro !==
+      "string" ||
+    typeof copy.instagramClosing !==
+      "string" ||
+    typeof copy.youtubeIntro !==
+      "string" ||
+    typeof copy.youtubeClosing !==
+      "string" ||
+    typeof copy.youtubeKeywords !==
+      "string" ||
     !copy.reelListingLines ||
-    typeof copy.reelListingLines !== "object"
+    typeof copy.reelListingLines !==
+      "object"
   ) {
     throw new Error(
       "Generated content response is missing required fields.",
     );
   }
 
-  const expectedMlsNumbers = new Set(
-    listings.map(
-      (listing) => listing.mlsNumber,
-    ),
-  );
+  const expectedMlsNumbers =
+    new Set(
+      listings.map(
+        (listing) =>
+          listing.mlsNumber,
+      ),
+    );
 
-  const returnedMlsNumbers = Object.keys(
-    copy.reelListingLines,
-  );
+  const returnedMlsNumbers =
+    Object.keys(
+      copy.reelListingLines,
+    );
 
   if (
     returnedMlsNumbers.length !==
@@ -422,18 +546,34 @@ function validateGeneratedCopy(
     );
   }
 
-  for (const listing of listings) {
+  for (
+    const listing
+    of listings
+  ) {
     const line =
       copy.reelListingLines[
         listing.mlsNumber
       ];
 
-    const lineWordCount = line
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean).length;
+    if (
+      !line ||
+      typeof line !== "string"
+    ) {
+      throw new Error(
+        `Generated Reel line is missing for MLS ${listing.mlsNumber}.`,
+      );
+    }
 
-    if (lineWordCount < 6) {
+    const lineWordCount =
+      line
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .length;
+
+    if (
+      lineWordCount < 6
+    ) {
       throw new Error(
         `Generated Reel line for MLS ${listing.mlsNumber} is too short.`,
       );
@@ -455,15 +595,26 @@ function validateGeneratedCopy(
         listing.currentPrice,
       );
 
-    if (!line.includes(formattedPrice)) {
+    if (
+      !line.includes(
+        formattedPrice,
+      )
+    ) {
       throw new Error(
         `Generated Reel line is missing ${formattedPrice}.`,
       );
     }
   }
 
-  for (const returnedMls of returnedMlsNumbers) {
-    if (!expectedMlsNumbers.has(returnedMls)) {
+  for (
+    const returnedMls
+    of returnedMlsNumbers
+  ) {
+    if (
+      !expectedMlsNumbers.has(
+        returnedMls,
+      )
+    ) {
       throw new Error(
         `Generated content included unknown MLS ${returnedMls}.`,
       );
@@ -475,26 +626,33 @@ function validateFinalContent(
   content: GeneratedContent,
   listings: SelectedListing[],
 ): void {
-  const wordCount = content.reelScript
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean).length;
+  const wordCount =
+    content.reelScript
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .length;
 
-  if (wordCount < 100) {
+  if (
+    wordCount < 100
+  ) {
     throw new Error(
       `Generated Reel script has only ${wordCount} words.`,
     );
   }
 
-  if (wordCount > 190) {
+  if (
+    wordCount > 190
+  ) {
     console.warn(
       `Generated Reel script has ${wordCount} words. Trimming to a shorter version.`,
     );
 
-    content.reelScript = trimReelScript(
-      content.reelScript,
-      175,
-    );
+    content.reelScript =
+      trimReelScript(
+        content.reelScript,
+        175,
+      );
   }
 
   if (
@@ -507,7 +665,10 @@ function validateFinalContent(
     );
   }
 
-  for (const listing of listings) {
+  for (
+    const listing
+    of listings
+  ) {
     const streetAddress =
       getStreetAddress(
         listing.address,
@@ -515,20 +676,32 @@ function validateFinalContent(
 
     const requiredSurfaces = [
       {
-        name: "Instagram caption",
-        value: content.instagramCaption,
+        name:
+          "Instagram caption",
+
+        value:
+          content.instagramCaption,
       },
       {
-        name: "YouTube description",
+        name:
+          "YouTube description",
+
         value:
           content.youtubeShortsDescription,
       },
     ];
 
-    for (const surface of requiredSurfaces) {
+    for (
+      const surface
+      of requiredSurfaces
+    ) {
       if (
-        !normalize(surface.value).includes(
-          normalize(streetAddress),
+        !normalize(
+          surface.value,
+        ).includes(
+          normalize(
+            streetAddress,
+          ),
         )
       ) {
         throw new Error(
@@ -554,9 +727,21 @@ function validateFinalContent(
       /#[A-Za-z0-9_]+/g,
     )?.length ?? 0;
 
-  if (hashtagCount !== 5) {
+  if (
+    hashtagCount !== 5
+  ) {
     throw new Error(
       `Instagram caption contains ${hashtagCount} hashtags. Expected exactly 5.`,
+    );
+  }
+
+  if (
+    !content.instagramCaption.includes(
+      "steventranrealestate.com",
+    )
+  ) {
+    throw new Error(
+      "Instagram caption is missing the website reference.",
     );
   }
 
@@ -567,6 +752,19 @@ function validateFinalContent(
   ) {
     throw new Error(
       "YouTube description is missing Steven's contact block.",
+    );
+  }
+
+  const blogUrl =
+    createPriceDropBlogUrl();
+
+  if (
+    !content.youtubeShortsDescription.includes(
+      blogUrl,
+    )
+  ) {
+    throw new Error(
+      "YouTube description is missing the weekly price-drop blog URL.",
     );
   }
 }
@@ -590,19 +788,27 @@ function createLocationLabel(
     "Portland",
   ];
 
-  for (const location of knownLocations) {
+  for (
+    const location
+    of knownLocations
+  ) {
     if (
-      reason.toLowerCase().includes(
-        location.toLowerCase(),
-      )
+      reason
+        .toLowerCase()
+        .includes(
+          location.toLowerCase(),
+        )
     ) {
-      return `a home in ${location}`;
+      return (
+        `a home in ${location}`
+      );
     }
   }
 
-  const city = extractCity(
-    listing.address,
-  );
+  const city =
+    extractCity(
+      listing.address,
+    );
 
   if (city) {
     return `a home in ${city}`;
@@ -614,9 +820,10 @@ function createLocationLabel(
 function extractCity(
   address: string,
 ): string | null {
-  const match = address.match(
-    /\s+(Beaverton|Portland|Hillsboro|Tigard|Lake Oswego|Sherwood|Tualatin|Aloha|Bethany|Vancouver|Camas|Ridgefield|Oregon City|Happy Valley),?\s+(?:OR|WA)\s+\d{5}/i,
-  );
+  const match =
+    address.match(
+      /\s+(Beaverton|Portland|Hillsboro|Tigard|Lake Oswego|Sherwood|Tualatin|Aloha|Bethany|Vancouver|Camas|Ridgefield|Oregon City|Happy Valley),?\s+(?:OR|WA)\s+\d{5}/i,
+    );
 
   return match?.[1] ?? null;
 }
@@ -626,14 +833,18 @@ function containsStreetNumber(
   address: string,
 ): boolean {
   const streetNumber =
-    address.match(/^\d+/)?.[0];
+    address.match(
+      /^\d+/,
+    )?.[0];
 
   if (!streetNumber) {
     return false;
   }
 
   return new RegExp(
-    `\\b${escapeRegExp(streetNumber)}\\b`,
+    `\\b${escapeRegExp(
+      streetNumber,
+    )}\\b`,
   ).test(value);
 }
 
@@ -644,33 +855,51 @@ function getStreetAddress(
     /\s+(?:Beaverton|Portland|Hillsboro|Tigard|Lake Oswego|Sherwood|Tualatin|Aloha|Bethany|Vancouver|Camas|Ridgefield|Oregon City|Happy Valley),?\s+(?:OR|WA)\s+\d{5}(?:-\d{4})?$/i;
 
   return address
-    .replace(cityStatePattern, "")
+    .replace(
+      cityStatePattern,
+      "",
+    )
     .trim();
 }
 
 function formatCurrency(
   value: number,
 ): string {
-  return value.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  });
+  return value.toLocaleString(
+    "en-US",
+    {
+      style:
+        "currency",
+
+      currency:
+        "USD",
+
+      maximumFractionDigits:
+        0,
+    },
+  );
 }
 
 function formatRoundedReduction(
   value: number | null,
 ): string | null {
-  if (value === null || value <= 0) {
+  if (
+    value === null ||
+    value <= 0
+  ) {
     return null;
   }
 
   const rounded =
-    Math.round(value / 1000) * 1000;
+    Math.round(
+      value / 1000,
+    ) * 1000;
 
-  return `about ${formatCurrency(
-    rounded,
-  )} below the original list price`;
+  return (
+    `about ${formatCurrency(
+      rounded,
+    )} below the original list price`
+  );
 }
 
 function normalizeKeywords(
@@ -678,10 +907,17 @@ function normalizeKeywords(
 ): string {
   return value
     .split(",")
-    .map((keyword) => keyword.trim())
+    .map(
+      (keyword) =>
+        keyword.trim(),
+    )
     .filter(Boolean)
     .filter(
-      (keyword, index, all) =>
+      (
+        keyword,
+        index,
+        all,
+      ) =>
         all.findIndex(
           (item) =>
             item.toLowerCase() ===
@@ -694,16 +930,25 @@ function normalizeKeywords(
 function cleanSentence(
   value: string,
 ): string {
-  const cleaned = value
-    .replace(/^\s*\d+[.)]\s*/, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  const cleaned =
+    value
+      .replace(
+        /^\s*\d+[.)]\s*/,
+        "",
+      )
+      .replace(
+        /\s+/g,
+        " ",
+      )
+      .trim();
 
   if (!cleaned) {
     return "";
   }
 
-  return /[.!?]$/.test(cleaned)
+  return /[.!?]$/.test(
+    cleaned,
+  )
     ? cleaned
     : `${cleaned}.`;
 }
@@ -712,7 +957,10 @@ function cleanParagraph(
   value: string,
 ): string {
   return value
-    .replace(/\s+/g, " ")
+    .replace(
+      /\s+/g,
+      " ",
+    )
     .trim();
 }
 
@@ -734,17 +982,50 @@ function normalize(
 ): string {
   return value
     .toUpperCase()
-    .replace(/[.,#'’\-|]/g, " ")
-    .replace(/\bSTREET\b/g, "ST")
-    .replace(/\bAVENUE\b/g, "AVE")
-    .replace(/\bPLACE\b/g, "PL")
-    .replace(/\bDRIVE\b/g, "DR")
-    .replace(/\bLANE\b/g, "LN")
-    .replace(/\bCOURT\b/g, "CT")
-    .replace(/\bROAD\b/g, "RD")
-    .replace(/\bBOULEVARD\b/g, "BLVD")
-    .replace(/\bTERRACE\b/g, "TER")
-    .replace(/\s+/g, " ")
+    .replace(
+      /[.,#'’\-|]/g,
+      " ",
+    )
+    .replace(
+      /\bSTREET\b/g,
+      "ST",
+    )
+    .replace(
+      /\bAVENUE\b/g,
+      "AVE",
+    )
+    .replace(
+      /\bPLACE\b/g,
+      "PL",
+    )
+    .replace(
+      /\bDRIVE\b/g,
+      "DR",
+    )
+    .replace(
+      /\bLANE\b/g,
+      "LN",
+    )
+    .replace(
+      /\bCOURT\b/g,
+      "CT",
+    )
+    .replace(
+      /\bROAD\b/g,
+      "RD",
+    )
+    .replace(
+      /\bBOULEVARD\b/g,
+      "BLVD",
+    )
+    .replace(
+      /\bTERRACE\b/g,
+      "TER",
+    )
+    .replace(
+      /\s+/g,
+      " ",
+    )
     .trim();
 }
 
@@ -761,34 +1042,53 @@ function trimReelScript(
   script: string,
   targetWords: number,
 ): string {
-  const withoutCta = script
-    .replace(EXACT_REEL_CTA, "")
-    .trim();
+  const withoutCta =
+    script
+      .replace(
+        EXACT_REEL_CTA,
+        "",
+      )
+      .trim();
 
   const sentences =
-    withoutCta.match(/[^.!?]+[.!?]+/g) ?? [
+    withoutCta.match(
+      /[^.!?]+[.!?]+/g,
+    ) ?? [
       withoutCta,
     ];
 
-  const keptSentences: string[] = [];
+  const keptSentences:
+    string[] = [];
+
   let wordCount = 0;
 
-  for (const sentence of sentences) {
-    const sentenceWords = sentence
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean).length;
+  for (
+    const sentence
+    of sentences
+  ) {
+    const sentenceWords =
+      sentence
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .length;
 
     if (
-      keptSentences.length > 0 &&
-      wordCount + sentenceWords >
+      keptSentences.length >
+        0 &&
+      wordCount +
+        sentenceWords >
         targetWords - 20
     ) {
       break;
     }
 
-    keptSentences.push(sentence.trim());
-    wordCount += sentenceWords;
+    keptSentences.push(
+      sentence.trim(),
+    );
+
+    wordCount +=
+      sentenceWords;
   }
 
   return [
@@ -796,6 +1096,9 @@ function trimReelScript(
     EXACT_REEL_CTA,
   ]
     .join(" ")
-    .replace(/\s+/g, " ")
+    .replace(
+      /\s+/g,
+      " ",
+    )
     .trim();
 }

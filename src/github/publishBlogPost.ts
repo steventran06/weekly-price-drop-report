@@ -1,11 +1,24 @@
-import type { GeneratedBlogPost } from "../blog/generateBlogPost.js";
+interface PublishableBlogPost {
+  filename: string;
+  markdown: string;
+}
 
 interface GitHubFileResponse {
   sha?: string;
 }
 
+interface GitHubPutResponse {
+  content?: {
+    html_url?: string;
+  };
+
+  commit?: {
+    html_url?: string;
+  };
+}
+
 export async function publishBlogPost(
-  post: GeneratedBlogPost,
+  post: PublishableBlogPost,
 ): Promise<string> {
   const token =
     process.env.WEBSITE_GITHUB_TOKEN?.trim();
@@ -32,13 +45,35 @@ export async function publishBlogPost(
     );
   }
 
-  const filePath =
-    `${postsPath}/${post.filename}`;
+  if (!post.filename?.trim()) {
+    throw new Error(
+      "Blog post filename is missing.",
+    );
+  }
 
-  const encodedPath = filePath
-    .split("/")
-    .map(encodeURIComponent)
-    .join("/");
+  if (!post.markdown?.trim()) {
+    throw new Error(
+      "Blog post markdown is empty.",
+    );
+  }
+
+  const normalizedPostsPath =
+    postsPath.replace(
+      /^\/+|\/+$/g,
+      "",
+    );
+
+  const filePath =
+    `${normalizedPostsPath}/${post.filename}`;
+
+  const encodedPath =
+    filePath
+      .split("/")
+      .map(
+        (part) =>
+          encodeURIComponent(part),
+      )
+      .join("/");
 
   const apiUrl =
     `https://api.github.com/repos/` +
@@ -49,56 +84,75 @@ export async function publishBlogPost(
   );
 
   /*
-   * Check whether this week's file already exists.
-   * GitHub requires the existing blob SHA when updating.
+   * GitHub requires the existing file SHA
+   * if we're updating a file that already exists.
    */
-  const existingFile = await getExistingFile(
-    apiUrl,
-    token,
-    branch,
-  );
+  const existingFile =
+    await getExistingFile(
+      apiUrl,
+      token,
+      branch,
+    );
 
-  const body: {
+  const requestBody: {
     message: string;
     content: string;
     branch: string;
     sha?: string;
   } = {
     message:
-      `Publish weekly price drops: ${post.filename}`,
-    content: Buffer.from(
-      post.markdown,
-      "utf8",
-    ).toString("base64"),
+      createCommitMessage(
+        post.filename,
+        Boolean(
+          existingFile?.sha,
+        ),
+      ),
+
+    content:
+      Buffer.from(
+        post.markdown,
+        "utf8",
+      ).toString(
+        "base64",
+      ),
+
     branch,
   };
 
   if (existingFile?.sha) {
-    body.sha = existingFile.sha;
+    requestBody.sha =
+      existingFile.sha;
   }
 
-  const response = await fetch(apiUrl, {
-    method: "PUT",
+  const response =
+    await fetch(
+      apiUrl,
+      {
+        method: "PUT",
 
-    headers: {
-      Accept:
-        "application/vnd.github+json",
+        headers: {
+          Accept:
+            "application/vnd.github+json",
 
-      Authorization:
-        `Bearer ${token}`,
+          Authorization:
+            `Bearer ${token}`,
 
-      "X-GitHub-Api-Version":
-        "2026-03-10",
+          "X-GitHub-Api-Version":
+            "2022-11-28",
 
-      "Content-Type":
-        "application/json",
+          "Content-Type":
+            "application/json",
 
-      "User-Agent":
-        "weekly-price-drop-report",
-    },
+          "User-Agent":
+            "weekly-price-drop-report",
+        },
 
-    body: JSON.stringify(body),
-  });
+        body:
+          JSON.stringify(
+            requestBody,
+          ),
+      },
+    );
 
   if (!response.ok) {
     const errorText =
@@ -110,25 +164,36 @@ export async function publishBlogPost(
   }
 
   const result =
-    await response.json() as {
-      content?: {
-        html_url?: string;
-      };
-      commit?: {
-        html_url?: string;
-      };
-    };
+    await response.json() as GitHubPutResponse;
 
-  console.log(
-    existingFile
-      ? "Updated existing weekly blog post."
-      : "Created new weekly blog post.",
-  );
+  if (existingFile?.sha) {
+    console.log(
+      "Updated existing blog post.",
+    );
+  } else {
+    console.log(
+      "Created new blog post.",
+    );
+  }
+
+  const htmlUrl =
+    result.content?.html_url;
+
+  const commitUrl =
+    result.commit?.html_url;
+
+  if (htmlUrl) {
+    return htmlUrl;
+  }
+
+  if (commitUrl) {
+    return commitUrl;
+  }
 
   return (
-    result.content?.html_url ||
-    result.commit?.html_url ||
-    `https://github.com/${owner}/${repo}/blob/${branch}/${filePath}`
+    `https://github.com/` +
+    `${owner}/${repo}/blob/` +
+    `${branch}/${filePath}`
   );
 }
 
@@ -138,29 +203,36 @@ async function getExistingFile(
   branch: string,
 ): Promise<GitHubFileResponse | null> {
   const url =
-    `${apiUrl}?ref=${encodeURIComponent(
+    `${apiUrl}?ref=` +
+    encodeURIComponent(
       branch,
-    )}`;
+    );
 
-  const response = await fetch(url, {
-    method: "GET",
+  const response =
+    await fetch(
+      url,
+      {
+        method: "GET",
 
-    headers: {
-      Accept:
-        "application/vnd.github+json",
+        headers: {
+          Accept:
+            "application/vnd.github+json",
 
-      Authorization:
-        `Bearer ${token}`,
+          Authorization:
+            `Bearer ${token}`,
 
-      "X-GitHub-Api-Version":
-        "2026-03-10",
+          "X-GitHub-Api-Version":
+            "2022-11-28",
 
-      "User-Agent":
-        "weekly-price-drop-report",
-    },
-  });
+          "User-Agent":
+            "weekly-price-drop-report",
+        },
+      },
+    );
 
-  if (response.status === 404) {
+  if (
+    response.status === 404
+  ) {
     return null;
   }
 
@@ -174,4 +246,21 @@ async function getExistingFile(
   }
 
   return await response.json() as GitHubFileResponse;
+}
+
+function createCommitMessage(
+  filename: string,
+  isUpdate: boolean,
+): string {
+  if (isUpdate) {
+    return (
+      `Update generated blog post: ` +
+      filename
+    );
+  }
+
+  return (
+    `Publish generated blog post: ` +
+    filename
+  );
 }

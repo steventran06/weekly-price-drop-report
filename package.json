@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "weekly": "tsx src/index.ts",
+    "market-stats": "tsx src/marketStats/index.ts",
     "auth:export": "tsx src/exportAuth.ts",
     "inspect": "tsx src/inspect.ts",
     "parse": "tsx src/parse.ts",
@@ -18,7 +19,8 @@
     "cheerio": "^1.1.2",
     "dotenv": "^17.2.1",
     "googleapis": "^105.0.0",
-    "openai": "^7.4.0"
+    "openai": "^7.4.0",
+    "pdfjs-dist": "^6.2.108"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
