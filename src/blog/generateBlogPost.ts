@@ -33,6 +33,17 @@ interface MatchedListing {
   source: RmlsListing;
 }
 
+const COVER_IMAGE =
+  "/assets/weekly-price-drops-cover.png";
+
+const BASE_TAGS = [
+  "portland-real-estate",
+  "portland-metro",
+  "portland-price-drops",
+  "price-drops",
+  "homes-for-sale",
+];
+
 export async function generateBlogPost(
   analysis: WeeklyAnalysis,
   sourceListings: RmlsListing[],
@@ -216,7 +227,14 @@ function assembleBlogPost(
     publicationDate.slugDate;
 
   const filename =
-  `${publicationDate.isoDate}-weekly-price-drops.md`;
+    `${publicationDate.isoDate}-weekly-price-drops.md`;
+
+  const tags =
+    createBlogTags(selectedSources);
+
+  const tagsYaml = tags
+    .map((tag) => `  - ${tag}`)
+    .join("\n");
 
   const comparisonRows = selectedSources
     .map(({ selection, source }) => {
@@ -322,13 +340,13 @@ slug: ${slug}
 featured: false
 draft: false
 tags:
-  - portland-real-estate
-  - portland-price-drops
-  - homes-for-sale
+${tagsYaml}
 description: "${escapeYamlString(
     copy.description,
   )}"
 ---
+
+![](${COVER_IMAGE})
 
 ${copy.introduction}
 
@@ -491,6 +509,55 @@ function validateBlogCopy(
   }
 }
 
+function createBlogTags(
+  listings: MatchedListing[],
+): string[] {
+  const tags = new Set<string>(
+    BASE_TAGS,
+  );
+
+  for (const {
+    selection,
+    source,
+  } of listings) {
+    const city =
+      extractCity(
+        selection.address,
+      );
+
+    if (city) {
+      tags.add(
+        normalizeTag(city),
+      );
+    }
+
+    const neighborhood =
+      source.neighborhood?.trim();
+
+    if (neighborhood) {
+      tags.add(
+        normalizeTag(
+          neighborhood,
+        ),
+      );
+    }
+  }
+
+  return [...tags];
+}
+
+function normalizeTag(
+  value: string,
+): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function createPropertyHeading(
   selection: SelectedListing,
   source: RmlsListing,
@@ -516,11 +583,6 @@ function createPropertyHeading(
   const reason =
     selection.shortReason
       ?.toLowerCase() ?? "";
-
-  /*
-   * Prefer more descriptive headings when the listing
-   * characteristics support them.
-   */
 
   if (
     reason.includes(
@@ -681,10 +743,6 @@ function formatNullableCurrency(
       },
     );
 
-  /*
-   * Escape $ so Markdown math plugins do not
-   * interpret currency as inline math.
-   */
   return formatted.replace(
     "$",
     "\\$",
