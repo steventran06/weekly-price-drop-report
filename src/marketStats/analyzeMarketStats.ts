@@ -5,57 +5,93 @@ import type {
 
 export interface MarketRanking {
   rank: number;
+
   area: string;
-  propertyType: MarketStats["propertyType"];
-  monthsOfInventory: number | null;
-  pendingActiveRatio: number | null;
-  averageDaysOnMarketSold: number | null;
-  listToSalesRatio: number | null;
-  averageSalePrice: number | null;
+
+  propertyType:
+    MarketStats["propertyType"];
+
+  monthsOfInventory:
+    number | null;
+
+  pendingActiveRatio:
+    number | null;
+
+  averageDaysOnMarketSold:
+    number | null;
+
+  averageSalePrice:
+    number | null;
 }
 
 export interface CondoVsSingleFamilyComparison {
   area: string;
 
-  singleFamilyInventory: number | null;
-  condoInventory: number | null;
-  inventoryGap: number | null;
+  singleFamilyInventory:
+    number | null;
 
-  singleFamilyPendingRatio: number | null;
-  condoPendingRatio: number | null;
+  condoInventory:
+    number | null;
 
-  singleFamilyDom: number | null;
-  condoDom: number | null;
+  inventoryGap:
+    number | null;
+
+  singleFamilyPendingRatio:
+    number | null;
+
+  condoPendingRatio:
+    number | null;
+
+  singleFamilyDom:
+    number | null;
+
+  condoDom:
+    number | null;
 }
 
 export interface MarketStatsAnalysis {
-  reportDate: string | null;
+  reportDate:
+    string | null;
 
-  metroAggregate: MarketStats | null;
+  metroAggregate:
+    MarketStats | null;
 
-  hottestSingleFamily: MarketRanking[];
-  strongestBuyerOpportunities: MarketRanking[];
+  hottestSingleFamily:
+    MarketRanking[];
 
-  hottestCondoMarkets: MarketRanking[];
-  strongestCondoBuyerOpportunities: MarketRanking[];
+  strongestBuyerOpportunities:
+    MarketRanking[];
 
-  fastestSingleFamilyMarkets: MarketRanking[];
-  slowestSingleFamilyMarkets: MarketRanking[];
+  hottestCondoMarkets:
+    MarketRanking[];
 
-  highestSingleFamilySaleToList: MarketRanking[];
-  lowestSingleFamilySaleToList: MarketRanking[];
+  strongestCondoBuyerOpportunities:
+    MarketRanking[];
 
-  condoVsSingleFamily: CondoVsSingleFamilyComparison[];
+  fastestSingleFamilyMarkets:
+    MarketRanking[];
+
+  slowestSingleFamilyMarkets:
+    MarketRanking[];
+
+  condoVsSingleFamily:
+    CondoVsSingleFamilyComparison[];
 
   summary: {
-    totalMarketsAnalyzed: number;
-    singleFamilyMarketsAnalyzed: number;
-    condoMarketsAnalyzed: number;
+    totalMarketsAnalyzed:
+      number;
+
+    singleFamilyMarketsAnalyzed:
+      number;
+
+    condoMarketsAnalyzed:
+      number;
   };
 }
 
 export function analyzeMarketStats(
-  extracted: ExtractedMarketStats,
+  extracted:
+    ExtractedMarketStats,
 ): MarketStatsAnalysis {
   const localMarkets =
     extracted.markets.filter(
@@ -119,13 +155,19 @@ export function analyzeMarketStats(
     rankMarkets(
       singleFamilyMarkets.filter(
         (market) =>
-          market.averageDaysOnMarketSold !== null,
+          market.averageDaysOnMarketSold !==
+          null,
       ),
-      (a, b) =>
+
+      (
+        a,
+        b,
+      ) =>
         numericAsc(
           a.averageDaysOnMarketSold,
           b.averageDaysOnMarketSold,
         ),
+
       5,
     );
 
@@ -133,41 +175,19 @@ export function analyzeMarketStats(
     rankMarkets(
       singleFamilyMarkets.filter(
         (market) =>
-          market.averageDaysOnMarketSold !== null,
+          market.averageDaysOnMarketSold !==
+          null,
       ),
-      (a, b) =>
+
+      (
+        a,
+        b,
+      ) =>
         numericDesc(
           a.averageDaysOnMarketSold,
           b.averageDaysOnMarketSold,
         ),
-      5,
-    );
 
-  const highestSingleFamilySaleToList =
-    rankMarkets(
-      singleFamilyMarkets.filter(
-        (market) =>
-          market.listToSalesRatio !== null,
-      ),
-      (a, b) =>
-        numericDesc(
-          a.listToSalesRatio,
-          b.listToSalesRatio,
-        ),
-      5,
-    );
-
-  const lowestSingleFamilySaleToList =
-    rankMarkets(
-      singleFamilyMarkets.filter(
-        (market) =>
-          market.listToSalesRatio !== null,
-      ),
-      (a, b) =>
-        numericAsc(
-          a.listToSalesRatio,
-          b.listToSalesRatio,
-        ),
       5,
     );
 
@@ -186,16 +206,16 @@ export function analyzeMarketStats(
     metroAggregate,
 
     hottestSingleFamily,
+
     strongestBuyerOpportunities,
 
     hottestCondoMarkets,
+
     strongestCondoBuyerOpportunities,
 
     fastestSingleFamilyMarkets,
-    slowestSingleFamilyMarkets,
 
-    highestSingleFamilySaleToList,
-    lowestSingleFamilySaleToList,
+    slowestSingleFamilyMarkets,
 
     condoVsSingleFamily,
 
@@ -213,12 +233,16 @@ export function analyzeMarketStats(
 }
 
 function compareHotMarkets(
-  a: MarketStats,
-  b: MarketStats,
+  a:
+    MarketStats,
+
+  b:
+    MarketStats,
 ): number {
   /*
    * Primary signal:
-   * Lower months of inventory = hotter market.
+   * Lower months of inventory =
+   * more competitive market.
    */
   const inventoryComparison =
     numericAsc(
@@ -227,14 +251,16 @@ function compareHotMarkets(
     );
 
   if (
-    inventoryComparison !== 0
+    inventoryComparison !==
+    0
   ) {
     return inventoryComparison;
   }
 
   /*
    * Tie breaker:
-   * Higher pending/active ratio = stronger demand.
+   * Higher pending/active ratio =
+   * stronger buyer activity.
    */
   const pendingComparison =
     numericDesc(
@@ -243,14 +269,16 @@ function compareHotMarkets(
     );
 
   if (
-    pendingComparison !== 0
+    pendingComparison !==
+    0
   ) {
     return pendingComparison;
   }
 
   /*
    * Final tie breaker:
-   * Lower sold DOM = faster market.
+   * Lower sold DOM =
+   * faster-moving market.
    */
   return numericAsc(
     a.averageDaysOnMarketSold,
@@ -259,12 +287,16 @@ function compareHotMarkets(
 }
 
 function compareBuyerOpportunityMarkets(
-  a: MarketStats,
-  b: MarketStats,
+  a:
+    MarketStats,
+
+  b:
+    MarketStats,
 ): number {
   /*
    * Primary signal:
-   * Higher inventory = more buyer choice.
+   * Higher inventory =
+   * more buyer choice.
    */
   const inventoryComparison =
     numericDesc(
@@ -273,14 +305,15 @@ function compareBuyerOpportunityMarkets(
     );
 
   if (
-    inventoryComparison !== 0
+    inventoryComparison !==
+    0
   ) {
     return inventoryComparison;
   }
 
   /*
    * Lower pending ratio can indicate
-   * weaker buyer competition.
+   * less buyer competition.
    */
   const pendingComparison =
     numericAsc(
@@ -289,14 +322,16 @@ function compareBuyerOpportunityMarkets(
     );
 
   if (
-    pendingComparison !== 0
+    pendingComparison !==
+    0
   ) {
     return pendingComparison;
   }
 
   /*
-   * Longer DOM can create more room
-   * for negotiation.
+   * Longer sold DOM can mean buyers
+   * have more time and potentially
+   * more room to negotiate.
    */
   return numericDesc(
     a.averageDaysOnMarketSold,
@@ -305,29 +340,50 @@ function compareBuyerOpportunityMarkets(
 }
 
 function rankMarkets(
-  markets: MarketStats[],
+  markets:
+    MarketStats[],
+
   compareFn: (
-    a: MarketStats,
-    b: MarketStats,
+    a:
+      MarketStats,
+
+    b:
+      MarketStats,
   ) => number,
-  limit: number,
+
+  limit:
+    number,
 ): MarketRanking[] {
-  return [...markets]
+  return [
+    ...markets,
+  ]
     .filter(
       (market) =>
         market.monthsOfInventory !==
           null ||
         market.averageDaysOnMarketSold !==
           null ||
-        market.listToSalesRatio !==
+        market.pendingActiveRatio !==
           null,
     )
-    .sort(compareFn)
-    .slice(0, limit)
+    .sort(
+      compareFn,
+    )
+    .slice(
+      0,
+      limit,
+    )
     .map(
-      (market, index) => ({
-        rank: index + 1,
-        area: market.area,
+      (
+        market,
+        index,
+      ) => ({
+        rank:
+          index + 1,
+
+        area:
+          market.area,
+
         propertyType:
           market.propertyType,
 
@@ -340,9 +396,6 @@ function rankMarkets(
         averageDaysOnMarketSold:
           market.averageDaysOnMarketSold,
 
-        listToSalesRatio:
-          market.listToSalesRatio,
-
         averageSalePrice:
           market.averageSalePrice,
       }),
@@ -350,8 +403,11 @@ function rankMarkets(
 }
 
 function buildCondoVsSingleFamilyComparisons(
-  singleFamilyMarkets: MarketStats[],
-  condoMarkets: MarketStats[],
+  singleFamilyMarkets:
+    MarketStats[],
+
+  condoMarkets:
+    MarketStats[],
 ): CondoVsSingleFamilyComparison[] {
   const condosByArea =
     new Map(
@@ -364,53 +420,63 @@ function buildCondoVsSingleFamilyComparisons(
     );
 
   return singleFamilyMarkets
-    .map((singleFamily) => {
-      const condo =
-        condosByArea.get(
-          singleFamily.area,
-        );
+    .map(
+      (
+        singleFamily,
+      ) => {
+        const condo =
+          condosByArea.get(
+            singleFamily.area,
+          );
 
-      if (!condo) {
-        return null;
-      }
+        if (
+          !condo
+        ) {
+          return null;
+        }
 
-      return {
-        area:
-          singleFamily.area,
+        return {
+          area:
+            singleFamily.area,
 
-        singleFamilyInventory:
-          singleFamily.monthsOfInventory,
-
-        condoInventory:
-          condo.monthsOfInventory,
-
-        inventoryGap:
-          calculateDifference(
-            condo.monthsOfInventory,
+          singleFamilyInventory:
             singleFamily.monthsOfInventory,
-          ),
 
-        singleFamilyPendingRatio:
-          singleFamily.pendingActiveRatio,
+          condoInventory:
+            condo.monthsOfInventory,
 
-        condoPendingRatio:
-          condo.pendingActiveRatio,
+          inventoryGap:
+            calculateDifference(
+              condo.monthsOfInventory,
+              singleFamily.monthsOfInventory,
+            ),
 
-        singleFamilyDom:
-          singleFamily.averageDaysOnMarketSold,
+          singleFamilyPendingRatio:
+            singleFamily.pendingActiveRatio,
 
-        condoDom:
-          condo.averageDaysOnMarketSold,
-      };
-    })
+          condoPendingRatio:
+            condo.pendingActiveRatio,
+
+          singleFamilyDom:
+            singleFamily.averageDaysOnMarketSold,
+
+          condoDom:
+            condo.averageDaysOnMarketSold,
+        };
+      },
+    )
     .filter(
       (
         comparison,
       ): comparison is CondoVsSingleFamilyComparison =>
-        comparison !== null,
+        comparison !==
+        null,
     )
     .sort(
-      (a, b) =>
+      (
+        a,
+        b,
+      ) =>
         numericDesc(
           a.inventoryGap,
           b.inventoryGap,
@@ -419,72 +485,113 @@ function buildCondoVsSingleFamilyComparisons(
 }
 
 function calculateDifference(
-  a: number | null,
-  b: number | null,
+  a:
+    number | null,
+
+  b:
+    number | null,
 ): number | null {
   if (
-    a === null ||
-    b === null
+    a ===
+      null ||
+    b ===
+      null
   ) {
     return null;
   }
 
   return Number(
-    (a - b).toFixed(1),
+    (
+      a -
+      b
+    ).toFixed(
+      1,
+    ),
   );
 }
 
 function findReportDate(
-  markets: MarketStats[],
+  markets:
+    MarketStats[],
 ): string | null {
   return (
     markets.find(
       (market) =>
-        market.reportDate !== null,
-    )?.reportDate ?? null
+        market.reportDate !==
+        null,
+    )?.reportDate ??
+    null
   );
 }
 
 function numericAsc(
-  a: number | null,
-  b: number | null,
+  a:
+    number | null,
+
+  b:
+    number | null,
 ): number {
   if (
-    a === null &&
-    b === null
+    a ===
+      null &&
+    b ===
+      null
   ) {
     return 0;
   }
 
-  if (a === null) {
+  if (
+    a ===
+    null
+  ) {
     return 1;
   }
 
-  if (b === null) {
+  if (
+    b ===
+    null
+  ) {
     return -1;
   }
 
-  return a - b;
+  return (
+    a -
+    b
+  );
 }
 
 function numericDesc(
-  a: number | null,
-  b: number | null,
+  a:
+    number | null,
+
+  b:
+    number | null,
 ): number {
   if (
-    a === null &&
-    b === null
+    a ===
+      null &&
+    b ===
+      null
   ) {
     return 0;
   }
 
-  if (a === null) {
+  if (
+    a ===
+    null
+  ) {
     return 1;
   }
 
-  if (b === null) {
+  if (
+    b ===
+    null
+  ) {
     return -1;
   }
 
-  return b - a;
+  return (
+    b -
+    a
+  );
 }
