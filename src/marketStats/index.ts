@@ -49,6 +49,14 @@ import {
   sendMarketStatsReport,
 } from "./sendMarketStatsReport.js";
 
+import {
+  buildWebsiteMarketStats,
+} from "./buildWebsiteMarketStats.js";
+
+import {
+  publishWebsiteMarketStats,
+} from "../github/publishWebsiteMarketStats.js";
+
 dotenv.config();
 
 async function main(): Promise<void> {
@@ -200,6 +208,28 @@ async function main(): Promise<void> {
 
   console.log(
     `Published historical market stats: ${historicalGitHubUrl}`,
+  );
+
+  /*
+   * Publish the CURRENT TMO report to the
+   * real-estate website.
+   *
+   * This uses only the stats extracted from
+   * the one PDF processed during this run.
+   */
+  const websiteMarketStats =
+    buildWebsiteMarketStats(
+      stats,
+      pdf.filename,
+    );
+
+  const websiteMarketStatsUrl =
+    await publishWebsiteMarketStats(
+      websiteMarketStats,
+    );
+
+  console.log(
+    `Published website market stats: ${websiteMarketStatsUrl}`,
   );
 
   /*

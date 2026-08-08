@@ -21,7 +21,7 @@ export async function publishBlogPost(
   post: PublishableBlogPost,
 ): Promise<string> {
   const token =
-    process.env.WEBSITE_GITHUB_TOKEN?.trim();
+    process.env.BLOG_GITHUB_TOKEN?.trim();
 
   const owner =
     process.env.WEBSITE_GITHUB_OWNER?.trim() ||
@@ -41,7 +41,7 @@ export async function publishBlogPost(
 
   if (!token) {
     throw new Error(
-      "WEBSITE_GITHUB_TOKEN is missing.",
+      "BLOG_GITHUB_TOKEN is missing.",
     );
   }
 

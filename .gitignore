@@ -15,3 +15,6 @@ output/market-stats/*.json
 output/market-stats/*.html
 output/market-stats/*.md
 output/market-stats/*.txt
+
+# Generated market stats output
+output/market-stats/

@@ -1,9 +1,6 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-
-export type HistoricalSnapshotType =
-  | "market-stats"
-  | "price-drops";
+import type {
+  WebsiteMarketStats,
+} from "../marketStats/buildWebsiteMarketStats.js";
 
 interface GitHubFileResponse {
   sha?: string;
@@ -19,105 +16,91 @@ interface GitHubPutResponse {
   };
 }
 
-export async function publishHistoricalSnapshot(
-  type: HistoricalSnapshotType,
-  localFilePath: string,
+export async function publishWebsiteMarketStats(
+  stats: WebsiteMarketStats,
 ): Promise<string> {
   const token =
-    process.env.HISTORY_GITHUB_TOKEN?.trim() ||
-    process.env.BLOG_GITHUB_TOKEN?.trim();
+    process.env.SITE_GITHUB_TOKEN?.trim();
 
   const owner =
-    process.env.HISTORY_GITHUB_OWNER?.trim() ||
-    process.env.WEBSITE_GITHUB_OWNER?.trim() ||
+    process.env.SITE_GITHUB_OWNER?.trim() ||
     "steventran06";
 
   const repo =
-    process.env.HISTORY_GITHUB_REPO?.trim() ||
-    "weekly-price-drop-report";
+    process.env.SITE_GITHUB_REPO?.trim() ||
+    "steventranrealestate";
 
   const branch =
-    process.env.HISTORY_GITHUB_BRANCH?.trim() ||
+    process.env.SITE_GITHUB_BRANCH?.trim() ||
     "main";
 
-  const historyPath =
-    process.env.HISTORY_GITHUB_PATH?.trim() ||
-    "data";
-
-  if (!token) {
-    throw new Error(
-      "HISTORY_GITHUB_TOKEN or BLOG_GITHUB_TOKEN is required.",
-    );
-  }
-
-  const filename =
-    path.basename(
-      localFilePath,
-    );
+  const configuredPath =
+    process.env.SITE_MARKET_STATS_PATH?.trim() ||
+    "data/market-stats/latest.json";
 
   if (
-    !/^\d{4}-\d{2}-\d{2}\.json$/.test(
-      filename,
-    )
+    !token
   ) {
     throw new Error(
-      `Historical snapshot filename must use YYYY-MM-DD.json format. Received: ${filename}`,
+      "SITE_GITHUB_TOKEN is required to publish website market stats.",
     );
   }
 
-  const year =
-    filename.slice(
-      0,
-      4,
-    );
-
-  const json =
-    await fs.readFile(
-      localFilePath,
-      "utf8",
-    );
-
-  if (
-    !json.trim()
-  ) {
-    throw new Error(
-      "Historical snapshot JSON is empty.",
-    );
-  }
-
-  /*
-   * Validate JSON before publishing.
-   */
-  JSON.parse(
-    json,
-  );
-
-  const normalizedHistoryPath =
-    historyPath.replace(
-      /^\/+|\/+$/g,
+  const filePath =
+    configuredPath.replace(
+      /^\/+/,
       "",
     );
 
-  const filePath =
-    `${normalizedHistoryPath}/${type}/${year}/${filename}`;
-
   const encodedPath =
     filePath
-      .split("/")
+      .split(
+        "/",
+      )
       .map(
         (part) =>
           encodeURIComponent(
             part,
           ),
       )
-      .join("/");
+      .join(
+        "/",
+      );
 
   const apiUrl =
     `https://api.github.com/repos/` +
     `${owner}/${repo}/contents/${encodedPath}`;
 
+  const json =
+    JSON.stringify(
+      stats,
+      null,
+      2,
+    ) + "\n";
+
+  /*
+   * Validate our final serialized data
+   * before sending anything to GitHub.
+   */
+  JSON.parse(
+    json,
+  );
+
+  console.log("");
   console.log(
-    `Publishing historical snapshot to ${owner}/${repo}/${filePath}...`,
+    "Publishing latest TMO market stats to website repository...",
+  );
+
+  console.log(
+    `TMO report date: ${stats.reportDate}`,
+  );
+
+  console.log(
+    `Markets: ${stats.markets.length}`,
+  );
+
+  console.log(
+    `Destination: ${owner}/${repo}/${filePath}`,
   );
 
   const existingFile =
@@ -134,13 +117,9 @@ export async function publishHistoricalSnapshot(
     sha?: string;
   } = {
     message:
-      createCommitMessage(
-        type,
-        filename,
-        Boolean(
-          existingFile?.sha,
-        ),
-      ),
+      existingFile?.sha
+        ? `Update website market stats: ${stats.reportDate}`
+        : `Add website market stats: ${stats.reportDate}`,
 
     content:
       Buffer.from(
@@ -198,24 +177,18 @@ export async function publishHistoricalSnapshot(
       await response.text();
 
     throw new Error(
-      `GitHub historical snapshot publish failed (${response.status}): ${errorText}`,
+      `Website market stats publish failed (${response.status}): ${errorText}`,
     );
   }
 
   const result =
     await response.json() as GitHubPutResponse;
 
-  if (
+  console.log(
     existingFile?.sha
-  ) {
-    console.log(
-      `Updated existing ${type} historical snapshot.`,
-    );
-  } else {
-    console.log(
-      `Created new ${type} historical snapshot.`,
-    );
-  }
+      ? "Updated website market stats."
+      : "Created website market stats.",
+  );
 
   if (
     result.content?.html_url
@@ -241,15 +214,11 @@ async function getExistingFile(
   token: string,
   branch: string,
 ): Promise<GitHubFileResponse | null> {
-  const url =
-    `${apiUrl}?ref=` +
-    encodeURIComponent(
-      branch,
-    );
-
   const response =
     await fetch(
-      url,
+      `${apiUrl}?ref=${encodeURIComponent(
+        branch,
+      )}`,
       {
         method:
           "GET",
@@ -271,8 +240,7 @@ async function getExistingFile(
     );
 
   if (
-    response.status ===
-    404
+    response.status === 404
   ) {
     return null;
   }
@@ -284,34 +252,9 @@ async function getExistingFile(
       await response.text();
 
     throw new Error(
-      `GitHub historical file check failed (${response.status}): ${errorText}`,
+      `Website market stats file check failed (${response.status}): ${errorText}`,
     );
   }
 
   return await response.json() as GitHubFileResponse;
-}
-
-function createCommitMessage(
-  type: HistoricalSnapshotType,
-  filename: string,
-  isUpdate: boolean,
-): string {
-  const label =
-    type === "market-stats"
-      ? "market stats"
-      : "price drops";
-
-  if (
-    isUpdate
-  ) {
-    return (
-      `Update historical ${label}: ` +
-      filename
-    );
-  }
-
-  return (
-    `Save historical ${label}: ` +
-    filename
-  );
 }
