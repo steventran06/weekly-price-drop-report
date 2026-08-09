@@ -38,34 +38,32 @@ export async function publishWebsiteMarketStats(
     process.env.SITE_MARKET_STATS_PATH?.trim() ||
     "data/market-stats/latest.json";
 
-  if (
-    !token
-  ) {
+  if (!token) {
     throw new Error(
       "SITE_GITHUB_TOKEN is required to publish website market stats.",
     );
   }
 
+  validateWebsiteMarketStats(
+    stats,
+  );
+
   const filePath =
     configuredPath.replace(
-      /^\/+/,
+      /^\/+/, 
       "",
     );
 
   const encodedPath =
     filePath
-      .split(
-        "/",
-      )
+      .split("/")
       .map(
         (part) =>
           encodeURIComponent(
             part,
           ),
       )
-      .join(
-        "/",
-      );
+      .join("/");
 
   const apiUrl =
     `https://api.github.com/repos/` +
@@ -79,26 +77,44 @@ export async function publishWebsiteMarketStats(
     ) + "\n";
 
   /*
-   * Validate our final serialized data
-   * before sending anything to GitHub.
+   * Parse the final serialized payload once before
+   * making any GitHub request. This catches accidental
+   * non-JSON values or serialization problems locally.
    */
   JSON.parse(
     json,
   );
 
+  const oregonCount =
+    stats.markets.filter(
+      (market) =>
+        market.sourceRegion ===
+        "oregon",
+    ).length;
+
+  const washingtonCount =
+    stats.markets.filter(
+      (market) =>
+        market.sourceRegion ===
+        "washington",
+    ).length;
+
   console.log("");
   console.log(
     "Publishing latest TMO market stats to website repository...",
   );
-
   console.log(
     `TMO report date: ${stats.reportDate}`,
   );
-
   console.log(
     `Markets: ${stats.markets.length}`,
   );
-
+  console.log(
+    `Oregon markets: ${oregonCount}`,
+  );
+  console.log(
+    `Washington markets: ${washingtonCount}`,
+  );
   console.log(
     `Destination: ${owner}/${repo}/${filePath}`,
   );
@@ -132,9 +148,7 @@ export async function publishWebsiteMarketStats(
     branch,
   };
 
-  if (
-    existingFile?.sha
-  ) {
+  if (existingFile?.sha) {
     requestBody.sha =
       existingFile.sha;
   }
@@ -170,9 +184,7 @@ export async function publishWebsiteMarketStats(
       },
     );
 
-  if (
-    !response.ok
-  ) {
+  if (!response.ok) {
     const errorText =
       await response.text();
 
@@ -190,15 +202,11 @@ export async function publishWebsiteMarketStats(
       : "Created website market stats.",
   );
 
-  if (
-    result.content?.html_url
-  ) {
+  if (result.content?.html_url) {
     return result.content.html_url;
   }
 
-  if (
-    result.commit?.html_url
-  ) {
+  if (result.commit?.html_url) {
     return result.commit.html_url;
   }
 
@@ -207,6 +215,64 @@ export async function publishWebsiteMarketStats(
     `${owner}/${repo}/blob/` +
     `${branch}/${filePath}`
   );
+}
+
+function validateWebsiteMarketStats(
+  stats: WebsiteMarketStats,
+): void {
+  if (
+    stats.source !==
+    "TMO"
+  ) {
+    throw new Error(
+      "Website market stats payload has an invalid source.",
+    );
+  }
+
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(
+      stats.reportDate,
+    )
+  ) {
+    throw new Error(
+      `Website market stats payload has an invalid reportDate: ${stats.reportDate}`,
+    );
+  }
+
+  if (
+    !Array.isArray(
+      stats.markets,
+    ) ||
+    stats.markets.length ===
+      0
+  ) {
+    throw new Error(
+      "Website market stats payload does not contain any markets.",
+    );
+  }
+
+  for (const market of stats.markets) {
+    if (
+      market.sourceRegion !==
+        "oregon" &&
+      market.sourceRegion !==
+        "washington"
+    ) {
+      throw new Error(
+        `Website market stats contains a market without a valid sourceRegion: ${market.area}`,
+      );
+    }
+
+    if (
+      !market.area ||
+      market.area ===
+        "Unknown Area"
+    ) {
+      throw new Error(
+        `Website market stats contains an invalid area on page ${market.page}.`,
+      );
+    }
+  }
 }
 
 async function getExistingFile(
@@ -240,14 +306,13 @@ async function getExistingFile(
     );
 
   if (
-    response.status === 404
+    response.status ===
+    404
   ) {
     return null;
   }
 
-  if (
-    !response.ok
-  ) {
+  if (!response.ok) {
     const errorText =
       await response.text();
 

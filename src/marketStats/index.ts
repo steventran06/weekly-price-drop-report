@@ -14,6 +14,10 @@ import {
 } from "../github/publishHistoricalSnapshot.js";
 
 import {
+  publishWebsiteMarketStats,
+} from "../github/publishWebsiteMarketStats.js";
+
+import {
   saveHistoricalSnapshot,
 } from "../history/saveHistoricalSnapshot.js";
 
@@ -23,6 +27,10 @@ import {
 
 import {
   extractMarketStats,
+} from "./extractMarketStats.js";
+
+import type {
+  ExtractedMarketStats,
 } from "./extractMarketStats.js";
 
 import {
@@ -53,29 +61,19 @@ import {
   buildWebsiteMarketStats,
 } from "./buildWebsiteMarketStats.js";
 
-import {
-  publishWebsiteMarketStats,
-} from "../github/publishWebsiteMarketStats.js";
-
 dotenv.config();
 
 async function main(): Promise<void> {
   console.log(
     "================================",
   );
-
   console.log(
-    " Portland Metro Market Stats",
+    " Oregon + Washington TMO Stats",
   );
-
   console.log(
     "================================",
   );
 
-  /*
-   * Step 1:
-   * Authenticate.
-   */
   console.log(
     "Authenticating...",
   );
@@ -91,31 +89,52 @@ async function main(): Promise<void> {
     google.gmail({
       version:
         "v1",
-
       auth,
     });
 
   /*
-   * Step 2:
-   * Find and download newest TMO report.
+   * Download the newest report from each Gmail label.
+   * A missing report is allowed; the other region can
+   * still be processed and published.
    */
-  const pdf =
+  const oregonPdf =
     await downloadMarketStatsPdf(
       gmail,
+      {
+        label:
+          "TMO Reports",
+        region:
+          "oregon",
+        displayName:
+          "Oregon TMO report",
+        newerThanDays:
+          7,
+      },
     );
 
-  /*
-   * Missing source data is not an error.
-   */
+  const washingtonPdf =
+    await downloadMarketStatsPdf(
+      gmail,
+      {
+        label:
+          "WA TMO Reports",
+        region:
+          "washington",
+        displayName:
+          "Washington TMO report",
+        newerThanDays:
+          7,
+      },
+    );
+
   if (
-    !pdf
+    !oregonPdf &&
+    !washingtonPdf
   ) {
     console.log("");
-
     console.log(
-      "No TMO Reports email found in the last 5 days.",
+      "No Oregon or Washington TMO report was found in the configured lookback window.",
     );
-
     console.log(
       "Skipping weekly market stats workflow.",
     );
@@ -123,50 +142,176 @@ async function main(): Promise<void> {
     return;
   }
 
-  console.log("");
+  let oregonStats:
+    ExtractedMarketStats | null =
+    null;
 
-  console.log(
-    "PDF download completed.",
-  );
+  let washingtonStats:
+    ExtractedMarketStats | null =
+    null;
 
-  console.log(
-    `File: ${pdf.filename}`,
-  );
-
-  /*
-   * Step 3:
-   * Extract structured market data.
-   */
-  const stats =
-    await extractMarketStats(
-      pdf.outputPath,
+  if (oregonPdf) {
+    console.log("");
+    console.log(
+      `Oregon PDF: ${oregonPdf.filename}`,
     );
+
+    oregonStats =
+      await extractMarketStats(
+        oregonPdf.outputPath,
+        {
+          region:
+            "oregon",
+          outputFilename:
+            "market-stats-oregon.json",
+        },
+      );
+
+    if (
+      oregonStats.markets.length ===
+      0
+    ) {
+      console.warn(
+        "No Oregon market rows were extracted.",
+      );
+
+      oregonStats =
+        null;
+    }
+  }
+
+  if (washingtonPdf) {
+    console.log("");
+    console.log(
+      `Washington PDF: ${washingtonPdf.filename}`,
+    );
+
+    washingtonStats =
+      await extractMarketStats(
+        washingtonPdf.outputPath,
+        {
+          region:
+            "washington",
+          outputFilename:
+            "market-stats-washington.json",
+        },
+      );
+
+    if (
+      washingtonStats.markets.length ===
+      0
+    ) {
+      console.warn(
+        "No Washington market rows were extracted.",
+      );
+
+      washingtonStats =
+        null;
+    }
+  }
 
   if (
-    stats.markets.length ===
-    0
+    !oregonStats &&
+    !washingtonStats
   ) {
     console.log("");
-
     console.log(
-      "No market data was extracted from the TMO report.",
-    );
-
-    console.log(
-      "Skipping market stats workflow.",
+      "TMO PDFs were found, but neither report produced market data.",
     );
 
     return;
   }
 
   /*
-   * Step 4:
-   * Save a permanent historical snapshot.
+   * Publish ONE combined latest.json.
    *
-   * IMPORTANT:
-   * This structure intentionally mirrors
-   * the monthly backfill snapshots.
+   * This avoids the second region overwriting the first
+   * region in the website repository.
    */
+  const combinedStats:
+    ExtractedMarketStats = {
+      sourcePdf:
+        [
+          oregonStats?.sourcePdf,
+          washingtonStats?.sourcePdf,
+        ]
+          .filter(
+            (
+              value,
+            ): value is string =>
+              Boolean(value),
+          )
+          .join(", "),
+
+      extractedAt:
+        new Date()
+          .toISOString(),
+
+      markets: [
+        ...(
+          oregonStats?.markets ??
+          []
+        ),
+        ...(
+          washingtonStats?.markets ??
+          []
+        ),
+      ],
+    };
+
+  const attachmentFilenames =
+    [
+      oregonPdf?.filename,
+      washingtonPdf?.filename,
+    ].filter(
+      (
+        value,
+      ): value is string =>
+        Boolean(value),
+    );
+
+  const websiteMarketStats =
+    buildWebsiteMarketStats(
+      combinedStats,
+      attachmentFilenames,
+    );
+
+  const websiteMarketStatsUrl =
+    await publishWebsiteMarketStats(
+      websiteMarketStats,
+    );
+
+  console.log(
+    `Published combined website market stats: ${websiteMarketStatsUrl}`,
+  );
+
+  /*
+   * Everything below this point remains OREGON ONLY.
+   *
+   * Washington rows are intentionally excluded from:
+   * - historical Portland market snapshots
+   * - market analysis
+   * - generated blog/reel/social content
+   * - the weekly market-stats email
+   *
+   * That preserves the behavior of the existing Portland
+   * reporting workflow while still feeding WA data to the site.
+   */
+  if (
+    !oregonStats ||
+    !oregonPdf
+  ) {
+    console.log("");
+    console.log(
+      "No Oregon TMO report was available.",
+    );
+    console.log(
+      "Washington website stats were published, but Oregon analysis/content was skipped.",
+    );
+
+    return;
+  }
+
   const snapshotDate =
     getPortlandDate();
 
@@ -175,23 +320,23 @@ async function main(): Promise<void> {
 
     source: {
       gmailMessageId:
-        null,
+        oregonPdf.messageId,
 
       subject:
-        null,
+        oregonPdf.subject,
 
       internalDate:
-        null,
+        oregonPdf.internalDate,
 
       attachmentFilename:
-        pdf.filename,
+        oregonPdf.filename,
 
       source:
         "weekly-market-stats-workflow",
     },
 
     report:
-      stats,
+      oregonStats,
   };
 
   const historicalPath =
@@ -207,38 +352,12 @@ async function main(): Promise<void> {
     );
 
   console.log(
-    `Published historical market stats: ${historicalGitHubUrl}`,
+    `Published historical Oregon market stats: ${historicalGitHubUrl}`,
   );
 
-  /*
-   * Publish the CURRENT TMO report to the
-   * real-estate website.
-   *
-   * This uses only the stats extracted from
-   * the one PDF processed during this run.
-   */
-  const websiteMarketStats =
-    buildWebsiteMarketStats(
-      stats,
-      pdf.filename,
-    );
-
-  const websiteMarketStatsUrl =
-    await publishWebsiteMarketStats(
-      websiteMarketStats,
-    );
-
-  console.log(
-    `Published website market stats: ${websiteMarketStatsUrl}`,
-  );
-
-  /*
-   * Step 5:
-   * Analyze markets.
-   */
   const analysis =
     analyzeMarketStats(
-      stats,
+      oregonStats,
     );
 
   const analysisPath =
@@ -247,42 +366,28 @@ async function main(): Promise<void> {
     );
 
   console.log("");
-
   console.log(
     `Saved market analysis to: ${analysisPath}`,
   );
 
-  /*
-   * Step 6:
-   * Generate content.
-   */
   console.log("");
-
   console.log(
-    "Generating market stats content...",
+    "Generating Oregon market stats content...",
   );
 
   const generatedContent =
     await generateMarketStatsContent(
-      stats,
+      oregonStats,
       analysis,
     );
 
-  /*
-   * Step 7:
-   * Assemble blog Markdown.
-   */
   const blog =
     generateMarketStatsBlog(
       generatedContent,
-      stats,
+      oregonStats,
       analysis,
     );
 
-  /*
-   * Step 8:
-   * Save generated content locally.
-   */
   const contentPaths =
     await writeMarketStatsContent(
       generatedContent,
@@ -290,39 +395,28 @@ async function main(): Promise<void> {
     );
 
   console.log("");
-
   console.log(
-    "Generated market content:",
+    "Generated Oregon market content:",
   );
-
   console.log(
     `- Blog: ${contentPaths.blogPath}`,
   );
-
   console.log(
     `- Reel: ${contentPaths.reelPath}`,
   );
-
   console.log(
     `- Instagram: ${contentPaths.instagramPath}`,
   );
-
   console.log(
     `- YouTube: ${contentPaths.youtubePath}`,
   );
-
   console.log(
     `- JSON: ${contentPaths.contentJsonPath}`,
   );
 
-  /*
-   * Step 9:
-   * Publish blog.
-   */
   console.log("");
-
   console.log(
-    "Publishing market stats blog to website repository...",
+    "Publishing Oregon market stats blog to website repository...",
   );
 
   const publishedBlogUrl =
@@ -334,19 +428,14 @@ async function main(): Promise<void> {
     `Published market stats blog: ${publishedBlogUrl}`,
   );
 
-  /*
-   * Step 10:
-   * Email finished report.
-   */
   console.log("");
-
   console.log(
-    "Emailing market stats report...",
+    "Emailing Oregon market stats report...",
   );
 
   await sendMarketStatsReport(
     gmail,
-    stats,
+    oregonStats,
     analysis,
     generatedContent,
     blog,
@@ -360,21 +449,15 @@ async function main(): Promise<void> {
       ),
   );
 
-  /*
-   * Console summary.
-   */
   console.log("");
-
   console.log(
     "Market Analysis",
   );
-
   console.log(
     "---------------",
   );
 
   console.log("");
-
   console.log(
     "Most Competitive Single-Family Markets",
   );
@@ -398,7 +481,6 @@ async function main(): Promise<void> {
   }
 
   console.log("");
-
   console.log(
     "Strongest Single-Family Buyer Opportunities",
   );
@@ -422,7 +504,6 @@ async function main(): Promise<void> {
   }
 
   console.log("");
-
   console.log(
     "Most Competitive Condo Markets",
   );
@@ -446,7 +527,6 @@ async function main(): Promise<void> {
   }
 
   console.log("");
-
   console.log(
     "Strongest Condo Buyer Opportunities",
   );
@@ -470,7 +550,6 @@ async function main(): Promise<void> {
   }
 
   console.log("");
-
   console.log(
     "Largest Condo vs Single-Family Inventory Gaps",
   );
@@ -497,29 +576,23 @@ async function main(): Promise<void> {
   }
 
   console.log("");
-
   console.log(
     "Historical Snapshot",
   );
-
   console.log(
     "-------------------",
   );
-
   console.log(
     `Date: ${snapshotDate}`,
   );
-
   console.log(
     `Local: ${historicalPath}`,
   );
-
   console.log(
     `GitHub: ${historicalGitHubUrl}`,
   );
 
   console.log("");
-
   console.log(
     "Market stats workflow completed.",
   );
@@ -532,13 +605,10 @@ function getPortlandDate(): string {
       {
         timeZone:
           "America/Los_Angeles",
-
         year:
           "numeric",
-
         month:
           "2-digit",
-
         day:
           "2-digit",
       },
@@ -583,9 +653,7 @@ function getPortlandDate(): string {
 function formatPercent(
   value: number | null,
 ): string {
-  if (
-    value === null
-  ) {
+  if (value === null) {
     return "N/A";
   }
 
@@ -595,9 +663,7 @@ function formatPercent(
 function formatInventory(
   value: number | null,
 ): string {
-  if (
-    value === null
-  ) {
+  if (value === null) {
     return "N/A";
   }
 
@@ -607,9 +673,7 @@ function formatInventory(
 function formatDays(
   value: number | null,
 ): string {
-  if (
-    value === null
-  ) {
+  if (value === null) {
     return "N/A";
   }
 
@@ -622,7 +686,6 @@ main().catch(
       unknown,
   ) => {
     console.error("");
-
     console.error(
       "Application failed:",
     );
@@ -633,7 +696,6 @@ main().catch(
       console.error(
         error.message,
       );
-
       console.error(
         error.stack,
       );
