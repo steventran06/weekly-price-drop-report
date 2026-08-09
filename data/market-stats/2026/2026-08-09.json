@@ -1,7 +1,7 @@
 {
   "snapshotDate": "2026-08-09",
   "source": {
-    "gmailMessageId": null,
+    "gmailMessageId": "19fc84d5abf2441c",
     "subject": null,
     "internalDate": null,
     "attachmentFilename": "TMO-Reports-Week-of-8.3.26.pdf",
@@ -9,7 +9,7 @@
   },
   "report": {
     "sourcePdf": "TMO-Reports-Week-of-8.3.26.pdf",
-    "extractedAt": "2026-08-09T16:04:21.637Z",
+    "extractedAt": "2026-08-09T17:34:59.382Z",
     "markets": [
       {
         "page": 1,
