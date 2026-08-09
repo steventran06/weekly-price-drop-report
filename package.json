@@ -13,7 +13,8 @@
     "inspect": "tsx src/inspect.ts",
     "parse": "tsx src/parse.ts",
     "build": "tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "events": "tsx src/events/index.ts"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.0",

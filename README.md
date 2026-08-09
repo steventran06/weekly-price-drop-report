@@ -1201,3 +1201,62 @@ Main website: steventranrealestate.com
 Instagram: @steventranpdx
 
 YouTube: @steventran_pdxrealtor
+
+---
+
+# Website Upcoming Events
+
+The repository also contains an independent scheduled workflow for publishing
+upcoming Portland Metro and SW Washington events to the Steven Tran Real Estate
+website repository.
+
+The event job does not use Gmail or OpenAI. It fetches structured event data from
+the Ticketmaster Discovery API, normalizes the results, removes duplicate and
+cancelled events, and publishes one static JSON file to the website repository.
+
+## Run locally
+
+```bash
+npm run events
+```
+
+Required environment variables:
+
+```text
+TICKETMASTER_API_KEY=...
+SITE_GITHUB_TOKEN=...
+```
+
+The existing website GitHub settings can be reused:
+
+```text
+SITE_GITHUB_OWNER=steventran06
+SITE_GITHUB_REPO=steventranrealestate
+SITE_GITHUB_BRANCH=main
+```
+
+By default the generated file is published to:
+
+```text
+data/events/latest.json
+```
+
+Override that path with:
+
+```text
+SITE_EVENTS_PATH=data/events/latest.json
+```
+
+Optional tuning variables:
+
+```text
+EVENT_LOOKAHEAD_DAYS=120
+EVENT_PAGE_SIZE=100
+EVENT_MAX_PAGES_PER_CITY=5
+EVENT_REQUEST_DELAY_MS=650
+```
+
+The resulting event records include city slugs plus venue latitude/longitude
+when Ticketmaster supplies coordinates. This allows the website to display
+city-specific events immediately and later support nearby-neighborhood filtering
+without changing the fetcher.
