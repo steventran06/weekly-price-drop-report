@@ -71,6 +71,7 @@ export interface WebsiteHotListingsPayload {
   freshnessHours: number;
   publicDisplayEnabled: boolean;
   displayLimit: number;
+  topListings: WebsiteHotListing[];
   cities: Record<string, WebsiteHotListing[]>;
   neighborhoods: Record<string, WebsiteHotListing[]>;
   diagnostics: {
@@ -80,6 +81,7 @@ export interface WebsiteHotListingsPayload {
     selectedListings: number;
     mappedToCity: number;
     withImage: number;
+    withNeighborhood: number;
     withBrokerage: number;
   };
 }

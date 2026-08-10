@@ -7,6 +7,7 @@ import type {
 const DISPLAY_LIMIT = 8;
 const FRESHNESS_HOURS = 72;
 const NEIGHBORHOOD_LIMIT = 6;
+const HOMEPAGE_LIMIT = 20;
 
 export function buildWebsiteHotListings(
   sourceListings: ScoredListing[],
@@ -19,6 +20,17 @@ export function buildWebsiteHotListings(
 
   const cities: Record<string, WebsiteHotListing[]> = {};
   const neighborhoods: Record<string, WebsiteHotListing[]> = {};
+
+  const topListings = sourceListings
+    .filter(
+      (listing) =>
+        listing.citySlug &&
+        listing.city &&
+        listing.address &&
+        listing.currentPrice,
+    )
+    .slice(0, HOMEPAGE_LIMIT)
+    .map(toWebsiteListing);
 
   for (const listing of sourceListings) {
     if (!listing.citySlug || !listing.city || !listing.address || !listing.currentPrice) {
@@ -57,6 +69,7 @@ export function buildWebsiteHotListings(
     freshnessHours: FRESHNESS_HOURS,
     publicDisplayEnabled,
     displayLimit: DISPLAY_LIMIT,
+    topListings,
     cities,
     neighborhoods,
     diagnostics: {
@@ -66,6 +79,7 @@ export function buildWebsiteHotListings(
       selectedListings: selected.length,
       mappedToCity: sourceListings.filter((listing) => listing.citySlug).length,
       withImage: sourceListings.filter((listing) => listing.imageUrl).length,
+      withNeighborhood: sourceListings.filter((listing) => listing.neighborhood).length,
       withBrokerage: sourceListings.filter((listing) => listing.listingBrokerage).length,
     },
   };
