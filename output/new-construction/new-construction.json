@@ -1,0 +1,2706 @@
+{
+  "lastVerified": "2026-08-10",
+  "freshnessDays": 45,
+  "intro": {
+    "title": "New Construction Homes in Portland Metro & Southwest Washington",
+    "description": "Compare active and upcoming new-home communities, builders, cities and the tradeoffs that matter before you walk into a model home. Availability, incentives and phases can change quickly, so every community below includes a verification source."
+  },
+  "builders": [
+    {
+      "id": "toll-brothers",
+      "name": "Toll Brothers",
+      "domain": "tollbrothers.com",
+      "website": "https://www.tollbrothers.com/luxury-homes/Portland-OR/Vancouver-WA",
+      "sourceUrl": "https://www.tollbrothers.com/luxury-homes/Portland-OR/Vancouver-WA",
+      "summary": "Luxury production and semi-personalized new homes across the Portland/Vancouver market, including communities in Portland, Camas, Washougal and Ridgefield.",
+      "incentives": [],
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "holt-homes",
+      "name": "Holt Homes",
+      "domain": "holthomes.com",
+      "website": "https://holthomes.com/",
+      "sourceUrl": "https://holthomes.com/",
+      "summary": "Pacific Northwest builder with a broad mix of detached homes and townhomes across Oregon and Southwest Washington.",
+      "incentives": []
+    },
+    {
+      "id": "david-weekley",
+      "name": "David Weekley Homes",
+      "domain": "davidweekleyhomes.com",
+      "website": "https://www.davidweekleyhomes.com/new-homes/or/portland",
+      "sourceUrl": "https://www.davidweekleyhomes.com/new-homes/or",
+      "summary": "National builder with Portland-area communities ranging from attached homes to detached new construction, including active, closeout and coming-soon phases.",
+      "incentives": []
+    },
+    {
+      "id": "stone-bridge",
+      "name": "Stone Bridge Homes NW",
+      "domain": "stonebridgehomesnw.com",
+      "website": "https://www.stonebridgehomesnw.com/communities/portland/",
+      "sourceUrl": "https://www.stonebridgehomesnw.com/communities/portland/",
+      "summary": "Oregon builder focused on semi-custom, Earth Advantage-certified homes in Portland-area communities.",
+      "incentives": []
+    },
+    {
+      "id": "new-tradition",
+      "name": "New Tradition Homes",
+      "domain": "newtraditionhomes.com",
+      "website": "https://www.newtraditionhomes.com/communities/vancouver-area",
+      "sourceUrl": "https://www.newtraditionhomes.com/communities/vancouver-area",
+      "summary": "Family-owned Southwest Washington builder with communities in Vancouver, Ridgefield, Battle Ground, La Center and nearby Clark County markets.",
+      "incentives": [],
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "pahlisch",
+      "name": "Pahlisch Homes",
+      "domain": "pahlischhomes.com",
+      "website": "https://pahlischhomes.com/communities/",
+      "sourceUrl": "https://pahlischhomes.com/communities/",
+      "summary": "Longtime Oregon and Washington builder known for master-planned communities, mixed home types and neighborhood amenities.",
+      "incentives": [],
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "pacific-lifestyle",
+      "name": "Pacific Lifestyle Homes",
+      "domain": "pacificlifestylehomes.com",
+      "website": "https://www.pacificlifestylehomes.com/new-homes/",
+      "sourceUrl": "https://www.pacificlifestylehomes.com/new-homes/",
+      "summary": "Northwest builder with communities in Portland Metro and Southwest Washington, including customizable and quick-move-in options.",
+      "incentives": []
+    },
+    {
+      "id": "lennar",
+      "name": "Lennar",
+      "domain": "lennar.com",
+      "website": "https://www.lennar.com/new-homes/oregon/portland",
+      "sourceUrl": "https://www.lennar.com/new-homes/oregon/portland",
+      "summary": "National homebuilder with new-home communities and move-in-ready inventory across major markets, including the Portland area when currently offered.",
+      "incentives": []
+    },
+    {
+      "id": "risewell-homes",
+      "name": "Risewell Homes",
+      "domain": "risewellhomes.com",
+      "website": "https://risewellhomes.com/finder/oregon",
+      "sourceUrl": "https://risewellhomes.com/finder/oregon",
+      "summary": "Homebuilder active in Oregon and Washington with neighborhood, floor-plan and available-home information published through its regional home finder.",
+      "incentives": []
+    },
+    {
+      "id": "taylor-morrison",
+      "name": "Taylor Morrison",
+      "domain": "taylormorrison.com",
+      "website": "https://www.taylormorrison.com/or",
+      "sourceUrl": "https://www.taylormorrison.com/or",
+      "summary": "National builder with Portland Metro and Southwest Washington communities, including detached homes and townhomes with current pricing and availability information.",
+      "incentives": []
+    },
+    {
+      "id": "dr-horton",
+      "name": "D.R. Horton",
+      "domain": "drhorton.com",
+      "website": "https://www.drhorton.com/oregon/greater-portland",
+      "sourceUrl": "https://www.drhorton.com/oregon/greater-portland",
+      "summary": "Large national builder with Greater Portland communities, quick-move-in inventory and multiple home series across a range of price points.",
+      "incentives": []
+    },
+    {
+      "id": "riverside-homes",
+      "name": "Riverside Homes",
+      "domain": "riversidehome.com",
+      "website": "http://riversidehome.com/",
+      "sourceUrl": "http://riversidehome.com/",
+      "summary": "Portland-area homebuilder historically active in Beaverton, Hillsboro, Tigard, Sherwood and nearby communities. Public records are shown only when the official site can be reached and verified.",
+      "incentives": [],
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "noyes-development",
+      "name": "Noyes Development",
+      "domain": "noyesdevelopment.com",
+      "website": "https://www.noyesdevelopment.com/our-communities",
+      "sourceUrl": "https://www.noyesdevelopment.com/our-communities",
+      "summary": "Local Portland-area builder focused on higher-performance, semi-custom and luxury new homes in Washington County and the greater Portland area.",
+      "incentives": []
+    },
+    {
+      "id": "lgi-homes",
+      "name": "LGI Homes",
+      "domain": "lgihomes.com",
+      "website": "https://www.lgihomes.com/oregon/portland",
+      "sourceUrl": "https://www.lgihomes.com/oregon/portland",
+      "summary": "National builder with Portland-area communities emphasizing move-in-ready homes, included upgrades and published community amenities and promotions.",
+      "incentives": []
+    },
+    {
+      "id": "chad-e-davis",
+      "name": "Chad E. Davis Construction",
+      "domain": "chadedavisconstruction.com",
+      "website": "https://www.chadedavisconstruction.com/lots",
+      "sourceUrl": "https://www.chadedavisconstruction.com/lots",
+      "summary": "Forest Grove-based Oregon builder with current and upcoming communities across Washington County and other western Oregon markets.",
+      "incentives": []
+    },
+    {
+      "id": "manor-homes",
+      "name": "Manor Homes",
+      "domain": "mymanorhome.com",
+      "website": "https://www.mymanorhome.com/",
+      "sourceUrl": "https://www.mymanorhome.com/",
+      "summary": "Southwest Washington builder focused on thoughtfully designed new homes and communities in Vancouver, Ridgefield and nearby Clark County markets.",
+      "incentives": []
+    }
+  ],
+  "communities": [
+    {
+      "builderId": "new-tradition",
+      "name": "Amira's Song",
+      "city": "Battle Ground",
+      "citySlug": "battle-ground",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.newtraditionhomes.com/communities/vancouver-area/battle-ground/amiras-song",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 451900,
+          "to": null,
+          "text": "Price Range: $451,900"
+        },
+        "squareFeet": {
+          "min": 1170,
+          "max": 1913,
+          "text": "1,170-1,913 SQ FT"
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": 5,
+        "quickMoveInCount": 11,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "2025 NW 18th Ave, Battle Ground, WA",
+        "salesOfficeHours": "Mon - Fri 10:30 - 5:30 Sat 10:00 - 5:00",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [
+          "Walking trail",
+          "Select homes backing onto protected greenspace"
+        ],
+        "highlights": [
+          "Now selling from the mid $400s",
+          "Townhome community with single-level and two-story plans",
+          "Attached garage and fenced yard on each home",
+          "Located across from Daybreak Elementary"
+        ],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "new-tradition",
+      "name": "Walker Field",
+      "city": "Battle Ground",
+      "citySlug": "battle-ground",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.newtraditionhomes.com/communities/vancouver-area/battle-ground/walker-field",
+      "lastVerified": "2026-08-10",
+      "note": "Page shows Phase 2 now open and a community promotion banner (no clear, specific offer text visible).",
+      "details": {
+        "pricing": {
+          "from": 529900,
+          "to": 710900,
+          "text": "Price Range: $529,900 - $710,900"
+        },
+        "squareFeet": {
+          "min": 1786,
+          "max": 2962,
+          "text": "1,786-2,962 SQ FT"
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": 9,
+        "quickMoveInCount": 3,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "2003 NW 17th Ave, Battle Ground, WA",
+        "salesOfficeHours": "Mon - Sat 10:00am-5:00pm",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [
+          "Surrounded by mature trees and protected greenspace",
+          "Greenbelt homesites available"
+        ],
+        "highlights": [
+          "NOW SELLING — Model home and sales office open",
+          "Phase 2 now open; call to place a lot hold"
+        ],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Willow Ridge",
+      "city": "Beaverton",
+      "citySlug": "beaverton",
+      "status": "Now Selling",
+      "homeType": "New homes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pacific-lifestyle",
+      "name": "Scholls Heights",
+      "city": "Beaverton",
+      "citySlug": "beaverton",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.pacificlifestylehomes.com/new-homes/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "The Glades at Green Mountain",
+      "city": "Camas",
+      "citySlug": "camas",
+      "status": "Now Selling",
+      "homeType": "New homes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pacific-lifestyle",
+      "name": "The Landing at Green Mountain",
+      "city": "Camas",
+      "citySlug": "camas",
+      "status": "Limited Availability",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.pacificlifestylehomes.com/new-homes/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pacific-lifestyle",
+      "name": "The Nines at Camas Meadows Golf Course Homes",
+      "city": "Camas",
+      "citySlug": "camas",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.pacificlifestylehomes.com/new-homes/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pacific-lifestyle",
+      "name": "The Nines at Camas Meadows Townhomes",
+      "city": "Camas",
+      "citySlug": "camas",
+      "status": "Now Selling",
+      "homeType": "Townhomes",
+      "sourceUrl": "https://www.pacificlifestylehomes.com/new-homes/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "toll-brothers",
+      "name": "Camas Meadows Crossing",
+      "city": "Camas",
+      "citySlug": "camas",
+      "status": "Now Selling",
+      "homeType": "Townhomes",
+      "sourceUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Washington/Camas-Meadows-Crossing",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 599000,
+          "to": null,
+          "text": "Starting at $599,000."
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": 5,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "3839 NW 65th Ave, Camas, WA 98607",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [
+          "Adjacent to Camas Meadows Golf Club",
+          "Low-maintenance townhome living"
+        ],
+        "highlights": [
+          "Townhome community in Camas with designer-appointed collections",
+          "Model homes open (news post & community page)."
+        ],
+        "incentives": []
+      },
+      "imageUrl": "https://cdn.tollbrothers.com/communities/14856/images-resized/4375450-OR-Camas-Meadows-Crossing-Community-Tour_Hero_thumbnail_1920.jpg",
+      "imageSourceUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Washington/Camas-Meadows-Crossing",
+      "imageAlt": "Camas Meadows Crossing by Toll Brothers in Camas"
+    },
+    {
+      "builderId": "toll-brothers",
+      "name": "Lacamas Hills",
+      "city": "Camas",
+      "citySlug": "camas",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Washington/Lacamas-Hills",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 899000,
+          "to": 1129000,
+          "text": "Priced from $899,000 (Powell Collection); Huron Collection priced from $1,129,000."
+        },
+        "squareFeet": {
+          "min": 1813,
+          "max": null,
+          "text": "Powell Collection: 1,813–1,937+ sq. ft.; Huron Collection: 3,226+ sq. ft. (as advertised)."
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "2884 N 49th Ave, Camas, WA 98607",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [
+          "North shore of Lacamas Lake",
+          "Greenbelt home sites"
+        ],
+        "highlights": [
+          "Master-planned community with two collections (Powell and Huron)",
+          "Located in Camas School District with lake and greenbelt views"
+        ],
+        "incentives": []
+      },
+      "imageUrl": "https://cdn.tollbrothers.com/communities/masters/917/images-resized/Lacamas_Hills_Wenatchee_Farmhouse_73_Great_Room_1920.jpg",
+      "imageSourceUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Washington/Lacamas-Hills",
+      "imageAlt": "Lacamas Hills by Toll Brothers in Camas"
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Laurel Woods",
+      "city": "Cornelius",
+      "citySlug": "cornelius",
+      "status": "Now Selling",
+      "homeType": "New homes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "david-weekley",
+      "name": "Parkview Terrace",
+      "city": "Forest Grove",
+      "citySlug": "forest-grove",
+      "status": "Closeout",
+      "homeType": "Paired villas + single-family",
+      "sourceUrl": "https://www.davidweekleyhomes.com/new-homes/or",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "stone-bridge",
+      "name": "Parkview Terrace",
+      "city": "Forest Grove",
+      "citySlug": "forest-grove",
+      "status": "Now Selling",
+      "homeType": "Semi-custom single-family",
+      "sourceUrl": "https://www.stonebridgehomesnw.com/communities/portland/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "david-weekley",
+      "name": "Powell Crest",
+      "city": "Gresham",
+      "citySlug": "gresham",
+      "status": "Coming Soon",
+      "homeType": "Townhomes",
+      "sourceUrl": "https://www.davidweekleyhomes.com/new-homes/or",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Pleasant Valley Villages",
+      "city": "Happy Valley",
+      "citySlug": "happy-valley",
+      "status": "Now Selling",
+      "homeType": "New homes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Scouters Mountain",
+      "city": "Happy Valley",
+      "citySlug": "happy-valley",
+      "status": "Now Selling",
+      "homeType": "New homes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "david-weekley",
+      "name": "Reed's Crossing - Villas Series",
+      "city": "Hillsboro",
+      "citySlug": "hillsboro",
+      "status": "Now Selling",
+      "homeType": "Villas / attached homes",
+      "sourceUrl": "https://www.davidweekleyhomes.com/new-homes/or",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Reed's Crossing",
+      "city": "Hillsboro",
+      "citySlug": "hillsboro",
+      "status": "Now Selling",
+      "homeType": "New homes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pahlisch",
+      "name": "Butternut Creek",
+      "city": "Hillsboro",
+      "citySlug": "hillsboro",
+      "status": "Now Selling",
+      "homeType": "New homes",
+      "sourceUrl": "https://pahlischhomes.com/communities/butternut-creek/",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 664900,
+          "to": null,
+          "text": "Starting at $664,900"
+        },
+        "squareFeet": {
+          "min": 1746,
+          "max": 2957,
+          "text": "Shown homes range ~1,746 to 2,957 sq ft on community page"
+        },
+        "bedrooms": {
+          "min": 3,
+          "max": 5,
+          "text": "Listings on the community page show 3–5 beds"
+        },
+        "bathrooms": {
+          "min": 2,
+          "max": 3,
+          "text": "Listings on the community page show 2–3 baths"
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "7507 SE Treeline St, Hillsboro, OR 97123",
+        "salesOfficeHours": "Fri-Tue 11 AM - 5 PM",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [
+          "basketball",
+          "covered seating",
+          "dog park",
+          "park",
+          "pavilion",
+          "paved trails",
+          "playground",
+          "splash pad"
+        ],
+        "highlights": [
+          "Model home on-site",
+          "Community map and phases shown",
+          "Located near Butternut Creek Park and South Hillsboro area"
+        ],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pahlisch",
+      "name": "Rosedale Parks",
+      "city": "Hillsboro",
+      "citySlug": "hillsboro",
+      "status": "Now Selling",
+      "homeType": "Townhomes + single-family",
+      "sourceUrl": "https://pahlischhomes.com/communities/rosedale-parks/",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 425900,
+          "to": null,
+          "text": "Starting at $425,900"
+        },
+        "squareFeet": {
+          "min": 1520,
+          "max": 2010,
+          "text": "Shown homes range ~1,520 to 2,010 sq ft on community page"
+        },
+        "bedrooms": {
+          "min": 3,
+          "max": 3,
+          "text": "Listings shown are 3 beds"
+        },
+        "bathrooms": {
+          "min": 2,
+          "max": 3,
+          "text": "Listings shown are 2.5–3 baths"
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "6515 SE Silvergrass St, Hillsboro, OR 97123",
+        "salesOfficeHours": "Fri-Tue 11 AM - 5 PM",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [
+          "clubhouse",
+          "covered seating",
+          "firepit",
+          "gym",
+          "paved trails",
+          "pool",
+          "spa",
+          "splash pad"
+        ],
+        "highlights": [
+          "Life Ready (move-in ready) inventory shown",
+          "Both townhome and single-family product",
+          "Located near Reserve Golf Course and local amenities"
+        ],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "stone-bridge",
+      "name": "Reed's Crossing",
+      "city": "Hillsboro",
+      "citySlug": "hillsboro",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.stonebridgehomesnw.com/communities/portland/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "new-tradition",
+      "name": "Stephens Hillside Farm",
+      "city": "La Center",
+      "citySlug": "la-center",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.newtraditionhomes.com/communities/vancouver-area/la-center/stephens-hillside-farm",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 640900,
+          "to": 976900,
+          "text": "Price Range: $640,900 - $976,900"
+        },
+        "squareFeet": {
+          "min": 1561,
+          "max": 3031,
+          "text": "1,561-3,031 SQ FT"
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": 15,
+        "quickMoveInCount": 4,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [
+          "Neighborhood park and playground",
+          "Connected walking trails"
+        ],
+        "highlights": [
+          "Homesites range from ~7,500 sq ft to over 12,000 sq ft",
+          "Limited opportunities available"
+        ],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pacific-lifestyle",
+      "name": "Serres Farms",
+      "city": "Oregon City",
+      "citySlug": "oregon-city",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.pacificlifestylehomes.com/new-homes/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "david-weekley",
+      "name": "Durham Heights",
+      "city": "Portland",
+      "citySlug": "portland",
+      "status": "Closeout",
+      "homeType": "New homes",
+      "sourceUrl": "https://www.davidweekleyhomes.com/new-homes/or",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "stone-bridge",
+      "name": "Cedar Mill Terrace",
+      "city": "Portland",
+      "citySlug": "portland",
+      "status": "Now Selling",
+      "homeType": "Semi-custom single-family",
+      "sourceUrl": "https://www.stonebridgehomesnw.com/communities/portland/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "toll-brothers",
+      "name": "Toll Brothers at Hosford Farms - Terra Collection",
+      "city": "Portland",
+      "citySlug": "portland",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Oregon/Toll-Brothers-at-Hosford-Farms-Terra-Collection",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 678995,
+          "to": null,
+          "text": "Starting at $678,995."
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": 4,
+          "max": 5,
+          "text": "4–5 bedrooms (as advertised)."
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": 6,
+        "quickMoveInUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Oregon/Toll-Brothers-at-Hosford-Farms-Terra-Collection/Quick-Move-In/MLS-24567594",
+        "modelHomeAddress": "15789 NW Holman Way, Portland, OR 97229",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [
+          "Located in Bethany area adjacent to 17 acres of protected green space",
+          "Walkable to Sato Elementary; close to Bethany Village and Highway 26 access",
+          "Two- and three-story homes with 10' main-level ceilings and optional covered patios"
+        ],
+        "incentives": []
+      },
+      "imageUrl": "https://cdn.tollbrothers.com/communities/14256/images-resized/Hosford_Farms_Terra_Kruse_Farmhouse_5-10-kitchen-great-room_1920.jpg",
+      "imageSourceUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Oregon/Toll-Brothers-at-Hosford-Farms-Terra-Collection",
+      "imageAlt": "Toll Brothers at Hosford Farms - Terra Collection by Toll Brothers in Portland"
+    },
+    {
+      "builderId": "david-weekley",
+      "name": "Greely Farms",
+      "city": "Ridgefield",
+      "citySlug": "ridgefield",
+      "status": "Now Selling",
+      "homeType": "Single-Family Homes",
+      "sourceUrl": "https://www.davidweekleyhomes.com/new-homes/or/portland/ridgefield",
+      "lastVerified": "2026-08-09",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "david-weekley",
+      "name": "Sanderling Park",
+      "city": "Ridgefield",
+      "citySlug": "ridgefield",
+      "status": "Coming Soon",
+      "homeType": "Townhomes",
+      "sourceUrl": "https://www.davidweekleyhomes.com/new-homes/or",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Greely Farms",
+      "city": "Ridgefield",
+      "citySlug": "ridgefield",
+      "status": "Now Selling",
+      "homeType": "New homes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Paradise Pointe",
+      "city": "Ridgefield",
+      "citySlug": "ridgefield",
+      "status": "Now Selling",
+      "homeType": "New homes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "new-tradition",
+      "name": "Paradise Pointe",
+      "city": "Ridgefield",
+      "citySlug": "ridgefield",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.newtraditionhomes.com/communities/vancouver-area/ridgefield/paradise-pointe",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 782900,
+          "to": 1238900,
+          "text": "Price Range: $782,900 - $1,238,900"
+        },
+        "squareFeet": {
+          "min": 1865,
+          "max": 3445,
+          "text": "1,865-3,445 SQ FT"
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": 20,
+        "quickMoveInCount": 3,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "1158 N Paradise Avenue, Ridgefield, WA",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [
+          "Master-planned with preserved green space",
+          "Winding trails connecting into Ridgefield trail system",
+          "Parks and open spaces"
+        ],
+        "highlights": [
+          "Master-planned community with 7,500+ sq ft homesites available",
+          "Pricing starting from the low $800s (page lists exact range above)"
+        ],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pacific-lifestyle",
+      "name": "Paradise Pointe",
+      "city": "Ridgefield",
+      "citySlug": "ridgefield",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.pacificlifestylehomes.com/new-homes/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "toll-brothers",
+      "name": "Toll Brothers at Quail Ridge",
+      "city": "Ridgefield",
+      "citySlug": "ridgefield",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Washington/Toll-Brothers-at-Quail-Ridge",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 999995,
+          "to": null,
+          "text": "Priced from $999,995."
+        },
+        "squareFeet": {
+          "min": 2790,
+          "max": 3618,
+          "text": "2,790–3,618 sq. ft. (community listings)."
+        },
+        "bedrooms": {
+          "min": 4,
+          "max": 6,
+          "text": "4–6 bedrooms (as advertised)."
+        },
+        "bathrooms": {
+          "min": 3,
+          "max": 5,
+          "text": "3–5 baths (as advertised)."
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": 3,
+        "quickMoveInUrl": "https://www.tollbrothers.com/new-quick-move-in-homes/Ridgefield-WA",
+        "modelHomeAddress": "3832 S 16th Way, Ridgefield, WA 98642",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [
+          "Exclusive enclave of 27 homes in Ridgefield",
+          "Multiple one- and two-story home designs with personalization options"
+        ],
+        "incentives": []
+      },
+      "imageUrl": "https://cdn.tollbrothers.com/communities/15035/images-resized/3591050-WA-Woodinville-Sq-Community-Overview-Video-0125-WEB-HERO_thumbnail_1920.jpg",
+      "imageSourceUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Washington/Toll-Brothers-at-Quail-Ridge",
+      "imageAlt": "Toll Brothers at Quail Ridge by Toll Brothers in Ridgefield"
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Middlebrook",
+      "city": "Sherwood",
+      "citySlug": "sherwood",
+      "status": "Limited Availability",
+      "homeType": "New homes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "david-weekley",
+      "name": "River Terrace Crossing",
+      "city": "Tigard",
+      "citySlug": "tigard",
+      "status": "Closeout",
+      "homeType": "New homes",
+      "sourceUrl": "https://www.davidweekleyhomes.com/new-homes/or",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pacific-lifestyle",
+      "name": "River Terrace Crossing",
+      "city": "Tigard",
+      "citySlug": "tigard",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.pacificlifestylehomes.com/new-homes/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "stone-bridge",
+      "name": "Heights at Bull Mountain II",
+      "city": "Tigard",
+      "citySlug": "tigard",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.stonebridgehomesnw.com/communities/portland/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "david-weekley",
+      "name": "Harmony Heights",
+      "city": "Vancouver",
+      "citySlug": "vancouver",
+      "status": "Now Selling",
+      "homeType": "Single-Family Homes",
+      "sourceUrl": "https://www.davidweekleyhomes.com/new-homes/or/portland/vancouver",
+      "lastVerified": "2026-08-09",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Harmony Heights",
+      "city": "Vancouver",
+      "citySlug": "vancouver",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Heartwood",
+      "city": "Vancouver",
+      "citySlug": "vancouver",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Ramble Creek",
+      "city": "Vancouver",
+      "citySlug": "vancouver",
+      "status": "Now Selling",
+      "homeType": "Single-family + townhomes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "holt-homes",
+      "name": "Stones Throw",
+      "city": "Vancouver",
+      "citySlug": "vancouver",
+      "status": "Now Selling",
+      "homeType": "New homes",
+      "sourceUrl": "https://holthomes.com/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "new-tradition",
+      "name": "Harmony View",
+      "city": "Vancouver",
+      "citySlug": "vancouver",
+      "status": "Current Community",
+      "homeType": "New homes",
+      "sourceUrl": "https://www.newtraditionhomes.com/communities/vancouver-area/vancouver/harmony-view",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "new-tradition",
+      "name": "Pleasant Woods",
+      "city": "Vancouver",
+      "citySlug": "vancouver",
+      "status": "Limited Availability",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.newtraditionhomes.com/communities/vancouver-area/vancouver/pleasant-woods",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 620900,
+          "to": 889900,
+          "text": "Price Range: $620,900 - $889,900"
+        },
+        "squareFeet": {
+          "min": 1781,
+          "max": 3445,
+          "text": "1,781-3,445 SQ FT"
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": 17,
+        "quickMoveInCount": 4,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "new-tradition",
+      "name": "Si Ellen Farms",
+      "city": "Vancouver",
+      "citySlug": "vancouver",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.newtraditionhomes.com/communities/vancouver-area/vancouver/si-ellen-farms",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 728900,
+          "to": 1304900,
+          "text": "Price Range: $728,900 - $1,304,900"
+        },
+        "squareFeet": {
+          "min": 1877,
+          "max": 3445,
+          "text": "1,877-3,445 SQ FT"
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": 16,
+        "quickMoveInCount": 9,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pacific-lifestyle",
+      "name": "Salmon Creek Ridge",
+      "city": "Vancouver",
+      "citySlug": "vancouver",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.pacificlifestylehomes.com/new-homes/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "pacific-lifestyle",
+      "name": "Schnell Farms",
+      "city": "Vancouver",
+      "citySlug": "vancouver",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.pacificlifestylehomes.com/new-homes/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "toll-brothers",
+      "name": "Toll Brothers at Granite Highlands",
+      "city": "Washougal",
+      "citySlug": "washougal",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Washington/Toll-Brothers-at-Granite-Highlands",
+      "lastVerified": "2026-08-10",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": 1400000,
+          "to": null,
+          "text": "Anticipated from the $1,400,000s; select homes listed (example priced at $1,929,000)."
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "486 N. Y St, Washougal, WA 98671",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [
+          "Elevated homesites with views of Mt. Hood and the Columbia River",
+          "Master plan with multiple collections (Ridge and Bluffs at Granite Highlands)"
+        ],
+        "highlights": [
+          "Estate home collections with premium personalization",
+          "Model and quick-move homes referenced on community pages"
+        ],
+        "incentives": []
+      },
+      "imageUrl": "https://cdn.tollbrothers.com/communities/masters/1069/images-resized/OR_BluffsatGraniteHighlands_4_View_1920.jpg",
+      "imageSourceUrl": "https://www.tollbrothers.com/luxury-homes-for-sale/Washington/Toll-Brothers-at-Granite-Highlands",
+      "imageAlt": "Toll Brothers at Granite Highlands by Toll Brothers in Washougal"
+    },
+    {
+      "builderId": "david-weekley",
+      "name": "Ridgecrest at Frog Pond",
+      "city": "Wilsonville",
+      "citySlug": "wilsonville",
+      "status": "Coming Soon",
+      "homeType": "Single-Family Homes",
+      "sourceUrl": "https://www.davidweekleyhomes.com/new-homes/or/portland/coming-soon",
+      "lastVerified": "2026-08-09",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "stone-bridge",
+      "name": "Frog Pond Overlook",
+      "city": "Wilsonville",
+      "citySlug": "wilsonville",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.stonebridgehomesnw.com/communities/portland/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "stone-bridge",
+      "name": "Frog Pond Terrace",
+      "city": "Wilsonville",
+      "citySlug": "wilsonville",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.stonebridgehomesnw.com/communities/portland/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "stone-bridge",
+      "name": "Frog Pond Vista",
+      "city": "Wilsonville",
+      "citySlug": "wilsonville",
+      "status": "Limited Availability",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.stonebridgehomesnw.com/communities/portland/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    },
+    {
+      "builderId": "stone-bridge",
+      "name": "Ridgecrest at Frog Pond",
+      "city": "Wilsonville",
+      "citySlug": "wilsonville",
+      "status": "Now Selling",
+      "homeType": "Single-family",
+      "sourceUrl": "https://www.stonebridgehomesnw.com/communities/portland/",
+      "lastVerified": "2026-08-09",
+      "note": "",
+      "details": {
+        "pricing": {
+          "from": null,
+          "to": null,
+          "text": ""
+        },
+        "squareFeet": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bedrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "bathrooms": {
+          "min": null,
+          "max": null,
+          "text": ""
+        },
+        "floorPlanCount": null,
+        "quickMoveInCount": null,
+        "quickMoveInUrl": "",
+        "modelHomeAddress": "",
+        "salesOfficeHours": "",
+        "hoa": {
+          "amount": null,
+          "frequency": "",
+          "text": ""
+        },
+        "amenities": [],
+        "highlights": [],
+        "incentives": []
+      }
+    }
+  ],
+  "schemaVersion": 3,
+  "feedMeta": {
+    "source": "automated-official-builder-research-v5",
+    "note": "This file is the website input contract. A future upstream job may replace or merge builder/community records.",
+    "researchedAt": "2026-08-10T15:17:53.645Z",
+    "researchDate": "2026-08-10",
+    "researchMethod": "One low-reasoning, low-context OpenAI Responses API web-search call per tracked builder, restricted to the builder official domain. No high-reasoning fallback and no SDK retries. Missing optional facts are omitted instead of chased. Community card images are read directly from official community-page social metadata with no additional AI call.",
+    "trackedBuilderRegistryVersion": 1,
+    "trackedBuilderCount": 16,
+    "failedBuilderCount": 12,
+    "uncertainCommunityCount": 39,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "communityImageCount": 5,
+    "communityLogoFallbackCount": 48,
+    "communityImageFetchFailureCount": 0,
+    "communityImagePagesFetched": 21
+  }
+}

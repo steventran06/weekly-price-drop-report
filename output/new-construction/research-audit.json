@@ -1,0 +1,299 @@
+[
+  {
+    "builderId": "toll-brothers",
+    "builderName": "Toll Brothers",
+    "previousCount": 5,
+    "finalCount": 5,
+    "kept": 0,
+    "updated": 5,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": false,
+    "error": "",
+    "notes": [
+      "Research performed on tollbrothers.com only (single pass).",
+      "Verified community pages exist for all five supplied community names; captured readily-available facts: starting prices, quick-move-in counts, model/sales addresses, and prominent descriptive highlights when present on the official pages.",
+      "No builder-wide current incentives (concrete offers) were found on the Portland/Vancouver community pages during this single pass. Incentive list left empty.",
+      "Where numeric details (bed/bath counts, sq ft) were explicitly listed on the community or design pages, those values were recorded. Many optional fields (exact HOA, sales hours, floor plan counts) were not plainly published on the community landing pages and thus left blank per instructions.",
+      "All sourceUrl and quickMoveInUrl values are on tollbrothers.com and were taken directly from the official community pages and quick-move listings."
+    ]
+  },
+  {
+    "builderId": "holt-homes",
+    "builderName": "Holt Homes",
+    "previousCount": 13,
+    "finalCount": 13,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 13,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: Request timed out.",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "david-weekley",
+    "builderName": "David Weekley Homes",
+    "previousCount": 9,
+    "finalCount": 9,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 9,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: Request timed out.",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "stone-bridge",
+    "builderName": "Stone Bridge Homes NW",
+    "previousCount": 8,
+    "finalCount": 8,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 8,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: Request timed out.",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "new-tradition",
+    "builderName": "New Tradition Homes",
+    "previousCount": 7,
+    "finalCount": 7,
+    "kept": 0,
+    "updated": 7,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": false,
+    "error": "",
+    "notes": [
+      "All pages and facts were taken from newtraditionhomes.com community pages in the Vancouver-area directory (single research pass).",
+      "I captured only facts clearly shown on the builder's official community pages. If a field is blank/null, the official page did not present that data in an obvious way during this pass.",
+      "A Walker Field community promotion banner is present on the page but the banner text did not display a clear concrete offer during this single pass, so no incentive was recorded (per instructions).",
+      "verifiedAt for incentives would be 2026-08-10 (no incentives added)."
+    ]
+  },
+  {
+    "builderId": "pahlisch",
+    "builderName": "Pahlisch Homes",
+    "previousCount": 2,
+    "finalCount": 2,
+    "kept": 0,
+    "updated": 2,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": false,
+    "error": "",
+    "notes": [
+      "Single-pass research performed on official Pahlisch Homes site (pahlischhomes.com).",
+      "Primary community pages used: /communities/butternut-creek/ and /communities/rosedale-parks/ (captured 2026-08-10).",
+      "Captured visible starting prices, model addresses, sales hours, amenities, and example square-footage/bed/bath ranges as shown on each community page. Did not attempt exhaustive verification of floor plan counts, HOA fees, or community-specific incentives because they were not clearly summarized on the pages during this single pass."
+    ]
+  },
+  {
+    "builderId": "pacific-lifestyle",
+    "builderName": "Pacific Lifestyle Homes",
+    "previousCount": 9,
+    "finalCount": 9,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 9,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: Request timed out.",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "lennar",
+    "builderName": "Lennar",
+    "previousCount": 0,
+    "finalCount": 0,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: Lennar research returned unknown verified community: Ramble Creek",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "risewell-homes",
+    "builderName": "Risewell Homes",
+    "previousCount": 0,
+    "finalCount": 0,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: Risewell Homes research returned an unknown community update: Kingston Terrace",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "taylor-morrison",
+    "builderName": "Taylor Morrison",
+    "previousCount": 0,
+    "finalCount": 0,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: Taylor Morrison research returned unknown verified community: Ridgeline at Bethany",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "dr-horton",
+    "builderName": "D.R. Horton",
+    "previousCount": 0,
+    "finalCount": 0,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: D.R. Horton research returned unknown verified community: Kevanna Park Meadows",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "riverside-homes",
+    "builderName": "Riverside Homes",
+    "previousCount": 0,
+    "finalCount": 0,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": false,
+    "error": "",
+    "notes": [
+      "Attempted a single official-site research pass on riversidehome.com (required domain). The site returned HTTP 403 / access forbidden when fetching the builder homepage and directory pages, so I could not reach any community pages, promotions, or community-specific details. No community pages or incentives could be verified because the official domain was inaccessible during this pass (fetch error: 403 Forbidden). If you want, I can try again now or you can provide an alternate official URL or any community page URLs from Riverside Homes to inspect."
+    ]
+  },
+  {
+    "builderId": "noyes-development",
+    "builderName": "Noyes Development",
+    "previousCount": 0,
+    "finalCount": 0,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: Noyes Development research returned unknown verified community: Creekside at Westview",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "lgi-homes",
+    "builderName": "LGI Homes",
+    "previousCount": 0,
+    "finalCount": 0,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: LGI Homes research returned an unknown community update: Sunset Village",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "chad-e-davis",
+    "builderName": "Chad E. Davis Construction",
+    "previousCount": 0,
+    "finalCount": 0,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: Chad E. Davis Construction research returned unknown verified community: Davis Estates",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  },
+  {
+    "builderId": "manor-homes",
+    "builderName": "Manor Homes",
+    "previousCount": 0,
+    "finalCount": 0,
+    "kept": 0,
+    "updated": 0,
+    "removed": 0,
+    "uncertain": 0,
+    "added": 0,
+    "builderIncentiveCount": 0,
+    "communityIncentiveCount": 0,
+    "failed": true,
+    "error": "Error: Manor Homes research returned unknown verified community: Mill Creek Terrace",
+    "notes": [
+      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+    ]
+  }
+]

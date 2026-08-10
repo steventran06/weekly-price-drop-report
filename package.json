@@ -14,7 +14,9 @@
     "parse": "tsx src/parse.ts",
     "build": "tsc",
     "clean": "rm -rf dist",
-    "events": "tsx src/events/index.ts"
+    "events": "tsx src/events/index.ts",
+    "new-construction": "tsx src/newConstruction/index.ts",
+    "new-construction:dry-run": "NEW_CONSTRUCTION_DRY_RUN=true tsx src/newConstruction/index.ts"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.0",
