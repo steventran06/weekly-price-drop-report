@@ -36,7 +36,7 @@ export async function downloadMarketStatsPdf(
   options: DownloadMarketStatsPdfOptions,
 ): Promise<DownloadedMarketStatsPdf | null> {
   const newerThanDays =
-    options.newerThanDays ?? 5;
+    options.newerThanDays ?? 7;
 
   const displayName =
     options.displayName ??
