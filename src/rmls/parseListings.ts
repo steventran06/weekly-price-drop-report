@@ -4,6 +4,7 @@ import * as cheerio from "cheerio";
 
 export interface RmlsListing {
   mlsNumber: string;
+  reportItemId: string | null;
   address: string | null;
   currentPrice: number | null;
   bedrooms: number | null;
@@ -21,12 +22,14 @@ export interface RmlsListing {
   neighborhood: string | null;
   remarks: string | null;
   imageUrl: string | null;
+  imageUrls: string[];
   originalPrice: number | null;
   totalPriceReduction: number | null;
 }
 
 interface ListingChunk {
   mlsNumber: string;
+  reportItemId: string;
   html: string;
 }
 
@@ -55,16 +58,17 @@ function splitReportIntoListingChunks(
   html: string,
 ): ListingChunk[] {
   const markerPattern =
-    /<div\s+id=["']REPORT_ITEM_(\d+)_\d+["'][^>]*><\/div>/gi;
+    /<div\s+id=["'](REPORT_ITEM_(\d+)_(\d+))["'][^>]*><\/div>/gi;
 
   const matches = [...html.matchAll(markerPattern)];
   const chunks: ListingChunk[] = [];
 
   for (const [index, match] of matches.entries()) {
-    const mlsNumber = match[1];
+    const reportItemId = match[1];
+    const mlsNumber = match[2];
     const start = match.index;
 
-    if (!mlsNumber || start === undefined) {
+    if (!reportItemId || !mlsNumber || start === undefined) {
       continue;
     }
 
@@ -76,6 +80,7 @@ function splitReportIntoListingChunks(
 
     chunks.push({
       mlsNumber,
+      reportItemId,
       html: html.slice(start, end),
     });
   }
@@ -114,8 +119,15 @@ function parseListingChunk(
       ? originalPrice - currentPrice
       : null;
 
+  const imageUrls = extractImageUrls(
+    $,
+    chunk.mlsNumber,
+    chunk.html,
+  );
+
   return {
     mlsNumber: chunk.mlsNumber,
+    reportItemId: chunk.reportItemId,
     address: addressText || null,
     currentPrice,
     originalPrice,
@@ -166,7 +178,8 @@ function parseListingChunk(
       ["CC&Rs", "Legal"],
     ),
     remarks: extractRemarks($),
-    imageUrl: extractPrimaryImageUrl($),
+    imageUrl: imageUrls[0] ?? null,
+    imageUrls,
   };
 }
 
@@ -289,33 +302,195 @@ function extractRemarks(
   return null;
 }
 
-function extractPrimaryImageUrl(
+const DEFAULT_MAX_LISTING_PHOTOS = 20;
+const MAX_LISTING_PHOTOS_CAP = 50;
+
+function extractImageUrls(
   $: cheerio.CheerioAPI,
-): string | null {
+  mlsNumber: string,
+  rawHtml: string,
+): string[] {
   const selectors = [
     "img.PHOTO_NEW",
     "img[class*='PHOTO']",
     "img[src*='photo']",
   ];
 
-  for (const selector of selectors) {
-    const src = $(selector).first().attr("src");
+  const seen = new Set<string>();
+  const urls: string[] = [];
+
+  const addUrl = (value: string | null | undefined): void => {
+    const src = value?.trim();
 
     if (!src) {
-      continue;
+      return;
     }
 
+    let url = src;
+
     try {
-      return new URL(
+      url = new URL(
         src,
         "https://www.rmlsweb.com",
       ).toString();
     } catch {
-      return src;
+      // Keep the original source if URL normalization fails.
+    }
+
+    if (
+      !seen.has(url) &&
+      !/spacer|blank|pixel|transparent|nophoto/i.test(url)
+    ) {
+      seen.add(url);
+      urls.push(url);
+    }
+  };
+
+  /*
+   * RMLS renders only photo #1 as an <img>, but its Client Full HTML also
+   * contains the folder used by the photo viewer plus navigation entries for
+   * every available photo. Reconstruct those URLs so the consumer modal can
+   * show a real gallery instead of a single image.
+   */
+  for (const selector of selectors) {
+    $(selector).each((_, element) => {
+      addUrl($(element).attr("src"));
+    });
+  }
+
+  const photoFolder = extractPhotoFolder(
+    rawHtml,
+    mlsNumber,
+  );
+
+  const photoCount = extractPhotoCount(
+    rawHtml,
+    mlsNumber,
+  );
+
+  if (
+    photoFolder &&
+    photoCount > 1
+  ) {
+    const cacheBust = extractPhotoCacheBust(
+      urls[0] ?? null,
+    );
+
+    const limit = Math.min(
+      photoCount,
+      getMaxListingPhotos(),
+    );
+
+    for (let index = 1; index <= limit; index++) {
+      addUrl(
+        `/webphotos/${photoFolder}` +
+          `${mlsNumber}-${index}-a.jpg${cacheBust}`,
+      );
     }
   }
 
-  return null;
+  return urls.slice(
+    0,
+    getMaxListingPhotos(),
+  );
+}
+
+function extractPhotoFolder(
+  rawHtml: string,
+  mlsNumber: string,
+): string | null {
+  const escapedMls = escapeRegExp(mlsNumber);
+  const pattern = new RegExp(
+    `photourls\\[['"]photo${escapedMls}['"]\\]\\s*=\\s*['"]([^'"]+)['"]`,
+    "i",
+  );
+
+  const match = rawHtml.match(pattern);
+  const folder = match?.[1]
+    ?.replace(/^\/+|\/+$/g, "")
+    .trim();
+
+  return folder
+    ? `${folder}/`
+    : null;
+}
+
+function extractPhotoCount(
+  rawHtml: string,
+  mlsNumber: string,
+): number {
+  const escapedMls = escapeRegExp(mlsNumber);
+  const indexes: number[] = [];
+
+  const navPattern = new RegExp(
+    `PHOTONAV__${escapedMls}_(\\d+)`,
+    "gi",
+  );
+
+  for (const match of rawHtml.matchAll(navPattern)) {
+    const value = Number(match[1]);
+
+    if (Number.isInteger(value) && value > 0) {
+      indexes.push(value);
+    }
+  }
+
+  if (indexes.length > 0) {
+    return Math.max(...indexes);
+  }
+
+  const captionPattern = new RegExp(
+    `photocaptions\\[['"]photo${escapedMls}['"]\\]\\[(\\d+)\\]`,
+    "gi",
+  );
+
+  for (const match of rawHtml.matchAll(captionPattern)) {
+    const value = Number(match[1]);
+
+    if (Number.isInteger(value) && value > 0) {
+      indexes.push(value);
+    }
+  }
+
+  return indexes.length > 0
+    ? Math.max(...indexes)
+    : 0;
+}
+
+function extractPhotoCacheBust(
+  firstImageUrl: string | null,
+): string {
+  if (!firstImageUrl) {
+    return "";
+  }
+
+  try {
+    return new URL(firstImageUrl).search;
+  } catch {
+    const queryIndex = firstImageUrl.indexOf("?");
+    return queryIndex >= 0
+      ? firstImageUrl.slice(queryIndex)
+      : "";
+  }
+}
+
+function getMaxListingPhotos(): number {
+  const configured = Number(
+    process.env.HOT_LISTINGS_MAX_PHOTOS ??
+      DEFAULT_MAX_LISTING_PHOTOS,
+  );
+
+  if (
+    !Number.isFinite(configured) ||
+    configured < 2
+  ) {
+    return DEFAULT_MAX_LISTING_PHOTOS;
+  }
+
+  return Math.min(
+    Math.round(configured),
+    MAX_LISTING_PHOTOS_CAP,
+  );
 }
 
 function escapeRegExp(value: string): string {

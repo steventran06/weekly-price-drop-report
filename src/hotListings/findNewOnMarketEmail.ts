@@ -107,12 +107,132 @@ function decodeBase64Url(value: string): string {
 }
 
 function extractRmlsReportUrl(value: string): string | null {
-  const decoded = value.replace(/&amp;/gi, "&");
-  const match = decoded.match(
-    /https:\/\/www\.rmlsweb\.com\/v2\/public\/report\.asp\?[^\s"'<>]+/i,
+  const decoded = value
+    .replace(/&amp;/gi, "&")
+    .replace(/&#38;/gi, "&");
+
+  const reportPattern =
+    /https?:\/\/www\.rmlsweb\.com\/v2\/public\/report\.asp\?[^\s"'<>]+/gi;
+
+  const matches = Array.from(
+    decoded.matchAll(reportPattern),
+  ).map((match) => ({
+    url: cleanReportUrl(match[0]),
+    index: match.index ?? 0,
+  }));
+
+  if (matches.length === 0) {
+    return null;
+  }
+
+  const uniqueMatches = matches.filter(
+    (match, index, all) =>
+      all.findIndex(
+        (candidate) => candidate.url === match.url,
+      ) === index,
   );
 
-  if (!match) return null;
+  if (uniqueMatches.length === 1) {
+    console.log(
+      "RMLS email contained one public report link; using it.",
+    );
 
-  return match[0].replace(/[)>.,]+$/, "");
+    return uniqueMatches[0].url;
+  }
+
+  /*
+   * Normal RMLS daily auto-emails can contain two public-report links:
+   *
+   * 1. "newest matches" - only listings newly matched by that email
+   * 2. "complete list of available matches" - the full current result set
+   *
+   * Hot Listings needs the complete result set. Prefer the URL whose
+   * nearby email text identifies it as the complete-list link.
+   *
+   * Manual/test emails may contain only one link, which is handled above.
+   */
+  const completeListMatch = uniqueMatches.find(
+    (match) => {
+      const contextStart = Math.max(
+        0,
+        match.index - 240,
+      );
+      const precedingContext = normalizeEmailText(
+        decoded.slice(
+          contextStart,
+          match.index,
+        ),
+      );
+
+      return /complete list of available matches/i.test(
+        precedingContext,
+      );
+    },
+  );
+
+  if (completeListMatch) {
+    console.log(
+      `RMLS email contained ${uniqueMatches.length} public report links; ` +
+        "using the complete list of available matches.",
+    );
+
+    return completeListMatch.url;
+  }
+
+  /*
+   * Some MIME/plain-text representations can move the URL farther away
+   * from its label. As a second pass, find the phrase first and select the
+   * nearest RMLS report URL that follows it.
+   */
+  const completePhrase =
+    /complete\s+list\s+of\s+available\s+matches/i.exec(
+      normalizeEmailText(decoded),
+    );
+
+  if (completePhrase) {
+    const phraseIndex = decoded
+      .toLowerCase()
+      .indexOf(
+        "complete list of available matches",
+      );
+
+    if (phraseIndex >= 0) {
+      const followingMatch = uniqueMatches
+        .filter(
+          (match) => match.index > phraseIndex,
+        )
+        .sort(
+          (a, b) => a.index - b.index,
+        )[0];
+
+      if (followingMatch) {
+        console.log(
+          `RMLS email contained ${uniqueMatches.length} public report links; ` +
+            "using the report following the complete-list label.",
+        );
+
+        return followingMatch.url;
+      }
+    }
+  }
+
+  console.warn(
+    `RMLS email contained ${uniqueMatches.length} public report links, ` +
+      "but the complete-list link could not be identified. " +
+      "Falling back to the first RMLS report link.",
+  );
+
+  return uniqueMatches[0].url;
+}
+
+function cleanReportUrl(value: string): string {
+  return value.replace(/[)>.,]+$/, "");
+}
+
+function normalizeEmailText(value: string): string {
+  return value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }

@@ -40,10 +40,14 @@ async function main() {
   }
 
   const sourceListings = await parseSourceListings(report.html);
-  console.log(`Parsed ${sourceListings.length} RMLS listing(s) from today's email.`);
+  console.log(`Parsed ${sourceListings.length} RMLS listing(s) from the selected report.`);
 
   const sourceEmailAt = new Date(email.internalDate).toISOString();
-  const enrichedIncoming = enrichListings(sourceListings, report.html);
+  const enrichedIncoming = enrichListings(
+    sourceListings,
+    report.html,
+    email.reportUrl,
+  );
 
   const existingCache = await loadRollingHotListings();
   const rollingListings = mergeRollingHotListings(
@@ -76,11 +80,14 @@ async function main() {
   console.log("Hot listing diagnostics");
   console.log("-----------------------");
   console.log(`Source email: ${payload.sourceEmailAt}`);
-  console.log(`Today's new matches: ${payload.diagnostics.sourceListings}`);
+  console.log(`Source report listings: ${payload.diagnostics.sourceListings}`);
   console.log(`Rolling candidate pool: ${payload.diagnostics.rollingListings}`);
   console.log(`Eligible listings: ${payload.diagnostics.eligibleListings}`);
   console.log(`Mapped to city: ${payload.diagnostics.mappedToCity}`);
   console.log(`With image: ${payload.diagnostics.withImage}`);
+  console.log(`With multiple images: ${payload.diagnostics.withMultipleImages}`);
+  console.log(`With neighborhood: ${payload.diagnostics.withNeighborhood}`);
+  console.log(`With public remarks: ${payload.diagnostics.withRemarks}`);
   console.log(`With brokerage: ${payload.diagnostics.withBrokerage}`);
   console.log(`Selected for city feeds: ${payload.diagnostics.selectedListings}`);
   console.log(`Cities: ${Object.keys(payload.cities).length}`);

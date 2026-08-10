@@ -42,6 +42,7 @@ const CITY_SLUGS: Array<{
 export function enrichListings(
   listings: SourceListing[],
   html: string,
+  sourceReportUrl: string | null = null,
 ): EnrichedListing[] {
   return listings.map((listing) => {
     const chunk = findListingChunk(html, listing.mlsNumber);
@@ -50,6 +51,11 @@ export function enrichListings(
       cleanString((listing as Record<string, unknown>).listingBrokerage) ??
       cleanString((listing as Record<string, unknown>).listingOffice) ??
       extractBrokerage(chunk);
+
+    const neighborhood =
+      cleanString(listing.neighborhood) ??
+      extractNeighborhood(chunk) ??
+      extractNeighborhoodFromRemarks(listing.remarks);
 
     const bathrooms = calculateBathrooms(
       listing.fullBathrooms,
@@ -66,9 +72,11 @@ export function enrichListings(
       city: cityMatch?.name ?? null,
       citySlug: cityMatch?.slug ?? null,
       stateCode: cityMatch?.stateCode ?? inferStateCode(listing, chunk),
+      neighborhood,
       listingBrokerage,
       bathrooms,
       pricePerSquareFoot,
+      sourceReportUrl,
     };
   });
 }
@@ -142,6 +150,79 @@ function findListingChunk(html: string, mlsNumber: string): string | null {
 
   if (next < 0) return html.slice(start);
   return html.slice(start, start + match[0].length + next);
+}
+
+function extractNeighborhood(chunk: string | null): string | null {
+  if (!chunk) return null;
+
+  const text = htmlToLines(chunk);
+  const labels = [
+    "Neighborhood",
+    "Subdivision",
+    "Subdivision Name",
+    "Legal Subdivision",
+    "Community",
+  ];
+
+  for (const label of labels) {
+    const pattern = new RegExp(
+      `(?:^|\\n)\\s*${escapeRegExp(label)}\\s*:?\\s*(?:\\n\\s*)?([^\\n]{2,100})`,
+      "i",
+    );
+
+    const match = text.match(pattern);
+    const value = cleanNeighborhoodValue(match?.[1]);
+
+    if (value) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+function extractNeighborhoodFromRemarks(remarks: string | null): string | null {
+  const text = cleanString(remarks);
+  if (!text) return null;
+
+  /*
+   * Use only explicit "___ neighborhood" language from the public remarks.
+   * The website still requires an exact match against a configured neighborhood
+   * name/map alias, so a generic phrase such as "Beaverton neighborhood" will
+   * not place a listing on an unrelated neighborhood page.
+   */
+  const patterns = [
+    /\b(?:in|within|inside)\s+(?:the\s+)?(?:highly\s+)?(?:sought[- ]after\s+|desirable\s+|popular\s+|coveted\s+|established\s+)?([A-Z][A-Za-z0-9'’&.-]*(?:\s+[A-Z][A-Za-z0-9'’&.-]*){0,5})\s+neighborhood\b/,
+    /\b([A-Z][A-Za-z0-9'’&.-]*(?:\s+[A-Z][A-Za-z0-9'’&.-]*){0,5})\s+neighborhood\b/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    const value = cleanNeighborhoodValue(match?.[1]);
+
+    if (value) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+function cleanNeighborhoodValue(value: unknown): string | null {
+  const cleaned = cleanString(value);
+  if (!cleaned) return null;
+
+  const normalized = cleaned
+    .replace(/^[,;:\-\s]+|[,;:\-\s]+$/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!normalized || /^\d+$/.test(normalized)) return null;
+  if (/^(area|neighborhood|community|subdivision|unknown|n\/?a)$/i.test(normalized)) {
+    return null;
+  }
+
+  return normalized;
 }
 
 function extractBrokerage(chunk: string | null): string | null {

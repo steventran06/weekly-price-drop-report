@@ -1,7 +1,10 @@
 export interface SourceListing {
   mlsNumber: string;
+  reportItemId?: string | null;
   address: string | null;
   currentPrice: number | null;
+  originalPrice?: number | null;
+  totalPriceReduction?: number | null;
   bedrooms: number | null;
   fullBathrooms: number | null;
   partialBathrooms: number | null;
@@ -17,6 +20,7 @@ export interface SourceListing {
   neighborhood: string | null;
   remarks: string | null;
   imageUrl: string | null;
+  imageUrls?: string[];
   [key: string]: unknown;
 }
 
@@ -51,15 +55,24 @@ export interface WebsiteHotListing {
   citySlug: string;
   stateCode: "OR" | "WA" | null;
   neighborhood: string | null;
+  county: string | null;
   currentPrice: number;
+  originalPrice: number | null;
+  totalPriceReduction: number | null;
   bedrooms: number | null;
   bathrooms: number | null;
   squareFeet: number | null;
+  acres: number | null;
+  yearBuilt: number | null;
   imageUrl: string | null;
-  listingBrokerage: string | null;
+  imageUrls: string[];
+  publicRemarks: string | null;
   propertyType: string | null;
+  style: string | null;
+  status: string | null;
   listDate: string | null;
   daysOnMarket: number | null;
+  pricePerSquareFoot: number | null;
   score: number;
 }
 
@@ -81,7 +94,9 @@ export interface WebsiteHotListingsPayload {
     selectedListings: number;
     mappedToCity: number;
     withImage: number;
+    withMultipleImages: number;
     withNeighborhood: number;
+    withRemarks: number;
     withBrokerage: number;
   };
 }
