@@ -1,5 +1,3 @@
-import { Innertube } from "youtubei.js";
-
 import type {
   PlaylistVideoSummary,
   YoutubeVideo,
@@ -13,80 +11,36 @@ const REQUEST_HEADERS = {
   "Accept-Language": "en-US,en;q=0.9",
 };
 
-let youtubeClientPromise: Promise<Innertube> | null = null;
-
-async function getYoutubeClient(): Promise<Innertube> {
-  if (!youtubeClientPromise) {
-    youtubeClientPromise = Innertube.create();
-  }
-
-  return youtubeClientPromise;
-}
-
-/**
- * Reads a public YouTube playlist through YouTube.js / Innertube.
- *
- * This intentionally replaces the old ytInitialData HTML parser, since
- * YouTube can return playlist HTML whose internal renderer shape differs
- * between clients/requests.
- */
 export async function fetchPlaylistVideos(
   playlistId: string,
 ): Promise<PlaylistVideoSummary[]> {
-  const youtube = await getYoutubeClient();
-  let playlist = await youtube.getPlaylist(playlistId);
+  const url =
+    `${YOUTUBE_BASE}/playlist?list=${encodeURIComponent(playlistId)}`;
 
-  const results: PlaylistVideoSummary[] = [];
-  const seen = new Set<string>();
-  let page = 1;
+  const html = await fetchText(url);
+  const initialData = extractJsonObject(html, [
+    "var ytInitialData = ",
+    "window[\"ytInitialData\"] = ",
+    "ytInitialData = ",
+  ]);
 
-  while (true) {
-    const videos = Array.from(playlist.videos ?? []);
-
-    for (const video of videos) {
-      const videoId = readVideoId(video);
-      const title = readVideoTitle(video);
-
-      if (!videoId || !title || seen.has(videoId)) {
-        continue;
-      }
-
-      seen.add(videoId);
-      results.push({ videoId, title });
-    }
-
-    console.log(
-      `  Playlist page ${page}: ${videos.length} item(s), ${results.length} unique video(s) total`,
-    );
-
-    if (!playlist.has_continuation) {
-      break;
-    }
-
-    playlist = await playlist.getContinuation();
-    page += 1;
-
-    // Defensive guard in case YouTube ever returns a looping continuation.
-    if (page > 100) {
-      throw new Error(
-        `Playlist ${playlistId} exceeded 100 continuation pages. Aborting to avoid an infinite loop.`,
-      );
-    }
-  }
-
-  if (results.length === 0) {
+  if (!initialData) {
     throw new Error(
-      `Playlist ${playlistId} returned zero videos through YouTube.js. Refusing to publish an empty playlist.`,
+      `Could not find ytInitialData for playlist ${playlistId}.`,
     );
   }
 
-  return results;
+  const videos = collectPlaylistVideos(initialData);
+
+  if (videos.length === 0) {
+    throw new Error(
+      `Playlist ${playlistId} returned zero parsed videos. Refusing to publish an empty playlist.`,
+    );
+  }
+
+  return videos;
 }
 
-/**
- * Keep the existing watch-page metadata fetcher for new videos.
- * Playlist discovery was the failing part; this code path was not.
- */
 export async function fetchVideoDetails(
   videoId: string,
 ): Promise<YoutubeVideo> {
@@ -96,7 +50,7 @@ export async function fetchVideoDetails(
   const playerResponse = extractJsonObject(html, [
     "var ytInitialPlayerResponse = ",
     "ytInitialPlayerResponse = ",
-    'window["ytInitialPlayerResponse"] = ',
+    "window[\"ytInitialPlayerResponse\"] = ",
   ]);
 
   if (!playerResponse) {
@@ -145,93 +99,6 @@ export async function fetchVideoDetails(
   };
 }
 
-function readVideoId(value: unknown): string {
-  const record = asRecord(value);
-
-  if (!record) {
-    return "";
-  }
-
-  return firstNonEmptyString([
-    record.id,
-    record.video_id,
-    record.videoId,
-    record.content_id,
-    record.contentId,
-  ]) ?? "";
-}
-
-function readVideoTitle(value: unknown): string {
-  const record = asRecord(value);
-
-  if (!record) {
-    return "";
-  }
-
-  // Older YouTube.js PlaylistVideo nodes expose title directly.
-  const directTitle = readTextLike(record.title);
-  if (directTitle) {
-    return directTitle;
-  }
-
-  // Newer YouTube.js playlist responses may expose LockupView nodes.
-  // LockupView stores the title under metadata.title.
-  const metadata = asRecord(record.metadata);
-  const metadataTitle = readTextLike(metadata?.title);
-  if (metadataTitle) {
-    return metadataTitle;
-  }
-
-  return "";
-}
-
-function readTextLike(value: unknown): string {
-  if (typeof value === "string") {
-    return value.trim();
-  }
-
-  const record = asRecord(value);
-
-  if (!record) {
-    return "";
-  }
-
-  if (typeof record.text === "string") {
-    return record.text.trim();
-  }
-
-  if (typeof record.simpleText === "string") {
-    return record.simpleText.trim();
-  }
-
-  if (Array.isArray(record.runs)) {
-    const text = record.runs
-      .map((run) => {
-        const runRecord = asRecord(run);
-        return typeof runRecord?.text === "string"
-          ? runRecord.text
-          : "";
-      })
-      .join("")
-      .trim();
-
-    if (text) {
-      return text;
-    }
-  }
-
-  // YouTube.js Text instances implement toString(). Avoid Object's default.
-  const maybeToString = (value as { toString?: () => string }).toString;
-  if (typeof maybeToString === "function") {
-    const rendered = maybeToString.call(value).trim();
-    if (rendered && rendered !== "[object Object]" && rendered !== "N/A") {
-      return rendered;
-    }
-  }
-
-  return "";
-}
-
 async function fetchText(url: string): Promise<string> {
   const response = await fetch(url, {
     headers: REQUEST_HEADERS,
@@ -244,6 +111,86 @@ async function fetchText(url: string): Promise<string> {
   }
 
   return response.text();
+}
+
+function collectPlaylistVideos(root: unknown): PlaylistVideoSummary[] {
+  const results: PlaylistVideoSummary[] = [];
+  const seen = new Set<string>();
+
+  walk(root, (value) => {
+    const record = asRecord(value);
+    const renderer = asRecord(record?.playlistVideoRenderer);
+
+    if (!renderer) {
+      return;
+    }
+
+    const videoId =
+      typeof renderer.videoId === "string"
+        ? renderer.videoId
+        : "";
+
+    const title = readText(renderer.title);
+
+    if (!videoId || !title || seen.has(videoId)) {
+      return;
+    }
+
+    seen.add(videoId);
+    results.push({ videoId, title });
+  });
+
+  return results;
+}
+
+function walk(
+  value: unknown,
+  visitor: (value: unknown) => void,
+): void {
+  visitor(value);
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      walk(item, visitor);
+    }
+    return;
+  }
+
+  const record = asRecord(value);
+
+  if (!record) {
+    return;
+  }
+
+  for (const child of Object.values(record)) {
+    walk(child, visitor);
+  }
+}
+
+function readText(value: unknown): string {
+  const record = asRecord(value);
+
+  if (!record) {
+    return "";
+  }
+
+  if (typeof record.simpleText === "string") {
+    return record.simpleText.trim();
+  }
+
+  if (Array.isArray(record.runs)) {
+    return record.runs
+      .map((run) => {
+        const runRecord = asRecord(run);
+        return typeof runRecord?.text === "string"
+          ? runRecord.text
+          : "";
+      })
+      .join("")
+      .trim();
+  }
+
+  return "";
 }
 
 function extractJsonObject(
@@ -331,19 +278,17 @@ function readBalancedObject(
 }
 
 function normalizePublishedAt(value: string): string {
-  const trimmed = value.trim();
-
-  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
-    return `${trimmed}T00:00:00.000Z`;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return `${value}T00:00:00Z`;
   }
 
-  const parsed = new Date(trimmed);
+  const date = new Date(value);
 
-  if (Number.isNaN(parsed.getTime())) {
+  if (Number.isNaN(date.getTime())) {
     throw new Error(`Invalid YouTube publish date: ${value}`);
   }
 
-  return parsed.toISOString();
+  return date.toISOString();
 }
 
 function firstNonEmptyString(values: unknown[]): string | null {
@@ -356,10 +301,8 @@ function firstNonEmptyString(values: unknown[]): string | null {
   return null;
 }
 
-function asRecord(value: unknown): Record<string, any> | null {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return null;
-  }
-
-  return value as Record<string, any>;
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
 }
