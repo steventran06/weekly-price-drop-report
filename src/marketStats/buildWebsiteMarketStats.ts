@@ -8,6 +8,18 @@ export interface WebsiteMarketStats {
   source: "TMO";
   reportDate: string;
   generatedAt: string;
+
+  /*
+   * Keep per-region dates so the website can show
+   * the correct freshness independently for OR/WA.
+   * Optional for backwards compatibility with older
+   * latest.json files already in the website repo.
+   */
+  regionReportDates?: {
+    oregon?: string;
+    washington?: string;
+  };
+
   markets: MarketStats[];
 }
 
@@ -109,6 +121,22 @@ export function buildWebsiteMarketStats(
     `Washington markets: ${regionCounts.washington}`,
   );
 
+  const regionReportDates = {
+    oregon:
+      getRegionReportDate(
+        normalizedMarkets,
+        "oregon",
+      ) ??
+      undefined,
+
+    washington:
+      getRegionReportDate(
+        normalizedMarkets,
+        "washington",
+      ) ??
+      undefined,
+  };
+
   return {
     source:
       "TMO",
@@ -118,6 +146,8 @@ export function buildWebsiteMarketStats(
     generatedAt:
       new Date()
         .toISOString(),
+
+    regionReportDates,
 
     markets:
       normalizedMarkets,
@@ -823,6 +853,42 @@ function capitalize(
     value.charAt(0).toUpperCase() +
     value.slice(1)
   );
+}
+
+function getRegionReportDate(
+  markets: MarketStats[],
+  region: MarketStatsRegion,
+): string | null {
+  const dates =
+    markets
+      .filter(
+        (market) =>
+          market.sourceRegion ===
+          region,
+      )
+      .map(
+        (market) =>
+          parseLongDate(
+            market.reportDate,
+          ),
+      )
+      .filter(
+        (
+          value,
+        ): value is Date =>
+          value !== null,
+      )
+      .sort(
+        (a, b) =>
+          b.getTime() -
+          a.getTime(),
+      );
+
+  return dates[0]
+    ? formatIsoDate(
+        dates[0],
+      )
+    : null;
 }
 
 function countRegions(

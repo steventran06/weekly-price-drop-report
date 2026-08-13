@@ -5,8 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "weekly": "tsx src/index.ts",
+    "dev": "tsx watch src/weeklyPriceDrops/index.ts",
+    "weekly": "tsx src/weeklyPriceDrops/index.ts",
     "market-stats": "tsx src/marketStats/index.ts",
     "monthly-buyer-report": "tsx src/monthlyBuyerReport/index.ts",
     "auth:export": "tsx src/exportAuth.ts",
@@ -16,7 +16,10 @@
     "clean": "rm -rf dist",
     "events": "tsx src/events/index.ts",
     "new-construction": "tsx src/newConstruction/index.ts",
-    "new-construction:dry-run": "NEW_CONSTRUCTION_DRY_RUN=true tsx src/newConstruction/index.ts"
+    "new-construction:dry-run": "NEW_CONSTRUCTION_DRY_RUN=true tsx src/newConstruction/index.ts",
+    "reddit-alerts": "tsx src/redditAlerts/index.ts",
+    "reddit-alerts:dry-run": "REDDIT_ALERTS_DRY_RUN=true tsx src/redditAlerts/index.ts",
+    "reddit-alerts:test": "tsx src/redditAlerts/testNotification.ts"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.0",

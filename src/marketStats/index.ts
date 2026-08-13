@@ -61,9 +61,43 @@ import {
   buildWebsiteMarketStats,
 } from "./buildWebsiteMarketStats.js";
 
+import {
+  validateRegionalMarketStats,
+} from "./marketStatsHelpers.js";
+
+import {
+  updateWebsiteYoutube,
+} from "../youtube/index.js";
+
+import type {
+  DownloadedMarketStatsPdf,
+} from "./downloadMarketStatsPdf.js";
+
+import type {
+  MarketStatsRegion,
+} from "./extractMarketStats.js";
+
 dotenv.config();
 
 async function main(): Promise<void> {
+  /*
+   * YouTube sync is intentionally independent from the TMO workflow.
+   * If YouTube changes its public page markup or a playlist fetch fails,
+   * market stats should still continue and publish normally.
+   */
+  try {
+    await updateWebsiteYoutube();
+  } catch (error) {
+    console.error(
+      "YouTube sync failed; continuing with market stats without changing youtube.json.",
+    );
+    console.error(
+      error instanceof Error
+        ? error.message
+        : String(error),
+    );
+  }
+
   console.log(
     "================================",
   );
@@ -142,73 +176,19 @@ async function main(): Promise<void> {
     return;
   }
 
-  let oregonStats:
-    ExtractedMarketStats | null =
-    null;
-
-  let washingtonStats:
-    ExtractedMarketStats | null =
-    null;
-
-  if (oregonPdf) {
-    console.log("");
-    console.log(
-      `Oregon PDF: ${oregonPdf.filename}`,
+  const oregonStats =
+    await extractUsableRegionStats(
+      oregonPdf,
+      "oregon",
+      "market-stats-oregon.json",
     );
 
-    oregonStats =
-      await extractMarketStats(
-        oregonPdf.outputPath,
-        {
-          region:
-            "oregon",
-          outputFilename:
-            "market-stats-oregon.json",
-        },
-      );
-
-    if (
-      oregonStats.markets.length ===
-      0
-    ) {
-      console.warn(
-        "No Oregon market rows were extracted.",
-      );
-
-      oregonStats =
-        null;
-    }
-  }
-
-  if (washingtonPdf) {
-    console.log("");
-    console.log(
-      `Washington PDF: ${washingtonPdf.filename}`,
+  const washingtonStats =
+    await extractUsableRegionStats(
+      washingtonPdf,
+      "washington",
+      "market-stats-washington.json",
     );
-
-    washingtonStats =
-      await extractMarketStats(
-        washingtonPdf.outputPath,
-        {
-          region:
-            "washington",
-          outputFilename:
-            "market-stats-washington.json",
-        },
-      );
-
-    if (
-      washingtonStats.markets.length ===
-      0
-    ) {
-      console.warn(
-        "No Washington market rows were extracted.",
-      );
-
-      washingtonStats =
-        null;
-    }
-  }
 
   if (
     !oregonStats &&
@@ -216,7 +196,10 @@ async function main(): Promise<void> {
   ) {
     console.log("");
     console.log(
-      "TMO PDFs were found, but neither report produced market data.",
+      "Neither regional TMO report produced a complete, publishable dataset.",
+    );
+    console.log(
+      "The website latest.json will NOT be changed.",
     );
 
     return;
@@ -261,8 +244,12 @@ async function main(): Promise<void> {
 
   const attachmentFilenames =
     [
-      oregonPdf?.filename,
-      washingtonPdf?.filename,
+      oregonStats
+        ? oregonPdf?.filename
+        : null,
+      washingtonStats
+        ? washingtonPdf?.filename
+        : null,
     ].filter(
       (
         value,
@@ -596,6 +583,99 @@ async function main(): Promise<void> {
   console.log(
     "Market stats workflow completed.",
   );
+}
+
+async function extractUsableRegionStats(
+  pdf: DownloadedMarketStatsPdf | null,
+  region: MarketStatsRegion,
+  outputFilename: string,
+): Promise<ExtractedMarketStats | null> {
+  const label =
+    region ===
+    "oregon"
+      ? "Oregon"
+      : "Washington";
+
+  if (
+    !pdf
+  ) {
+    console.log("");
+    console.log(
+      `${label} TMO report was not found.`,
+    );
+    console.log(
+      `${label} website data will be preserved if it already exists.`,
+    );
+
+    return null;
+  }
+
+  console.log("");
+  console.log(
+    `${label} PDF: ${pdf.filename}`,
+  );
+
+  try {
+    const stats =
+      await extractMarketStats(
+        pdf.outputPath,
+        {
+          region,
+          outputFilename,
+        },
+      );
+
+    const validation =
+      validateRegionalMarketStats(
+        stats,
+        region,
+      );
+
+    if (
+      !validation.usable
+    ) {
+      console.warn(
+        `${label} TMO data is incomplete and will NOT replace existing website data.`,
+      );
+
+      for (
+        const reason
+        of validation.reasons
+      ) {
+        console.warn(
+          `- ${reason}`,
+        );
+      }
+
+      return null;
+    }
+
+    console.log(
+      `${label} markets ready for website publish: ${stats.markets.length}`,
+    );
+
+    return stats;
+  } catch (
+    error
+  ) {
+    console.warn(
+      `${label} TMO parsing failed. Existing ${label} website data will be preserved.`,
+    );
+
+    if (
+      error instanceof Error
+    ) {
+      console.warn(
+        error.message,
+      );
+    } else {
+      console.warn(
+        error,
+      );
+    }
+
+    return null;
+  }
 }
 
 function getPortlandDate(): string {

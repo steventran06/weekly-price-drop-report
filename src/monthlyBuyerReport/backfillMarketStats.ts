@@ -6,6 +6,10 @@ import type {
 } from "googleapis";
 
 import {
+  findPdfAttachmentPart,
+} from "../gmail/helpers.js";
+
+import {
   extractMarketStats,
 } from "../marketStats/extractMarketStats.js";
 
@@ -84,12 +88,23 @@ export async function backfillMarketStats(
         format: "full",
       });
 
-    const attachment =
-      findPdfAttachment(
+    const attachmentPart =
+      findPdfAttachmentPart(
         messageResponse.data.payload,
       );
 
-    if (!attachment) {
+    const attachmentFilename =
+      attachmentPart?.filename?.trim() ??
+      "";
+
+    const attachmentId =
+      attachmentPart?.body?.attachmentId ??
+      null;
+
+    if (
+      !attachmentPart ||
+      !attachmentFilename
+    ) {
       console.warn(
         `No PDF attachment found on ${snapshotDate}.`,
       );
@@ -98,7 +113,7 @@ export async function backfillMarketStats(
     }
 
     if (
-      !attachment.attachmentId
+      !attachmentId
     ) {
       console.warn(
         `PDF attachment on ${snapshotDate} did not include an attachment ID.`,
@@ -108,7 +123,7 @@ export async function backfillMarketStats(
     }
 
     console.log(
-      `Found PDF: ${attachment.filename}`,
+      `Found PDF: ${attachmentFilename}`,
     );
 
     /*
@@ -118,7 +133,7 @@ export async function backfillMarketStats(
       await gmail.users.messages.attachments.get({
         userId: "me",
         messageId: email.id,
-        id: attachment.attachmentId,
+        id: attachmentId,
       });
 
     const encodedData =
@@ -161,7 +176,7 @@ export async function backfillMarketStats(
 
     const safePdfFilename =
       `${snapshotDate}-${sanitizeFilename(
-        attachment.filename,
+        attachmentFilename,
       )}`;
 
     const tempPdfPath =
@@ -212,7 +227,7 @@ export async function backfillMarketStats(
             email.internalDate,
 
           attachmentFilename:
-            attachment.filename,
+            attachmentFilename,
         },
 
         report:
@@ -282,74 +297,6 @@ async function saveHistoricalSnapshot(
   );
 
   return outputPath;
-}
-
-function findPdfAttachment(
-  payload:
-    gmail_v1.Schema$MessagePart |
-    null |
-    undefined,
-): {
-  filename: string;
-  attachmentId: string | null;
-} | null {
-  if (!payload) {
-    return null;
-  }
-
-  /*
-   * The PDF can technically exist directly on
-   * this part.
-   */
-  const filename =
-    payload.filename?.trim() ??
-    "";
-
-  const mimeType =
-    payload.mimeType?.toLowerCase() ??
-    "";
-
-  const isPdf =
-    mimeType ===
-      "application/pdf" ||
-    filename
-      .toLowerCase()
-      .endsWith(
-        ".pdf",
-      );
-
-  if (
-    isPdf &&
-    filename
-  ) {
-    return {
-      filename,
-
-      attachmentId:
-        payload.body?.attachmentId ??
-        null,
-    };
-  }
-
-  /*
-   * Gmail messages often nest attachments
-   * several levels deep.
-   */
-  for (
-    const part
-    of payload.parts ?? []
-  ) {
-    const found =
-      findPdfAttachment(
-        part,
-      );
-
-    if (found) {
-      return found;
-    }
-  }
-
-  return null;
 }
 
 function getSnapshotDate(

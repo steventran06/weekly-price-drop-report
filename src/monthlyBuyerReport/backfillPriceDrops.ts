@@ -3,6 +3,14 @@ import type {
 } from "googleapis";
 
 import {
+  collectMessageText,
+} from "../gmail/helpers.js";
+
+import {
+  selectRmlsReportLink,
+} from "../rmls/emailReportLinks.js";
+
+import {
   fetchRmlsReport,
   saveRawReportHtml,
 } from "../rmls/fetchReport.js";
@@ -81,13 +89,18 @@ export async function backfillPriceDrops(
       });
 
     const messageText =
-      extractMessageText(
+      collectMessageText(
         messageResponse.data.payload,
       );
 
+    /*
+     * PRICE DROP emails use the second unique
+     * RMLS public-report URL for the full report.
+     */
     const reportUrl =
-      findRmlsReportUrl(
+      selectRmlsReportLink(
         messageText,
+        "second",
       );
 
     if (
@@ -212,159 +225,6 @@ export async function backfillPriceDrops(
   );
 
   return savedFiles;
-}
-
-function extractMessageText(
-  payload:
-    gmail_v1.Schema$MessagePart |
-    null |
-    undefined,
-): string {
-  if (
-    !payload
-  ) {
-    return "";
-  }
-
-  const pieces:
-    string[] = [];
-
-  const bodyData =
-    payload.body?.data;
-
-  if (
-    bodyData
-  ) {
-    pieces.push(
-      decodeBase64Url(
-        bodyData,
-      ),
-    );
-  }
-
-  for (
-    const part
-    of payload.parts ??
-    []
-  ) {
-    pieces.push(
-      extractMessageText(
-        part,
-      ),
-    );
-  }
-
-  return pieces
-    .filter(
-      Boolean,
-    )
-    .join(
-      "\n",
-    );
-}
-
-function decodeBase64Url(
-  value: string,
-): string {
-  const normalized =
-    value
-      .replace(
-        /-/g,
-        "+",
-      )
-      .replace(
-        /_/g,
-        "/",
-      );
-
-  return Buffer.from(
-    normalized,
-    "base64",
-  ).toString(
-    "utf8",
-  );
-}
-
-function findRmlsReportUrl(
-  text: string,
-): string | null {
-  if (
-    !text
-  ) {
-    return null;
-  }
-
-  /*
-   * HTML emails commonly encode & as &amp;.
-   */
-  const normalized =
-    text
-      .replace(
-        /&amp;/gi,
-        "&",
-      )
-      .replace(
-        /&#38;/gi,
-        "&",
-      )
-      .replace(
-        /\\u0026/gi,
-        "&",
-      );
-
-  const urls =
-    normalized.match(
-      /https?:\/\/[^\s"'<>]+/gi,
-    ) ?? [];
-
-  if (
-    urls.length ===
-    0
-  ) {
-    return null;
-  }
-
-  /*
-   * Prefer links that clearly look like RMLS
-   * or listing-report links.
-   */
-  const preferred =
-    urls.find(
-      (url) =>
-        /rmls/i.test(
-          url,
-        ),
-    );
-
-  const selected =
-    preferred ??
-    urls.find(
-      (url) =>
-        /report|listing|client|search/i.test(
-          url,
-        ),
-    );
-
-  if (
-    !selected
-  ) {
-    return null;
-  }
-
-  return cleanUrl(
-    selected,
-  );
-}
-
-function cleanUrl(
-  value: string,
-): string {
-  return value
-    .replace(
-      /[),.;]+$/g,
-      "",
-    )
-    .trim();
 }
 
 function getSnapshotDate(

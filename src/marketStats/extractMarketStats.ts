@@ -54,6 +54,14 @@ export interface ExtractedMarketStats {
   sourcePdf: string;
   extractedAt: string;
   markets: MarketStats[];
+
+  /*
+   * Parsing diagnostics are optional for compatibility
+   * with historical snapshots created before this field
+   * existed. New extractions always populate them.
+   */
+  pageCount?: number;
+  failedPages?: number[];
 }
 
 export interface ExtractMarketStatsOptions {
@@ -112,6 +120,9 @@ export async function extractMarketStats(
   const markets:
     MarketStats[] = [];
 
+  const failedPages:
+    number[] = [];
+
   for (
     let pageNumber = 1;
     pageNumber <=
@@ -154,6 +165,10 @@ export async function extractMarketStats(
       );
 
     if (!market) {
+      failedPages.push(
+        pageNumber,
+      );
+
       console.warn(
         `Could not parse market totals on page ${pageNumber}.`,
       );
@@ -182,6 +197,11 @@ export async function extractMarketStats(
       extractedAt:
         new Date()
           .toISOString(),
+
+      pageCount:
+        pdf.numPages,
+
+      failedPages,
 
       markets,
     };
