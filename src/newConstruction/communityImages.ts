@@ -41,6 +41,30 @@ const GENERIC_TOKENS = new Set([
   "the",
 ]);
 
+const REJECTED_IMAGE_PATH_PATTERNS = [
+  /(?:^|[\/_\-.])favicon(?:[\/_\-.]|$)/i,
+  /(?:^|[\/_\-.])apple-touch-icon(?:[\/_\-.]|$)/i,
+  /(?:^|[\/_\-.])site-icon(?:[\/_\-.]|$)/i,
+  /(?:^|[\/_\-.])logo(?:[\/_\-.]|$)/i,
+  /(?:^|[\/_\-.])brandmark(?:[\/_\-.]|$)/i,
+  /(?:^|[\/_\-.])sprite(?:[\/_\-.]|$)/i,
+];
+
+const OUT_OF_SCOPE_IMAGE_LOCATION_TOKENS = new Set([
+  "woodinville",
+  "seattle",
+  "bellevue",
+  "redmond",
+  "bothell",
+  "kirkland",
+  "everett",
+  "tacoma",
+  "olympia",
+  "salem",
+  "bend",
+  "eugene",
+]);
+
 export async function enrichCommunityImages(
   builders: NewConstructionBuilder[],
   communities: NewConstructionCommunity[],
@@ -59,9 +83,15 @@ export async function enrichCommunityImages(
   );
   const concurrency = readInteger(
     process.env.NEW_CONSTRUCTION_IMAGE_CONCURRENCY,
-    6,
+    2,
     1,
-    10,
+    4,
+  );
+  const maxHtmlBytes = readInteger(
+    process.env.NEW_CONSTRUCTION_IMAGE_MAX_BYTES,
+    512_000,
+    64_000,
+    2_000_000,
   );
 
   const uniqueUrls = [
@@ -74,7 +104,10 @@ export async function enrichCommunityImages(
 
   console.log("");
   console.log(
-    `Checking community page images (${uniqueUrls.length} unique official URLs, concurrency ${concurrency})...`,
+    `Checking community page images (` +
+      `${uniqueUrls.length} unique official URLs, ` +
+      `concurrency ${concurrency}, ` +
+      `max HTML ${Math.round(maxHtmlBytes / 1024)} KB/page)...`,
   );
 
   const pageResults = await mapWithConcurrency(
@@ -85,6 +118,7 @@ export async function enrichCommunityImages(
         const metadata = await fetchPageImageMetadata(
           url,
           timeoutMs,
+          maxHtmlBytes,
         );
         return [url, { metadata, failed: false }];
       } catch {
@@ -107,6 +141,13 @@ export async function enrichCommunityImages(
     if (
       builder &&
       page?.metadata?.imageUrl &&
+      isUsableCommunityImageUrl(
+        page.metadata.imageUrl,
+      ) &&
+      !hasConflictingImageLocation(
+        community,
+        page.metadata.imageUrl,
+      ) &&
       isCommunityPageMatch(
         community,
         builder,
@@ -152,6 +193,7 @@ export async function enrichCommunityImages(
 async function fetchPageImageMetadata(
   sourceUrl: string,
   timeoutMs: number,
+  maxHtmlBytes: number,
 ): Promise<PageImageMetadata | null> {
   const controller = new AbortController();
   const timeout = setTimeout(
@@ -183,16 +225,28 @@ async function fetchPageImageMetadata(
       return null;
     }
 
-    const html = await response.text();
-    const $ = load(html);
+    /*
+     * Do not call response.text() here. Some builder sites return very large
+     * HTML payloads, which can exhaust the small Node heap available on a
+     * Render cron instance. The metadata we need lives in <head>, so stop
+     * reading as soon as </head> arrives or the byte limit is reached.
+     */
+    const html = await readHtmlHead(
+      response,
+      maxHtmlBytes,
+    );
 
+    if (!html) {
+      return null;
+    }
+
+    const $ = load(html);
     const title = firstNonEmpty([
       $("meta[property='og:title']").attr("content"),
       $("meta[name='twitter:title']").attr("content"),
       $("title").first().text(),
       $("h1").first().text(),
     ]);
-
     const rawImage = firstNonEmpty([
       $("meta[property='og:image:secure_url']").attr("content"),
       $("meta[property='og:image']").attr("content"),
@@ -200,7 +254,6 @@ async function fetchPageImageMetadata(
       $("meta[name='twitter:image:src']").attr("content"),
       $("link[rel='image_src']").attr("href"),
     ]);
-
     const imageUrl = resolveHttpUrl(
       rawImage,
       response.url || sourceUrl,
@@ -218,6 +271,104 @@ async function fetchPageImageMetadata(
   } finally {
     clearTimeout(timeout);
   }
+}
+
+async function readHtmlHead(
+  response: Response,
+  maxBytes: number,
+): Promise<string> {
+  if (!response.body) {
+    return "";
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let html = "";
+  let bytesRead = 0;
+
+  try {
+    while (bytesRead < maxBytes) {
+      const { done, value } = await reader.read();
+
+      if (done) {
+        break;
+      }
+
+      if (!value || value.byteLength === 0) {
+        continue;
+      }
+
+      const remaining = maxBytes - bytesRead;
+      const chunk =
+        value.byteLength > remaining
+          ? value.subarray(0, remaining)
+          : value;
+
+      bytesRead += chunk.byteLength;
+      html += decoder.decode(chunk, {
+        stream: true,
+      });
+
+      const headEnd = html
+        .toLowerCase()
+        .indexOf("</head>");
+
+      if (headEnd !== -1) {
+        html = html.slice(
+          0,
+          headEnd + "</head>".length,
+        );
+        break;
+      }
+    }
+
+    html += decoder.decode();
+    return html;
+  } finally {
+    /*
+     * Stop downloading the remainder of the page after metadata has been
+     * collected. Ignore cancellation errors for already-completed responses.
+     */
+    try {
+      await reader.cancel();
+    } catch {
+      // No-op.
+    }
+  }
+}
+
+function isUsableCommunityImageUrl(
+  value: string,
+): boolean {
+  try {
+    const url = new URL(value);
+    const path = `${url.pathname}${url.search}`;
+
+    return !REJECTED_IMAGE_PATH_PATTERNS.some(
+      (pattern) => pattern.test(path),
+    );
+  } catch {
+    return false;
+  }
+}
+
+function hasConflictingImageLocation(
+  community: NewConstructionCommunity,
+  imageUrl: string,
+): boolean {
+  const imageTokens = new Set(tokens(safeUrlPath(imageUrl)));
+  const communityCityTokens = new Set(tokens(community.city));
+
+  for (const token of OUT_OF_SCOPE_IMAGE_LOCATION_TOKENS) {
+    if (
+      imageTokens.has(token) &&
+      !communityCityTokens.has(token)
+    ) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function isCommunityPageMatch(

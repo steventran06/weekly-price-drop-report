@@ -19,7 +19,9 @@
     "new-construction:dry-run": "NEW_CONSTRUCTION_DRY_RUN=true tsx src/newConstruction/index.ts",
     "reddit-alerts": "tsx src/redditAlerts/index.ts",
     "reddit-alerts:dry-run": "REDDIT_ALERTS_DRY_RUN=true tsx src/redditAlerts/index.ts",
-    "reddit-alerts:test": "tsx src/redditAlerts/testNotification.ts"
+    "reddit-alerts:test": "tsx src/redditAlerts/testNotification.ts",
+    "reddit-alerts:api-test": "tsx src/redditAlerts/testRedditApi.ts",
+    "reddit-alerts:filter-test": "tsx src/redditAlerts/testFilters.ts"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.0",

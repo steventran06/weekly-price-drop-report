@@ -14,11 +14,9 @@
     "failed": false,
     "error": "",
     "notes": [
-      "Research performed on tollbrothers.com only (single pass).",
-      "Verified community pages exist for all five supplied community names; captured readily-available facts: starting prices, quick-move-in counts, model/sales addresses, and prominent descriptive highlights when present on the official pages.",
-      "No builder-wide current incentives (concrete offers) were found on the Portland/Vancouver community pages during this single pass. Incentive list left empty.",
-      "Where numeric details (bed/bath counts, sq ft) were explicitly listed on the community or design pages, those values were recorded. Many optional fields (exact HOA, sales hours, floor plan counts) were not plainly published on the community landing pages and thus left blank per instructions.",
-      "All sourceUrl and quickMoveInUrl values are on tollbrothers.com and were taken directly from the official community pages and quick-move listings."
+      "One-pass research on official Toll Brothers site (tollbrothers.com) only, completed 2026-08-17.",
+      "Captured pricing, quick-move counts, addresses, and high-level product ranges where clearly published on each community page. Left numeric fields blank when not readily present on the official page to avoid guessing.",
+      "No builder-wide promotions/incentives were obvious on the community pages during this pass; none were captured. If you want me to hunt for regional or national promotions on tollbrothers.com promotions or financing pages, I can do a focused pass."
     ]
   },
   {
@@ -27,16 +25,20 @@
     "previousCount": 13,
     "finalCount": 13,
     "kept": 0,
-    "updated": 0,
+    "updated": 4,
     "removed": 0,
-    "uncertain": 13,
+    "uncertain": 9,
     "added": 0,
-    "builderIncentiveCount": 0,
+    "builderIncentiveCount": 3,
     "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: Request timed out.",
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "One practical research pass performed using only holthomes.com (per instructions).",
+      "Confirmed community-specific pages for Willow Ridge, Laurel Woods, The Glades at Green Mountain, and Pleasant Valley Villages and captured readily available facts (visitor hours, model addresses, floor plan ranges, example available-home prices shown on community pages).",
+      "Several supplied existing communities did not have clear dedicated community pages discovered in this single pass (e.g., Paradise Pointe, Scouters Mountain, Reed's Crossing, Greely Farms, Middlebrook, Harmony Heights, Heartwood, Ramble Creek, Stones Throw). They were omitted from verifiedExistingNames because no explicit current community page on holthomes.com was found within this one-pass check.",
+      "Captured builder-level incentives that are explicitly published on holthomes.com (finance offer, Imagine Happier Bonus, Community Heroes Program). Individual community-specific incentives were not found in this pass beyond the builder-level offers.",
+      "All sourceUrl and incentive URLs point to holthomes.com per source restriction. Missing numeric fields were left null or empty strings rather than inferred."
     ]
   },
   {
@@ -45,16 +47,17 @@
     "previousCount": 9,
     "finalCount": 9,
     "kept": 0,
-    "updated": 0,
+    "updated": 3,
     "removed": 0,
-    "uncertain": 9,
+    "uncertain": 6,
     "added": 0,
-    "builderIncentiveCount": 0,
-    "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: Request timed out.",
+    "builderIncentiveCount": 1,
+    "communityIncentiveCount": 1,
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "Research pass used official David Weekley Homes Portland market and community pages only (davidweekleyhomes.com).",
+      "Confirmed community pages and one builder promo page on official domain. Did one practical pass; several supplied existingCommunities were not re-verified on this pass and therefore were omitted from verifiedExistingNames/communityUpdates."
     ]
   },
   {
@@ -62,17 +65,19 @@
     "builderName": "Stone Bridge Homes NW",
     "previousCount": 8,
     "finalCount": 8,
-    "kept": 0,
-    "updated": 0,
+    "kept": 1,
+    "updated": 7,
     "removed": 0,
-    "uncertain": 8,
+    "uncertain": 0,
     "added": 0,
-    "builderIncentiveCount": 0,
-    "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: Request timed out.",
+    "builderIncentiveCount": 1,
+    "communityIncentiveCount": 1,
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "Search limited to official Stone Bridge Homes NW domain per instructions; one-pass research captured clear community pages for all supplied existing names except 'Ridgecrest at Frog Pond' which did not have a distinct dedicated community page on the site (input source was the builder's Portland directory root).",
+      "Builder-level promotion(s) explicitly advertise up to $35,000 credit for Portland-market presales/available homes; specific contract/close deadlines are published on the promotion landing page (promotion pages linked).",
+      "Where community pages list model addresses, hours, price ranges, quick-move counts, or floor plan counts those fields were copied into communityUpdates. If a useful fact was not readily present on the official community page, the field was left null/empty per instructions."
     ]
   },
   {
@@ -90,10 +95,9 @@
     "failed": false,
     "error": "",
     "notes": [
-      "All pages and facts were taken from newtraditionhomes.com community pages in the Vancouver-area directory (single research pass).",
-      "I captured only facts clearly shown on the builder's official community pages. If a field is blank/null, the official page did not present that data in an obvious way during this pass.",
-      "A Walker Field community promotion banner is present on the page but the banner text did not display a clear concrete offer during this single pass, so no incentive was recorded (per instructions).",
-      "verifiedAt for incentives would be 2026-08-10 (no incentives added)."
+      "Single-pass research performed on newtraditionhomes.com (Vancouver-area community directory and individual community pages).",
+      "Primary pages used: community-specific pages and Vancouver-area directory overview on newtraditionhomes.com.",
+      "VerifiedAt for incentives would be 2026-08-17; no current concrete builder-wide incentives or promotions were clearly posted on the official site during this pass."
     ]
   },
   {
@@ -111,9 +115,9 @@
     "failed": false,
     "error": "",
     "notes": [
-      "Single-pass research performed on official Pahlisch Homes site (pahlischhomes.com).",
-      "Primary community pages used: /communities/butternut-creek/ and /communities/rosedale-parks/ (captured 2026-08-10).",
-      "Captured visible starting prices, model addresses, sales hours, amenities, and example square-footage/bed/bath ranges as shown on each community page. Did not attempt exhaustive verification of floor plan counts, HOA fees, or community-specific incentives because they were not clearly summarized on the pages during this single pass."
+      "Verified Butternut Creek community page and model details on official site. Source: https://pahlischhomes.com/communities/butternut-creek/ (crawled).",
+      "Verified Rosedale Parks community page and model/move-in listings on official site. Source: https://pahlischhomes.com/communities/rosedale-parks/ (crawled).",
+      "Pahlisch 'Opportunities' / promotions page exists but the NW Oregon offer shown on that page contained an explicit expiration of 2026-01-31; no clear current, site-wide incentive with a future expiration was found on the official domain during this single-pass research. Source: https://pahlischhomes.com/opportunities/."
     ]
   },
   {
@@ -122,52 +126,85 @@
     "previousCount": 9,
     "finalCount": 9,
     "kept": 0,
-    "updated": 0,
+    "updated": 9,
     "removed": 0,
-    "uncertain": 9,
+    "uncertain": 0,
     "added": 0,
     "builderIncentiveCount": 0,
     "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: Request timed out.",
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "All searches and source URLs limited to pacificlifestylehomes.com as requested.",
+      "Primary pages used for community verification: community landing pages and community-specific PDFs/available-home pages on the official site.",
+      "No clear current builder-wide incentives/specials were found on the official domain during this single pass; therefore builderIncentives left empty.",
+      "Quick-move / available homes lists were used as supporting evidence for several communities (PDF and available-homes pages).",
+      "VerifiedAt for incentives would be 2026-08-17 if any had been captured."
     ]
   },
   {
     "builderId": "lennar",
     "builderName": "Lennar",
     "previousCount": 0,
-    "finalCount": 0,
+    "finalCount": 2,
     "kept": 0,
     "updated": 0,
     "removed": 0,
     "uncertain": 0,
-    "added": 0,
+    "added": 2,
     "builderIncentiveCount": 0,
     "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: Lennar research returned unknown verified community: Ramble Creek",
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "One pass search of Lennar official site (lennar.com) for Portland Metro / Vancouver area returned active community pages for Ramble Creek and Heartwood (both in Vancouver, WA).",
+      "Captured site-listed pricing, floorplan counts, available-home counts, addresses, hours, and on-page amenities/highlights where explicitly shown. Did not find community-specific current incentives on the community pages during this single pass; no builder-wide promotions were captured because none were readily visible on the allowed domain in this pass.",
+      "All source URLs are on lennar.com and were used as the primary community pages.",
+      "Verification date: 2026-08-17. Source pages accessed on lennar.com for each community.",
+      "Ramble Creek page explicitly states 'Actively selling' and shows multiple available homesites and plans; used as primary supporting URL.",
+      "Heartwood page explicitly states 'Actively selling' and shows multiple available homesites and plans; used as primary supporting URL.",
+      "Targeted verification confirmed ACTIVE new community: Ramble Creek",
+      "Targeted verification confirmed ACTIVE new community: Heartwood"
     ]
   },
   {
     "builderId": "risewell-homes",
     "builderName": "Risewell Homes",
     "previousCount": 0,
-    "finalCount": 0,
+    "finalCount": 1,
     "kept": 0,
     "updated": 0,
     "removed": 0,
     "uncertain": 0,
-    "added": 0,
-    "builderIncentiveCount": 0,
-    "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: Risewell Homes research returned an unknown community update: Kingston Terrace",
+    "added": 1,
+    "builderIncentiveCount": 1,
+    "communityIncentiveCount": 1,
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "Single pass research performed on risewellhomes.com/finder/oregon and the Vineyard masterplan page. Confirmed multiple masterplans and neighborhoods on the Oregon finder; captured a detailed update for Vineyard where neighborhood-level pricing, available homes (13 featured), address, and a rate-buydown banner were clearly presented.",
+      "Only official risewellhomes.com pages were used. Other communities listed on the Oregon finder were recorded in verifiedExistingNames but not expanded into full communityUpdates to respect the single-pass, budget-conscious instruction.",
+      "Primary source: Risewell Homes masterplan page for Vineyard (https://risewellhomes.com/oregon/portland-new-homes/masterplans/vineyard) — page displays 'Now Selling' and available homes (13 featured).",
+      "Supporting neighborhood pages checked: The Residences, The Reserve, The Townes (each under risewellhomes.com/oregon/portland-new-homes/neighborhoods) which show current listings and plans.",
+      "Verification date: 2026-08-17. Search restricted to risewellhomes.com per instructions.",
+      "Targeted verification confirmed ACTIVE new community: Vineyard",
+      "Ignored unknown name-only verification: Hazelbrook",
+      "Ignored unknown name-only verification: Vineyard",
+      "Ignored unknown name-only verification: Elevon",
+      "Ignored unknown name-only verification: Kingston Terrace",
+      "Ignored unknown name-only verification: The Rows at Kingston Terrace",
+      "Ignored unknown name-only verification: The Centre at Kingston Terrace",
+      "Ignored unknown name-only verification: The Reserve at The Vineyard",
+      "Ignored unknown name-only verification: The Residences at The Vineyard",
+      "Ignored unknown name-only verification: The Townes at The Vineyard",
+      "Ignored unknown name-only verification: The Centre at The Vineyard",
+      "Ignored unknown name-only verification: The Centre at Elevon",
+      "Ignored unknown name-only verification: The Rows at Elevon",
+      "Ignored unknown name-only verification: The Residences at Elevon",
+      "Ignored unknown name-only verification: The Rows at Hazelbrook",
+      "Ignored unknown name-only verification: The Cottages at Hazelbrook",
+      "Ignored unknown name-only verification: The Residences at Hazelbrook",
+      "Reclassified unknown community update as NEW: Vineyard"
     ]
   },
   {
@@ -183,7 +220,7 @@
     "builderIncentiveCount": 0,
     "communityIncentiveCount": 0,
     "failed": true,
-    "error": "Error: Taylor Morrison research returned unknown verified community: Ridgeline at Bethany",
+    "error": "Error: Request timed out.",
     "notes": [
       "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
     ]
@@ -192,18 +229,29 @@
     "builderId": "dr-horton",
     "builderName": "D.R. Horton",
     "previousCount": 0,
-    "finalCount": 0,
+    "finalCount": 5,
     "kept": 0,
     "updated": 0,
     "removed": 0,
     "uncertain": 0,
-    "added": 0,
-    "builderIncentiveCount": 0,
+    "added": 5,
+    "builderIncentiveCount": 1,
     "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: D.R. Horton research returned unknown verified community: Kevanna Park Meadows",
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "One practical pass on drhorton.com (allowed domain) performed. Community landing pages for multiple Portland-metro and SW Washington locations were located (Vancouver, Gresham, Hillsboro).",
+      "Where community pages included explicit product summaries (example: Kevanna Park Meadows), those concise facts were copied into the details.text fields. Many numeric fields (pricing, exact square-foot ranges, floor plan counts, quick-move counts, HOA amounts) were not readily presented on the top-level pages during this single pass, so numeric fields left null per instructions.",
+      "A site-level 'Red Tag Event' promotion is present on the official site; it was captured as a builder-wide incentive without a specific dollar amount or expiration shown on the main site during this pass.",
+      "Attempting to open the supplied builder 'greater-portland' landing URL returned a 403 when opened directly during this pass; community-specific pages were discovered via the site's internal search/index and used as sourceUrl values.",
+      "All searches and supporting pages were retrieved exclusively from drhorton.com as required.",
+      "Each community has at least one current 'available home' (QMI) or community marketing page on drhorton.com showing active marketing (Now ready / New homes / request info / tour options).",
+      "No regional directory pages explicitly reported any of these communities as Sold Out or Closed; available-home detail pages on the official site were used as the primary supporting evidence per SOURCE RULES.",
+      "Targeted verification confirmed ACTIVE new community: Kevanna Park Meadows",
+      "Targeted verification confirmed ACTIVE new community: Cottages at 66th",
+      "Targeted verification confirmed ACTIVE new community: The Vineyards at Blue Pearl",
+      "Targeted verification confirmed ACTIVE new community: Gordon Creek Pointe",
+      "Targeted verification confirmed ACTIVE new community: Terrace at Pleasant Valley"
     ]
   },
   {
@@ -221,79 +269,139 @@
     "failed": false,
     "error": "",
     "notes": [
-      "Attempted a single official-site research pass on riversidehome.com (required domain). The site returned HTTP 403 / access forbidden when fetching the builder homepage and directory pages, so I could not reach any community pages, promotions, or community-specific details. No community pages or incentives could be verified because the official domain was inaccessible during this pass (fetch error: 403 Forbidden). If you want, I can try again now or you can provide an alternate official URL or any community page URLs from Riverside Homes to inspect."
+      "Single practical web research pass attempted on the official allowed domain (riversidehome.com) on 2026-08-17.",
+      "Attempts to search the site and open the root URL returned no indexable search results via the allowed-domain search and the direct open call returned HTTP 403 Forbidden, preventing retrieval of pages on the allowed domain. (web.run open returned 403).",
+      "Because the SOURCE RULES require using only the official domain (riversidehome.com) and a single practical research pass, I did not attempt other domains or additional searches. No community pages, incentives, or current community directory entries could be confirmed from the allowed site during this pass.",
+      "If you want, I can (a) retry the allowed domain to see if access issues resolve, or (b) with your permission expand allowed domains (noting this would violate the SOURCE RULES) to locate Riverside Homes communities and incentives for Portland-Vancouver area."
     ]
   },
   {
     "builderId": "noyes-development",
     "builderName": "Noyes Development",
     "previousCount": 0,
-    "finalCount": 0,
+    "finalCount": 6,
     "kept": 0,
     "updated": 0,
     "removed": 0,
     "uncertain": 0,
-    "added": 0,
+    "added": 6,
     "builderIncentiveCount": 0,
     "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: Noyes Development research returned unknown verified community: Creekside at Westview",
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "One practical pass used the builder’s official site (our-communities / find-your-home / news pages). The site directory lists Timber Ridge Estates, Finnley Woods, Greenway Grove, Creekview Ridge, Highlands at North Bethany, Creekside at Westview, and Summit Meadow Estates. Highlands at North Bethany has an official past-communities page noting it is sold out (included in removals).",
+      "Creekside at Westview is called out on the site in multiple places (directory, news about the Solaris at Creekside award-winning home, and available-lots list); the site references model/lot numbers (e.g., Lot 29 model) and multiple available lots shown on the builder’s Available Homes list. No site-wide active incentives or concrete dollar/rate offers were clearly posted on the official domain during this single-pass review.",
+      "All source URLs in this report are on the official domain noyesdevelopment.com. VerifiedAt for incentives would be 2026-08-17 if any were present.",
+      "Searches were restricted to the official domain noyesdevelopment.com per instructions.",
+      "Primary supporting pages: the site-wide communities directory (Our Communities / Find a Home), the Virtual Tours page (shows 3‑D tours for Creekside, Creekview, and Timber Ridge), and the dedicated Greenway Grove community page.",
+      "No pages on noyesdevelopment.com explicitly indicated 'Sold Out', 'Closed', or 'No Longer Selling' for any of the proposed communities; evidence on the official site shows current marketing and available/virtual listings for each community.",
+      "Decisions err on the conservative side but each community above has current site evidence (directory listing, available homes, virtual tour, or dedicated community landing) consistent with an 'active' status as of 2026-08-17.",
+      "Targeted verification confirmed ACTIVE new community: Creekside at Westview",
+      "Targeted verification confirmed ACTIVE new community: Timber Ridge Estates",
+      "Targeted verification confirmed ACTIVE new community: Finnley Woods",
+      "Targeted verification confirmed ACTIVE new community: Greenway Grove",
+      "Targeted verification confirmed ACTIVE new community: Creekview Ridge",
+      "Targeted verification confirmed ACTIVE new community: Summit Meadow Estates",
+      "Ignored unknown name-only verification: Timber Ridge Estates",
+      "Ignored unknown name-only verification: Finnley Woods",
+      "Ignored unknown name-only verification: Greenway Grove",
+      "Ignored unknown name-only verification: Creekview Ridge",
+      "Ignored unknown name-only verification: Highlands at North Bethany",
+      "Ignored unknown name-only verification: Creekside at Westview",
+      "Ignored unknown name-only verification: Summit Meadow Estates",
+      "Reclassified unknown community update as NEW: Creekside at Westview",
+      "Reclassified unknown community update as NEW: Timber Ridge Estates",
+      "Reclassified unknown community update as NEW: Finnley Woods",
+      "Reclassified unknown community update as NEW: Greenway Grove"
     ]
   },
   {
     "builderId": "lgi-homes",
     "builderName": "LGI Homes",
     "previousCount": 0,
-    "finalCount": 0,
+    "finalCount": 3,
     "kept": 0,
     "updated": 0,
     "removed": 0,
     "uncertain": 0,
-    "added": 0,
+    "added": 3,
     "builderIncentiveCount": 0,
-    "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: LGI Homes research returned an unknown community update: Sunset Village",
+    "communityIncentiveCount": 3,
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "One-pass research using only the official LGI Homes site (lgihomes.com).",
+      "Added three current communities with official community pages in the Portland/Vancouver market: Copper Heights (Milwaukie), Beverly (Battle Ground), Park Meadow at Walnut Grove (Vancouver).",
+      "Captured obvious, community-listed facts (starting price, square-footage ranges, bedroom ranges, floor plan counts, office address/hours, community amenities).",
+      "Each community page lists 'builder-paid closing costs' in features; recorded as community-specific closing-cost incentives where explicitly stated on the official community page.",
+      "Did not add Woodburn (Dove Landing) because Woodburn is outside the allowed city list for this assignment. Did not chase additional incentives or quick-move-in counts beyond what was readily visible on community pages.",
+      "All evidence sources are pages on lgihomes.com (builder's official site) for the Portland market; each community page includes floor plans, pricing or 'Move‑in Ready' language and contact/request‑info options.",
+      "Copper Heights pages reference Terrata Homes (LGI’s premium brand) and show multiple Move‑in Ready floor plans and Milwaukie address.",
+      "Beverly community page displays price starting point, contact phone/hours and floor plan detail pages (e.g., Bachelor II), supporting active status.",
+      "Park Meadow at Walnut Grove community page lists 6 floor plans with pricing and availability ranges, supporting active status.",
+      "Search and verification limited strictly to lgihomes.com per instructions; investor/press releases referencing openings were noted but the community pages above were used as primary evidence.",
+      "Targeted verification confirmed ACTIVE new community: Copper Heights",
+      "Targeted verification confirmed ACTIVE new community: Beverly",
+      "Targeted verification confirmed ACTIVE new community: Park Meadow at Walnut Grove"
     ]
   },
   {
     "builderId": "chad-e-davis",
     "builderName": "Chad E. Davis Construction",
     "previousCount": 0,
-    "finalCount": 0,
+    "finalCount": 2,
     "kept": 0,
     "updated": 0,
     "removed": 0,
     "uncertain": 0,
-    "added": 0,
+    "added": 2,
     "builderIncentiveCount": 0,
     "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: Chad E. Davis Construction research returned unknown verified community: Davis Estates",
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "Single official source used: builder's Current Communities / Lots directory page. The directory lists multiple communities but links on that page point to external partner/agent websites rather than dedicated pages on chadedavisconstruction.com.",
+      "Where a dedicated community page on the official domain was not available, the lots directory page (https://www.chadedavisconstruction.com/lots) was used as the authoritative source URL per instruction to use only the builder domain.",
+      "Only communities within the Portland Metro / SW Washington scope were added (Forest Grove, Hillsboro, Yamhill). Other listed communities on the directory are outside the required geographic scope and were omitted.",
+      "No explicit, current builder promotions or incentives were found on the allowed domain during this single-pass search.",
+      "All supporting evidence was taken from the builder's official 'Current Communities / Lots' page on chadedavisconstruction.com (Lots page lists both Davis Estates and Hamby Park). ([chadedavisconstruction.com](https://www.chadedavisconstruction.com/lots?utm_source=openai))",
+      "Hamby Park is noted on the page with 'Home Building Starting Summer 2026', supporting a 'Coming Soon' / actively marketed designation. ([chadedavisconstruction.com](https://www.chadedavisconstruction.com/lots?utm_source=openai))",
+      "Davis Estates is listed under Forest Grove with 'New Homes Starting in the $400,000s' on the same page, supporting 'Now Selling' / active designation. ([chadedavisconstruction.com](https://www.chadedavisconstruction.com/lots?utm_source=openai))",
+      "Targeted verification confirmed ACTIVE new community: Davis Estates",
+      "Targeted verification confirmed ACTIVE new community: Hamby Park",
+      "Ignored out-of-scope new community: Yamhill Park Meadows — Yamhill"
     ]
   },
   {
     "builderId": "manor-homes",
     "builderName": "Manor Homes",
     "previousCount": 0,
-    "finalCount": 0,
+    "finalCount": 3,
     "kept": 0,
     "updated": 0,
     "removed": 0,
     "uncertain": 0,
-    "added": 0,
+    "added": 3,
     "builderIncentiveCount": 0,
     "communityIncentiveCount": 0,
-    "failed": true,
-    "error": "Error: Manor Homes research returned unknown verified community: Mill Creek Terrace",
+    "failed": false,
+    "error": "",
     "notes": [
-      "Research call failed or timed out. Basic directory records were preserved. Volatile pricing, quick-move-in, HOA, sales-hour and incentive data were not carried forward as current facts."
+      "Single pass research on mymanorhome.com (official builder site). Identified community entries on the builder homepage and community-specific pages. Captured only facts clearly shown on the official domain; left numeric fields null when not explicitly published on site. Did not search outside mymanorhome.com per instructions.",
+      "Searches and evidence were restricted to the builder’s official domain (mymanorhome.com) per instructions.",
+      "Main site community directory lists Mill Creek Terrace, Prairie Glen, and Paradise Pointe; individual community/floor-plan pages show active marketing language and contact information (see cited pages).",
+      "Decision rule: marked active because official pages show current marketing (Now Selling / contact-for-pricing / limited-release/final chapters language).",
+      "Targeted verification confirmed ACTIVE new community: Paradise Pointe",
+      "Targeted verification confirmed ACTIVE new community: Prairie Glen",
+      "Targeted verification confirmed ACTIVE new community: Mill Creek Terrace",
+      "Ignored unknown name-only verification: Mill Creek Terrace",
+      "Ignored unknown name-only verification: Prairie Glen",
+      "Ignored unknown name-only verification: Garden Grove",
+      "Ignored unknown name-only verification: Paradise Pointe",
+      "Reclassified unknown community update as NEW: Paradise Pointe",
+      "Reclassified unknown community update as NEW: Prairie Glen",
+      "Reclassified unknown community update as NEW: Mill Creek Terrace"
     ]
   }
 ]

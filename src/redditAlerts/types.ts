@@ -1,19 +1,17 @@
-import type {
-  CityProfile,
-} from "./cities.js";
+import type { CityProfile } from "./cities.js";
 
-export type FeedKind =
+export type SourceKind =
   | "local"
   | "relocation"
   | "living"
-  | "buyer"
-  | "global";
+  | "buyer";
 
-export type RedditFeed = {
+export type RedditSource = {
   id: string;
   label: string;
-  url: string;
-  kind: FeedKind;
+  subreddits: readonly string[];
+  kind: SourceKind;
+  limit: number;
 };
 
 export type RedditPost = {
@@ -24,8 +22,8 @@ export type RedditPost = {
   author: string | null;
   publishedAt: Date;
   body: string;
-  feedIds: string[];
-  feedKinds: FeedKind[];
+  sourceIds: string[];
+  sourceKinds: SourceKind[];
 };
 
 export type RelevanceResult = {

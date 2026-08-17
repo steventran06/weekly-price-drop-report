@@ -107,16 +107,65 @@ export function validateFinalNewConstruction(
     35,
   );
 
-  const oldCount = previous.communities.length;
-  const newCount = next.communities.length;
-  const changePercent =
-    oldCount === 0
-      ? 0
-      : Math.abs(newCount - oldCount) / oldCount * 100;
+  const maxInitialBackfillPerBuilder = readInteger(
+    process.env.NEW_CONSTRUCTION_MAX_INITIAL_BACKFILL_PER_BUILDER,
+    10,
+  );
+  const maxInitialBackfillTotal = readInteger(
+    process.env.NEW_CONSTRUCTION_MAX_INITIAL_BACKFILL_TOTAL,
+    40,
+  );
 
-  if (changePercent > maxChangePercent) {
+  const initialBackfills = audits.filter(
+    (audit) => !audit.failed && audit.previousCount === 0,
+  );
+
+  for (const audit of initialBackfills) {
+    if (audit.added > maxInitialBackfillPerBuilder) {
+      throw new Error(
+        `${audit.builderName} initial backfill proposed ${audit.added} communities, exceeding the ${maxInitialBackfillPerBuilder}-community per-builder safety threshold. Refusing to publish.`,
+      );
+    }
+  }
+
+  const initialBackfillAdded = initialBackfills.reduce(
+    (sum, audit) => sum + audit.added,
+    0,
+  );
+
+  if (initialBackfillAdded > maxInitialBackfillTotal) {
     throw new Error(
-      `New-construction community count changed ${changePercent.toFixed(1)}% (${oldCount} -> ${newCount}), exceeding the ${maxChangePercent}% safety threshold. Refusing to publish.`,
+      `Initial builder backfills proposed ${initialBackfillAdded} communities, exceeding the ${maxInitialBackfillTotal}-community total safety threshold. Refusing to publish.`,
+    );
+  }
+
+  /*
+   * The global dataset may grow sharply when a tracked builder has zero
+   * previously stored communities and is populated for the first time. Do not
+   * treat those bounded initial backfills as runaway growth. Keep the original
+   * percentage guard for builders that already had communities in the feed.
+   */
+  const establishedAudits = audits.filter(
+    (audit) => audit.previousCount > 0,
+  );
+  const establishedOldCount = establishedAudits.reduce(
+    (sum, audit) => sum + audit.previousCount,
+    0,
+  );
+  const establishedNewCount = establishedAudits.reduce(
+    (sum, audit) => sum + audit.finalCount,
+    0,
+  );
+  const establishedChangePercent =
+    establishedOldCount === 0
+      ? 0
+      : Math.abs(establishedNewCount - establishedOldCount) /
+        establishedOldCount *
+        100;
+
+  if (establishedChangePercent > maxChangePercent) {
+    throw new Error(
+      `Established-builder community count changed ${establishedChangePercent.toFixed(1)}% (${establishedOldCount} -> ${establishedNewCount}), exceeding the ${maxChangePercent}% safety threshold. Refusing to publish.`,
     );
   }
 

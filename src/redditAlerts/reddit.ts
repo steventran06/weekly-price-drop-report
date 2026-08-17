@@ -1,130 +1,142 @@
-import * as cheerio from "cheerio";
-
 import type {
-  RedditFeed,
   RedditPost,
+  RedditSource,
 } from "./types.js";
 
-const USER_AGENT =
-  "weekly-price-drop-report/1.0 reddit-alerts (Portland Metro relocation monitoring)";
+export type RedditApiConfig = {
+  clientId: string;
+  clientSecret: string;
+  userAgent: string;
+};
 
-export async function fetchRedditFeed(
-  feed: RedditFeed,
-): Promise<RedditPost[]> {
-  const maxRetries = parsePositiveInteger(
-    process.env.REDDIT_MAX_RETRIES,
-    1,
+export type RedditApiClient = {
+  accessToken: string;
+  userAgent: string;
+};
+
+type RedditTokenResponse = {
+  access_token?: string;
+  token_type?: string;
+  expires_in?: number;
+  scope?: string;
+  error?: string;
+};
+
+type RedditListingResponse = {
+  data?: {
+    children?: Array<{
+      kind?: string;
+      data?: RedditListingPost;
+    }>;
+  };
+};
+
+type RedditListingPost = {
+  name?: string;
+  id?: string;
+  title?: string;
+  selftext?: string;
+  subreddit?: string;
+  author?: string;
+  created_utc?: number;
+  permalink?: string;
+};
+
+const TOKEN_URL = "https://www.reddit.com/api/v1/access_token";
+const API_BASE_URL = "https://oauth.reddit.com";
+const REQUEST_TIMEOUT_MS = 15_000;
+
+export async function createRedditApiClient(
+  config: RedditApiConfig,
+): Promise<RedditApiClient> {
+  const credentials = Buffer.from(
+    `${config.clientId}:${config.clientSecret}`,
+    "utf8",
+  ).toString("base64");
+
+  const response = await fetchWithTimeout(
+    TOKEN_URL,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${credentials}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": config.userAgent,
+      },
+      body: new URLSearchParams({
+        grant_type: "client_credentials",
+      }),
+    },
+    REQUEST_TIMEOUT_MS,
   );
 
-  for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
-    const response = await fetchWithTimeout(
-      feed.url,
-      {
-        headers: {
-          Accept:
-            "application/atom+xml, application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8",
-          "User-Agent": USER_AGENT,
-        },
-      },
-      15_000,
-    );
+  const raw = await response.text();
+  const payload = parseJson<RedditTokenResponse>(raw);
 
-    if (response.status === 429 && attempt < maxRetries) {
-      const retryDelayMs = getRetryDelayMs(
-        response.headers.get("retry-after"),
-      );
+  if (!response.ok || !payload?.access_token) {
+    const detail =
+      payload?.error ||
+      raw.slice(0, 300) ||
+      response.statusText;
 
-      console.warn(
-        `  Reddit rate limited ${feed.id}; retrying in ${Math.round(retryDelayMs / 1000)}s...`,
-      );
-
-      await sleep(retryDelayMs);
-      continue;
-    }
-
-    if (!response.ok) {
-      const body = await response.text();
-
-      throw new Error(
-        `Reddit RSS request failed for ${feed.id} (${response.status}): ${body.slice(0, 300)}`,
-      );
-    }
-
-    const xml = await response.text();
-
-    return parseRedditAtomFeed(
-      xml,
-      feed,
+    throw new Error(
+      `Reddit OAuth token request failed (${response.status}): ${detail}`,
     );
   }
 
-  return [];
+  return {
+    accessToken: payload.access_token,
+    userAgent: config.userAgent,
+  };
 }
 
-function parseRedditAtomFeed(
-  xml: string,
-  feed: RedditFeed,
-): RedditPost[] {
-  const $ = cheerio.load(
-    xml,
-    {
-      xmlMode: true,
-    },
+export async function fetchNewPosts(
+  client: RedditApiClient,
+  source: RedditSource,
+): Promise<RedditPost[]> {
+  const subredditPath = source.subreddits.join("+");
+  const url = new URL(
+    `/r/${subredditPath}/new`,
+    API_BASE_URL,
   );
+
+  url.searchParams.set(
+    "limit",
+    String(
+      Math.max(
+        1,
+        Math.min(100, source.limit),
+      ),
+    ),
+  );
+  url.searchParams.set("raw_json", "1");
+
+  const response = await fetchRedditJson(
+    client,
+    url,
+  );
+
+  const children =
+    response.data?.children ?? [];
 
   const posts: RedditPost[] = [];
 
-  $("entry").each((_: number, element: any) => {
-    const entry = $(element);
-    const id = cleanText(
-      entry.find("id").first().text(),
-    );
-    const title = cleanText(
-      entry.find("title").first().text(),
-    );
-    const updated = cleanText(
-      entry.find("updated").first().text() ||
-        entry.find("published").first().text(),
-    );
-    const url =
-      entry.find('link[rel="alternate"]').attr("href") ||
-      entry.find("link").first().attr("href") ||
-      "";
-    const author = cleanText(
-      entry.find("author name").first().text(),
-    );
-    const contentRaw =
-      entry.find("content").first().text() ||
-      entry.find("summary").first().text() ||
-      "";
-    const body = stripHtml(contentRaw);
-    const subreddit = extractSubreddit(
-      url,
-      body,
-    );
-    const publishedAt = new Date(updated);
+  for (const child of children) {
+    const item = child.data;
 
-    if (
-      !id ||
-      !title ||
-      !url ||
-      Number.isNaN(publishedAt.getTime())
-    ) {
-      return;
+    if (!item) {
+      continue;
     }
 
-    posts.push({
-      id,
-      title,
-      url: normalizeRedditUrl(url),
-      subreddit,
-      author: author || null,
-      publishedAt,
-      body,
-      feedIds: [feed.id],
-      feedKinds: [feed.kind],
-    });
-  });
+    const post = normalizePost(
+      item,
+      source,
+    );
+
+    if (post) {
+      posts.push(post);
+    }
+  }
 
   return posts;
 }
@@ -132,41 +144,32 @@ function parseRedditAtomFeed(
 export function mergeDuplicatePosts(
   posts: RedditPost[],
 ): RedditPost[] {
-  const merged = new Map<
-    string,
-    RedditPost
-  >();
+  const merged = new Map<string, RedditPost>();
 
   for (const post of posts) {
     const key = post.id || post.url;
     const existing = merged.get(key);
 
     if (!existing) {
-      merged.set(
-        key,
-        post,
-      );
+      merged.set(key, post);
       continue;
     }
 
-    existing.feedIds = Array.from(
+    existing.sourceIds = Array.from(
       new Set([
-        ...existing.feedIds,
-        ...post.feedIds,
+        ...existing.sourceIds,
+        ...post.sourceIds,
       ]),
     );
 
-    existing.feedKinds = Array.from(
+    existing.sourceKinds = Array.from(
       new Set([
-        ...existing.feedKinds,
-        ...post.feedKinds,
+        ...existing.sourceKinds,
+        ...post.sourceKinds,
       ]),
     );
 
-    if (
-      post.body.length >
-      existing.body.length
-    ) {
+    if (post.body.length > existing.body.length) {
       existing.body = post.body;
     }
   }
@@ -178,136 +181,147 @@ export function mergeDuplicatePosts(
   );
 }
 
-function stripHtml(
-  html: string,
-): string {
-  if (!html) {
-    return "";
-  }
-
-  const decoded = cheerio.load(html);
-
-  decoded("script, style").remove();
-
-  return cleanText(
-    decoded.root().text(),
-  )
-    .replace(
-      /submitted by\s+\/u\/\S+/gi,
-      "",
-    )
-    .replace(
-      /\[link\]\s*\[comments\]/gi,
-      "",
-    )
-    .trim();
-}
-
-function extractSubreddit(
-  url: string,
-  body: string,
-): string | null {
-  const urlMatch = url.match(
-    /reddit\.com\/r\/([^/]+)/i,
+async function fetchRedditJson(
+  client: RedditApiClient,
+  url: URL,
+): Promise<RedditListingResponse> {
+  const response = await fetchWithTimeout(
+    url,
+    {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${client.accessToken}`,
+        "User-Agent": client.userAgent,
+      },
+    },
+    REQUEST_TIMEOUT_MS,
   );
 
-  if (urlMatch?.[1]) {
-    return urlMatch[1];
+  const raw = await response.text();
+
+  if (!response.ok) {
+    const rateLimit = formatRateLimit(response);
+
+    throw new Error(
+      `Reddit API request failed (${response.status})${rateLimit}: ${raw.slice(0, 300)}`,
+    );
   }
 
-  const bodyMatch = body.match(
-    /\br\/([A-Za-z0-9_]+)/,
+  const parsed = parseJson<RedditListingResponse>(raw);
+
+  if (!parsed) {
+    throw new Error(
+      "Reddit API returned a non-JSON response.",
+    );
+  }
+
+  return parsed;
+}
+
+function normalizePost(
+  item: RedditListingPost,
+  source: RedditSource,
+): RedditPost | null {
+  const id =
+    item.name?.trim() ||
+    (item.id ? `t3_${item.id}` : "");
+  const title = item.title?.trim() || "";
+  const permalink = item.permalink?.trim() || "";
+  const createdUtc = Number(item.created_utc);
+
+  if (
+    !id ||
+    !title ||
+    !permalink ||
+    !Number.isFinite(createdUtc)
+  ) {
+    return null;
+  }
+
+  return {
+    id,
+    title,
+    url: normalizePermalink(permalink),
+    subreddit: item.subreddit?.trim() || null,
+    author: item.author?.trim() || null,
+    publishedAt: new Date(createdUtc * 1000),
+    body: item.selftext?.trim() || "",
+    sourceIds: [source.id],
+    sourceKinds: [source.kind],
+  };
+}
+
+function normalizePermalink(
+  permalink: string,
+): string {
+  if (/^https?:\/\//i.test(permalink)) {
+    return permalink;
+  }
+
+  return `https://www.reddit.com${
+    permalink.startsWith("/")
+      ? permalink
+      : `/${permalink}`
+  }`;
+}
+
+function formatRateLimit(
+  response: Response,
+): string {
+  const remaining = response.headers.get(
+    "x-ratelimit-remaining",
+  );
+  const reset = response.headers.get(
+    "x-ratelimit-reset",
+  );
+  const retryAfter = response.headers.get(
+    "retry-after",
   );
 
-  return bodyMatch?.[1] ?? null;
-}
+  const values = [
+    remaining
+      ? `remaining=${remaining}`
+      : null,
+    reset
+      ? `reset=${reset}s`
+      : null,
+    retryAfter
+      ? `retry-after=${retryAfter}s`
+      : null,
+  ].filter(Boolean);
 
-function normalizeRedditUrl(
-  rawUrl: string,
-): string {
-  try {
-    const url = new URL(rawUrl);
-
-    url.protocol = "https:";
-    url.hostname = "www.reddit.com";
-
-    return url.toString();
-  } catch {
-    return rawUrl;
-  }
-}
-
-function cleanText(
-  value: string,
-): string {
-  return value
-    .replace(/\s+/g, " ")
-    .trim();
+  return values.length > 0
+    ? ` [${values.join(", ")}]`
+    : "";
 }
 
 async function fetchWithTimeout(
-  url: string,
+  input: string | URL,
   init: RequestInit,
   timeoutMs: number,
 ): Promise<Response> {
-  const controller =
-    new AbortController();
-
-  const timeout = setTimeout(
+  const controller = new AbortController();
+  const timer = setTimeout(
     () => controller.abort(),
     timeoutMs,
   );
 
   try {
-    return await fetch(
-      url,
-      {
-        ...init,
-        signal:
-          controller.signal,
-      },
-    );
+    return await fetch(input, {
+      ...init,
+      signal: controller.signal,
+    });
   } finally {
-    clearTimeout(timeout);
+    clearTimeout(timer);
   }
 }
 
-function parsePositiveInteger(
-  value: string | undefined,
-  fallback: number,
-): number {
-  const parsed = Number(value);
-
-  return Number.isInteger(parsed) && parsed >= 0
-    ? parsed
-    : fallback;
-}
-
-function getRetryDelayMs(
-  retryAfter: string | null,
-): number {
-  if (retryAfter) {
-    const seconds = Number(retryAfter);
-
-    if (Number.isFinite(seconds) && seconds > 0) {
-      return Math.min(seconds * 1000, 120_000);
-    }
-
-    const dateMs = Date.parse(retryAfter);
-
-    if (!Number.isNaN(dateMs)) {
-      return Math.min(
-        Math.max(dateMs - Date.now(), 1000),
-        120_000,
-      );
-    }
+function parseJson<T>(
+  raw: string,
+): T | null {
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
   }
-
-  return 60_000;
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
 }
