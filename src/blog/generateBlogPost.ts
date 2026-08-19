@@ -316,9 +316,9 @@ ${imageSection}**Address:** [${selection.address}](${zillowUrl})
 **Square feet:** ${formatSquareFeet(
           source.squareFeet,
         )}  
-**Year built:** ${formatNullableNumber(
-          source.yearBuilt,
-        )}
+**Year built:** ${formatYearBuilt(
+  source.yearBuilt,
+)}
 
 ${propertyCopy.overview}
 
@@ -826,6 +826,14 @@ function formatNullableNumber(
     : value.toLocaleString(
         "en-US",
       );
+}
+
+function formatYearBuilt(
+  value: number | null,
+): string {
+  return value === null
+    ? "Not available"
+    : String(value);
 }
 
 function escapeYamlString(
