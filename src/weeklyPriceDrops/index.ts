@@ -106,7 +106,7 @@ async function main(): Promise<void> {
     0
   ) {
     console.log(
-      "No PRICE DROP emails found in the last 5 days.",
+      "No matching PRICE DROP source emails found.",
     );
 
     console.log(

@@ -38,6 +38,11 @@ export async function renderInstagramCarousel(
   const svgPaths: string[] = [];
   const imagePaths: string[] = [];
 
+  const logoDataUri =
+    await loadBrandLogoDataUri(
+      config.brand.logoPath,
+    );
+
   for (
     const [index, slide]
     of definition.slides.entries()
@@ -66,6 +71,7 @@ export async function renderInstagramCarousel(
         index + 1,
         definition.slides.length,
         config,
+        logoDataUri,
       );
 
     await fs.writeFile(
@@ -161,6 +167,7 @@ function renderSlideSvg(
   slideNumber: number,
   totalSlides: number,
   config: InstagramAutomationConfig,
+  logoDataUri: string,
 ): string {
   const {
     primary,
@@ -176,7 +183,7 @@ function renderSlideSvg(
 
   const commonHeader = `
     ${renderPaletteRail(config)}
-    <text x="72" y="90" class="brand">PORTLAND HOME GUIDE</text>
+    ${renderBrandLogo(logoDataUri)}
     <text x="1008" y="90" text-anchor="end" class="counter">${slideNumber}/${totalSlides}</text>
     <line x1="72" y1="122" x2="1008" y2="122" stroke="${escapeXml(divider)}" stroke-width="2" />
   `;
@@ -216,7 +223,6 @@ function renderSlideSvg(
   <rect width="${WIDTH}" height="${HEIGHT}" fill="${escapeXml(background)}" />
   <style>
     text { font-family: Arial, Helvetica, sans-serif; fill: ${escapeXml(text)}; }
-    .brand { font-size: 28px; font-weight: 800; letter-spacing: 3.2px; fill: ${escapeXml(primary)}; }
     .counter { font-size: 22px; font-weight: 800; fill: ${escapeXml(muted)}; }
     .eyebrow { font-size: 24px; font-weight: 800; letter-spacing: 3px; fill: ${escapeXml(primary)}; }
     .title { font-size: 68px; font-weight: 800; letter-spacing: -1.2px; }
@@ -236,6 +242,58 @@ function renderSlideSvg(
   ${content}
   ${commonFooter}
 </svg>`;
+}
+
+function renderBrandLogo(
+  logoDataUri: string,
+): string {
+  // The supplied PHG logo is 1123 × 347 (3.24:1). A 300px-wide
+  // render keeps the full mark legible while leaving ample room for
+  // the carousel counter on the right.
+  const width = 300;
+  const height = 93;
+
+  return `<image
+    href="${escapeXml(logoDataUri)}"
+    x="72"
+    y="22"
+    width="${width}"
+    height="${height}"
+    preserveAspectRatio="xMinYMid meet"
+  />`;
+}
+
+async function loadBrandLogoDataUri(
+  configuredPath: string,
+): Promise<string> {
+  const logoPath =
+    path.isAbsolute(configuredPath)
+      ? configuredPath
+      : path.join(
+          process.cwd(),
+          configuredPath,
+        );
+
+  let logoBuffer: Buffer;
+
+  try {
+    logoBuffer =
+      await fs.readFile(
+        logoPath,
+      );
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : String(error);
+
+    throw new Error(
+      `Could not read Portland Home Guide logo at ${logoPath}. ` +
+      `Set INSTAGRAM_BRAND_LOGO_PATH if the file lives elsewhere. ${message}`,
+    );
+  }
+
+  return `data:image/png;base64,${logoBuffer.toString("base64")}`;
 }
 
 function renderPaletteRail(

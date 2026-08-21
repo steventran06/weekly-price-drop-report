@@ -12,6 +12,10 @@ import {
   selectRmlsReportLink,
 } from "../rmls/emailReportLinks.js";
 
+import {
+  getNewOnMarketGmailQuery,
+} from "../gmail/queries.js";
+
 export interface NewOnMarketEmail {
   messageId: string;
   reportUrl: string;
@@ -19,15 +23,11 @@ export interface NewOnMarketEmail {
   internalDate: number;
 }
 
-const DEFAULT_QUERY =
-  'label:"NEW ON MARKET" newer_than:2d';
-
 export async function findLatestNewOnMarketEmail(
   gmail: gmail_v1.Gmail,
 ): Promise<NewOnMarketEmail> {
   const query =
-    process.env.NEW_ON_MARKET_GMAIL_QUERY?.trim() ||
-    DEFAULT_QUERY;
+    getNewOnMarketGmailQuery();
 
   console.log(
     `Searching Gmail with: ${query}`,

@@ -5,7 +5,6 @@ import type {
 } from "googleapis";
 
 import {
-  buildRecentLabelQuery,
   findPdfAttachmentPart,
   getMessageHeader,
   searchGmailMessages,
@@ -16,10 +15,9 @@ import type {
 } from "./extractMarketStats.js";
 
 export interface DownloadMarketStatsPdfOptions {
-  label: string;
+  query: string;
   region: MarketStatsRegion;
   displayName?: string;
-  newerThanDays?: number;
 }
 
 export interface DownloadedMarketStatsPdf {
@@ -36,22 +34,18 @@ export async function downloadMarketStatsPdf(
   gmail: gmail_v1.Gmail,
   options: DownloadMarketStatsPdfOptions,
 ): Promise<DownloadedMarketStatsPdf | null> {
-  const newerThanDays =
-    options.newerThanDays ??
-    7;
-
   const displayName =
     options.displayName ??
     `${options.region} TMO report`;
 
   const query =
-    buildRecentLabelQuery(
-      options.label,
-      newerThanDays,
-      [
-        "has:attachment",
-      ],
+    options.query.trim();
+
+  if (!query) {
+    throw new Error(
+      `Gmail query is required for ${displayName}.`,
     );
+  }
 
   console.log("");
   console.log(

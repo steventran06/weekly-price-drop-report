@@ -9,6 +9,11 @@ import {
 } from "../gmail/auth.js";
 
 import {
+  getMonthlyPriceDropGmailQuery,
+  getMonthlyTmoGmailQuery,
+} from "../gmail/queries.js";
+
+import {
   publishBlogPost,
 } from "../github/publishBlogPost.js";
 
@@ -137,14 +142,14 @@ async function main(): Promise<void> {
   const marketStatsEmails =
     await findMonthlySourceEmails(
       gmail,
-      "TMO Reports",
+      getMonthlyTmoGmailQuery(),
       range,
     );
 
   const priceDropEmails =
     await findMonthlySourceEmails(
       gmail,
-      "PRICE DROP",
+      getMonthlyPriceDropGmailQuery(),
       range,
     );
 

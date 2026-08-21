@@ -3,7 +3,6 @@ import type {
 } from "googleapis";
 
 import {
-  buildLabelDateRangeQuery,
   getMessageHeader,
   searchGmailMessages,
 } from "../gmail/helpers.js";
@@ -24,15 +23,17 @@ export interface MonthlySourceEmail {
 
 export async function findMonthlySourceEmails(
   gmail: gmail_v1.Gmail,
-  label: string,
+  baseQuery: string,
   range: MonthRange,
 ): Promise<MonthlySourceEmail[]> {
   const query =
-    buildLabelDateRangeQuery(
-      label,
-      range.gmailAfter,
-      range.gmailBefore,
-    );
+    [
+      baseQuery.trim(),
+      `after:${range.gmailAfter}`,
+      `before:${range.gmailBefore}`,
+    ]
+      .filter(Boolean)
+      .join(" ");
 
   console.log("");
   console.log(

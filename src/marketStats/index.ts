@@ -6,6 +6,11 @@ import {
 } from "../gmail/auth.js";
 
 import {
+  getOregonTmoGmailQuery,
+  getWashingtonTmoGmailQuery,
+} from "../gmail/queries.js";
+
+import {
   publishBlogPost,
 } from "../github/publishBlogPost.js";
 
@@ -131,22 +136,22 @@ async function main(): Promise<void> {
     });
 
   /*
-   * Download the newest report from each Gmail label.
-   * A missing report is allowed; the other region can
-   * still be processed and published.
+   * Download the newest report from each Gmail topic query.
+   * Labels are intentionally not required because Gmail rules
+   * can apply them late or occasionally miss a message.
+   * A missing report is allowed; the other region can still be
+   * processed and published.
    */
   const oregonPdf =
     await downloadMarketStatsPdf(
       gmail,
       {
-        label:
-          "TMO Reports",
+        query:
+          getOregonTmoGmailQuery(),
         region:
           "oregon",
         displayName:
           "Oregon TMO report",
-        newerThanDays:
-          7,
       },
     );
 
@@ -154,14 +159,12 @@ async function main(): Promise<void> {
     await downloadMarketStatsPdf(
       gmail,
       {
-        label:
-          "WA TMO Reports",
+        query:
+          getWashingtonTmoGmailQuery(),
         region:
           "washington",
         displayName:
           "Washington TMO report",
-        newerThanDays:
-          7,
       },
     );
 

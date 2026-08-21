@@ -3,11 +3,14 @@ import type {
 } from "googleapis";
 
 import {
-  buildRecentLabelQuery,
   collectMessageText,
   getMessageHeader,
   searchGmailMessages,
 } from "../gmail/helpers.js";
+
+import {
+  getPriceDropGmailQuery,
+} from "../gmail/queries.js";
 
 import {
   extractRmlsReportLinks,
@@ -22,18 +25,11 @@ export interface PriceDropEmail {
   reportUrl: string | null;
 }
 
-const DEFAULT_LOOKBACK_DAYS =
-  5;
-
 export async function findPriceDropEmails(
   gmail: gmail_v1.Gmail,
 ): Promise<PriceDropEmail[]> {
   const query =
-    process.env.PRICE_DROP_GMAIL_QUERY?.trim() ||
-    buildRecentLabelQuery(
-      "PRICE DROP",
-      DEFAULT_LOOKBACK_DAYS,
-    );
+    getPriceDropGmailQuery();
 
   console.log(
     `Searching Gmail with: ${query}`,

@@ -7,6 +7,7 @@ export interface InstagramAutomationConfig {
   assetBaseUrl: string | null;
   githubPath: string;
   brand: {
+    logoPath: string;
     primary: string;
     background: string;
     accent: string;
@@ -63,6 +64,10 @@ export function getInstagramAutomationConfig(): InstagramAutomationConfig {
       ),
 
     brand: {
+      logoPath:
+        process.env.INSTAGRAM_BRAND_LOGO_PATH?.trim() ||
+        "assets/portland-home-guide-logo.png",
+
       // Portland Airport carpet palette:
       // https://www.color-hex.com/color-palette/1047768
       primary:
