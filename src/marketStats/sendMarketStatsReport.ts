@@ -1,3 +1,6 @@
+import { readFile } from "node:fs/promises";
+import { basename } from "node:path";
+
 import type { gmail_v1 } from "googleapis";
 
 import type {
@@ -33,6 +36,7 @@ export async function sendMarketStatsReport(
   analysis: MarketStatsAnalysis,
   content: GeneratedMarketStatsContent,
   blog: MarketStatsBlogPost,
+  instagramImagePaths: string[] = [],
 ): Promise<string> {
   const subject =
     createSubject(
@@ -55,29 +59,43 @@ export async function sendMarketStatsReport(
       blog,
     );
 
-  const boundary =
-    `weekly-market-stats-${Date.now()}`;
+  const mixedBoundary =
+    `weekly-market-stats-mixed-${Date.now()}`;
+
+  const alternativeBoundary =
+    `weekly-market-stats-alt-${Date.now()}`;
+
+  const attachmentParts =
+    await buildJpegAttachmentParts(
+      instagramImagePaths,
+      mixedBoundary,
+    );
 
   const mimeMessage = [
     `To: ${RECIPIENTS.join(", ")}`,
     `From: ${PRIMARY_RECIPIENT}`,
     `Subject: ${subject}`,
     "MIME-Version: 1.0",
-    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    `Content-Type: multipart/mixed; boundary="${mixedBoundary}"`,
     "",
-    `--${boundary}`,
+    `--${mixedBoundary}`,
+    `Content-Type: multipart/alternative; boundary="${alternativeBoundary}"`,
+    "",
+    `--${alternativeBoundary}`,
     'Content-Type: text/plain; charset="UTF-8"',
     "Content-Transfer-Encoding: 8bit",
     "",
     textBody,
     "",
-    `--${boundary}`,
+    `--${alternativeBoundary}`,
     'Content-Type: text/html; charset="UTF-8"',
     "Content-Transfer-Encoding: 8bit",
     "",
     htmlBody,
     "",
-    `--${boundary}--`,
+    `--${alternativeBoundary}--`,
+    ...attachmentParts,
+    `--${mixedBoundary}--`,
   ].join("\r\n");
 
   const raw =
@@ -107,6 +125,44 @@ export async function sendMarketStatsReport(
   }
 
   return response.data.id;
+}
+
+async function buildJpegAttachmentParts(
+  imagePaths: string[],
+  mixedBoundary: string,
+): Promise<string[]> {
+  const jpegPaths =
+    imagePaths.filter((imagePath) =>
+      /\.jpe?g$/i.test(imagePath),
+    );
+
+  const parts: string[] = [];
+
+  for (const imagePath of jpegPaths) {
+    const filename =
+      basename(imagePath);
+
+    const file =
+      await readFile(imagePath);
+
+    const base64 =
+      file
+        .toString("base64")
+        .match(/.{1,76}/g)
+        ?.join("\r\n") ?? "";
+
+    parts.push(
+      "",
+      `--${mixedBoundary}`,
+      `Content-Type: image/jpeg; name="${filename}"`,
+      "Content-Transfer-Encoding: base64",
+      `Content-Disposition: attachment; filename="${filename}"`,
+      "",
+      base64,
+    );
+  }
+
+  return parts;
 }
 
 function createSubject(

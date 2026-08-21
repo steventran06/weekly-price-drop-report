@@ -799,13 +799,66 @@ function extractAreaNumber(
 function extractReportDate(
   text: string,
 ): string | null {
-  const dateMatch =
-    text.match(
-      /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b/i,
-    );
+  /*
+   * TMO pages contain more than one long-form date. The footer usually
+   * includes a reporting range such as:
+   *
+   *   May 09, 2026 through August 9, 2026
+   *
+   * pdf.js does not guarantee that flattened text arrives in visual
+   * reading order, so taking the first date can accidentally capture
+   * the beginning of the reporting period instead of the report date.
+   *
+   * The report date is the end of the TMO reporting period, so select
+   * the latest valid long-form date found on the page.
+   */
+  const datePattern =
+    /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b/gi;
+
+  const matches =
+    [...text.matchAll(
+      datePattern,
+    )];
+
+  let latestDate:
+    {
+      text: string;
+      timestamp: number;
+    } | null =
+    null;
+
+  for (const match of matches) {
+    const matchedText =
+      match[0];
+
+    const timestamp =
+      Date.parse(
+        `${matchedText} 00:00:00 UTC`,
+      );
+
+    if (
+      Number.isNaN(
+        timestamp,
+      )
+    ) {
+      continue;
+    }
+
+    if (
+      !latestDate ||
+      timestamp >
+        latestDate.timestamp
+    ) {
+      latestDate = {
+        text:
+          matchedText,
+        timestamp,
+      };
+    }
+  }
 
   return (
-    dateMatch?.[0] ??
+    latestDate?.text ??
     null
   );
 }

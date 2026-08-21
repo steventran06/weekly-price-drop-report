@@ -77,6 +77,10 @@ import type {
   MarketStatsRegion,
 } from "./extractMarketStats.js";
 
+import {
+  generateAndMaybePublishMarketStatsInstagram,
+} from "../social/instagram/marketStatsInstagram.js";
+
 dotenv.config();
 
 async function main(): Promise<void> {
@@ -263,6 +267,26 @@ async function main(): Promise<void> {
       attachmentFilenames,
     );
 
+  /*
+   * buildWebsiteMarketStats() already normalizes every regional row to
+   * the canonical TMO report date. Reuse those normalized Oregon rows
+   * for all downstream Portland analysis/content as a second line of
+   * defense against malformed or unexpectedly ordered PDF text.
+   */
+  const normalizedOregonStats:
+    ExtractedMarketStats | null =
+    oregonStats
+      ? {
+          ...oregonStats,
+          markets:
+            websiteMarketStats.markets.filter(
+              (market) =>
+                market.sourceRegion ===
+                "oregon",
+            ),
+        }
+      : null;
+
   const websiteMarketStatsUrl =
     await publishWebsiteMarketStats(
       websiteMarketStats,
@@ -285,7 +309,7 @@ async function main(): Promise<void> {
    * reporting workflow while still feeding WA data to the site.
    */
   if (
-    !oregonStats ||
+    !normalizedOregonStats ||
     !oregonPdf
   ) {
     console.log("");
@@ -323,7 +347,7 @@ async function main(): Promise<void> {
     },
 
     report:
-      oregonStats,
+      normalizedOregonStats,
   };
 
   const historicalPath =
@@ -344,7 +368,7 @@ async function main(): Promise<void> {
 
   const analysis =
     analyzeMarketStats(
-      oregonStats,
+      normalizedOregonStats,
     );
 
   const analysisPath =
@@ -364,14 +388,14 @@ async function main(): Promise<void> {
 
   const generatedContent =
     await generateMarketStatsContent(
-      oregonStats,
+      normalizedOregonStats,
       analysis,
     );
 
   const blog =
     generateMarketStatsBlog(
       generatedContent,
-      oregonStats,
+      normalizedOregonStats,
       analysis,
     );
 
@@ -401,6 +425,41 @@ async function main(): Promise<void> {
     `- JSON: ${contentPaths.contentJsonPath}`,
   );
 
+  /*
+   * Instagram carousel generation is intentionally non-blocking.
+   * The rendered JPEGs are attached to the weekly email so they can
+   * be saved to a phone and posted manually. SVG source files stay
+   * local and are never attached.
+   */
+  let instagramImagePaths: string[] = [];
+
+  try {
+    const renderedInstagram =
+      await generateAndMaybePublishMarketStatsInstagram(
+        normalizedOregonStats,
+        analysis,
+        generatedContent,
+      );
+
+    instagramImagePaths =
+      renderedInstagram?.imagePaths ?? [];
+
+    if (instagramImagePaths.length > 0) {
+      console.log(
+        `${instagramImagePaths.length} Instagram JPEG(s) will be attached to the weekly email.`,
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Instagram workflow failed; continuing with the weekly market stats workflow.",
+    );
+    console.error(
+      error instanceof Error
+        ? error.message
+        : String(error),
+    );
+  }
+
   console.log("");
   console.log(
     "Publishing Oregon market stats blog to website repository...",
@@ -422,10 +481,11 @@ async function main(): Promise<void> {
 
   await sendMarketStatsReport(
     gmail,
-    oregonStats,
+    normalizedOregonStats,
     analysis,
     generatedContent,
     blog,
+    instagramImagePaths,
   );
 
   console.log(

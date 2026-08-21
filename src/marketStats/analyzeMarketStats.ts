@@ -514,12 +514,46 @@ function findReportDate(
   markets:
     MarketStats[],
 ): string | null {
+  let latest:
+    {
+      value: string;
+      timestamp: number;
+    } | null =
+    null;
+
+  for (const market of markets) {
+    if (!market.reportDate) {
+      continue;
+    }
+
+    const timestamp =
+      Date.parse(
+        `${market.reportDate} 00:00:00 UTC`,
+      );
+
+    if (
+      Number.isNaN(
+        timestamp,
+      )
+    ) {
+      continue;
+    }
+
+    if (
+      !latest ||
+      timestamp >
+        latest.timestamp
+    ) {
+      latest = {
+        value:
+          market.reportDate,
+        timestamp,
+      };
+    }
+  }
+
   return (
-    markets.find(
-      (market) =>
-        market.reportDate !==
-        null,
-    )?.reportDate ??
+    latest?.value ??
     null
   );
 }
