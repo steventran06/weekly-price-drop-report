@@ -54,6 +54,10 @@ import {
   writeListingsJson,
 } from "../output/writeListings.js";
 
+import {
+  generatePriceDropInstagramCarousel,
+} from "../social/instagram/priceDropInstagram.js";
+
 dotenv.config();
 
 async function main(): Promise<void> {
@@ -366,6 +370,43 @@ async function main(): Promise<void> {
   );
 
   /*
+   * Generate the Portland Home Guide social carousel.
+   * This is intentionally non-blocking: the Wednesday report should
+   * still send even if a listing photo or carousel render fails.
+   */
+  let instagramImagePaths: string[] = [];
+  let portlandHomeGuideCaption: string | null = null;
+
+  try {
+    const renderedCarousel =
+      await generatePriceDropInstagramCarousel(
+        analysis,
+        listings,
+      );
+
+    instagramImagePaths =
+      renderedCarousel?.imagePaths ?? [];
+
+    portlandHomeGuideCaption =
+      renderedCarousel?.caption ?? null;
+
+    if (instagramImagePaths.length > 0) {
+      console.log(
+        `${instagramImagePaths.length} Portland Home Guide carousel JPEG(s) will be attached to the Wednesday email.`,
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Price-drop carousel generation failed; continuing with the Wednesday report.",
+    );
+    console.error(
+      error instanceof Error
+        ? error.message
+        : String(error),
+    );
+  }
+
+  /*
    * Step 7:
    * Generate blog.
    */
@@ -432,6 +473,8 @@ async function main(): Promise<void> {
     gmail,
     analysis,
     reportLink,
+    instagramImagePaths,
+    portlandHomeGuideCaption,
   );
 
   console.log(

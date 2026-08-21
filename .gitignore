@@ -18,3 +18,5 @@ output/market-stats/*.txt
 
 # Generated market stats output
 output/market-stats/
+# Generated weekly price-drop carousel output
+output/price-drops/

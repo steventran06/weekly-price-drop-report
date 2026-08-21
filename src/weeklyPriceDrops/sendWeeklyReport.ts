@@ -1,3 +1,6 @@
+import { readFile } from "node:fs/promises";
+import { basename } from "node:path";
+
 import type { gmail_v1 } from "googleapis";
 import type { WeeklyAnalysis } from "../analysis/types.js";
 
@@ -9,42 +12,62 @@ export async function sendWeeklyReport(
   gmail: gmail_v1.Gmail,
   analysis: WeeklyAnalysis,
   reportUrl: string,
+  instagramImagePaths: string[] = [],
+  portlandHomeGuideCaption: string | null = null,
 ): Promise<string> {
   const subject = createSubject();
 
   const textBody = createTextEmailBody(
     analysis,
     reportUrl,
+    instagramImagePaths.length,
+    portlandHomeGuideCaption,
   );
 
   const htmlBody = createHtmlEmailBody(
     analysis,
     reportUrl,
+    instagramImagePaths.length,
+    portlandHomeGuideCaption,
   );
 
-  const boundary =
-    `weekly-price-drop-${Date.now()}`;
+  const mixedBoundary =
+    `weekly-price-drop-mixed-${Date.now()}`;
+
+  const alternativeBoundary =
+    `weekly-price-drop-alt-${Date.now()}`;
+
+  const attachmentParts =
+    await buildJpegAttachmentParts(
+      instagramImagePaths,
+      mixedBoundary,
+    );
 
   const mimeMessage = [
     `To: ${RECIPIENT}`,
     `From: ${RECIPIENT}`,
     `Subject: ${subject}`,
     "MIME-Version: 1.0",
-    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    `Content-Type: multipart/mixed; boundary="${mixedBoundary}"`,
     "",
-    `--${boundary}`,
+    `--${mixedBoundary}`,
+    `Content-Type: multipart/alternative; boundary="${alternativeBoundary}"`,
+    "",
+    `--${alternativeBoundary}`,
     'Content-Type: text/plain; charset="UTF-8"',
     "Content-Transfer-Encoding: 8bit",
     "",
     textBody,
     "",
-    `--${boundary}`,
+    `--${alternativeBoundary}`,
     'Content-Type: text/html; charset="UTF-8"',
     "Content-Transfer-Encoding: 8bit",
     "",
     htmlBody,
     "",
-    `--${boundary}--`,
+    `--${alternativeBoundary}--`,
+    ...attachmentParts,
+    `--${mixedBoundary}--`,
   ].join("\r\n");
 
   const raw = Buffer.from(mimeMessage)
@@ -70,6 +93,44 @@ export async function sendWeeklyReport(
   return response.data.id;
 }
 
+async function buildJpegAttachmentParts(
+  imagePaths: string[],
+  mixedBoundary: string,
+): Promise<string[]> {
+  const jpegPaths =
+    imagePaths.filter((imagePath) =>
+      /\.jpe?g$/i.test(imagePath),
+    );
+
+  const parts: string[] = [];
+
+  for (const imagePath of jpegPaths) {
+    const filename =
+      basename(imagePath);
+
+    const file =
+      await readFile(imagePath);
+
+    const base64 =
+      file
+        .toString("base64")
+        .match(/.{1,76}/g)
+        ?.join("\r\n") ?? "";
+
+    parts.push(
+      "",
+      `--${mixedBoundary}`,
+      `Content-Type: image/jpeg; name="${filename}"`,
+      "Content-Transfer-Encoding: base64",
+      `Content-Disposition: attachment; filename="${filename}"`,
+      "",
+      base64,
+    );
+  }
+
+  return parts;
+}
+
 function createSubject(): string {
   const date =
     new Intl.DateTimeFormat(
@@ -89,6 +150,8 @@ function createSubject(): string {
 function createTextEmailBody(
   analysis: WeeklyAnalysis,
   reportUrl: string,
+  instagramImageCount: number,
+  portlandHomeGuideCaption: string | null,
 ): string {
   const listings =
     [...analysis.selectedListings]
@@ -171,6 +234,22 @@ function createTextEmailBody(
     "",
     commaSeparatedMls,
     "",
+    ...(instagramImageCount > 0
+      ? [
+          "PORTLAND HOME GUIDE PRICE-DROP CAROUSEL",
+          "======================================",
+          "",
+          `${instagramImageCount} Instagram-ready JPEGs are attached to this email.`,
+          "Files are ordered from the cover slide through the final CTA slide.",
+          "",
+          "PORTLAND HOME GUIDE CAROUSEL CAPTION",
+          "===================================",
+          "",
+          portlandHomeGuideCaption ||
+            "Caption unavailable.",
+          "",
+        ]
+      : []),
     "INSTAGRAM STORY BLURB",
     "=====================",
     "",
@@ -214,6 +293,8 @@ function createTextEmailBody(
 function createHtmlEmailBody(
   analysis: WeeklyAnalysis,
   reportUrl: string,
+  instagramImageCount: number,
+  portlandHomeGuideCaption: string | null,
 ): string {
   const listings =
     [...analysis.selectedListings]
@@ -441,6 +522,32 @@ function createHtmlEmailBody(
     border-top: 1px solid #dddddd;
     margin: 28px 0;
   ">
+
+  ${
+    instagramImageCount > 0
+      ? `
+  <h2>Portland Home Guide Price-Drop Carousel</h2>
+
+  <p>
+    <strong>${instagramImageCount} Instagram-ready JPEGs are attached.</strong>
+    They are ordered from the cover slide through the final CTA slide.
+  </p>
+
+  <h3>Portland Home Guide Carousel Caption</h3>
+
+  ${createCopyBox(
+    portlandHomeGuideCaption ||
+      "Caption unavailable.",
+  )}
+
+  <hr style="
+    border: 0;
+    border-top: 1px solid #dddddd;
+    margin: 28px 0;
+  ">
+`
+      : ""
+  }
 
   <h2>Instagram Story Blurb</h2>
 

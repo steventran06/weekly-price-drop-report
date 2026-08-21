@@ -23,7 +23,8 @@
     "reddit-alerts:api-test": "tsx src/redditAlerts/testRedditApi.ts",
     "reddit-alerts:filter-test": "tsx src/redditAlerts/testFilters.ts",
     "instagram:preview": "tsx src/social/instagram/preview.ts",
-    "instagram:publish": "tsx src/social/instagram/publishExisting.ts"
+    "instagram:publish": "tsx src/social/instagram/publishExisting.ts",
+    "price-drops:carousel-preview": "tsx src/social/instagram/priceDropPreview.ts"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.0",
