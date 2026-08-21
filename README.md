@@ -1200,7 +1200,7 @@ Main website: steventranrealestate.com
 
 Instagram: @steventranpdx
 
-YouTube: @steventran_pdxrealtor
+YouTube: @portlandmetrorealestateguide
 
 ---
 
