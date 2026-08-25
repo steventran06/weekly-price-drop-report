@@ -27,7 +27,7 @@ export function getPriceDropGmailQuery(): string {
   return envQuery(
     "PRICE_DROP_GMAIL_QUERY",
     [
-      "newer_than:7d",
+      "newer_than:5d",
       `from:${RMLS_SENDER}`,
       'subject:"PRICE CHANGE"',
     ].join(" "),
