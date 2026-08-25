@@ -422,6 +422,9 @@ async function main(): Promise<void> {
     `- Instagram: ${contentPaths.instagramPath}`,
   );
   console.log(
+    `- Google Business Post: ${contentPaths.googleBusinessPostPath}`,
+  );
+  console.log(
     `- YouTube: ${contentPaths.youtubePath}`,
   );
   console.log(

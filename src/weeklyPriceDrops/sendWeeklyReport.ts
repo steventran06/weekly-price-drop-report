@@ -250,6 +250,13 @@ function createTextEmailBody(
           "",
         ]
       : []),
+    "GOOGLE BUSINESS PROFILE POST",
+    "============================",
+    "",
+    `${analysis.googleBusinessPost.length}/1500 characters`,
+    "",
+    analysis.googleBusinessPost,
+    "",
     "INSTAGRAM STORY BLURB",
     "=====================",
     "",
@@ -548,6 +555,26 @@ function createHtmlEmailBody(
 `
       : ""
   }
+
+  <h2>Google Business Profile Post</h2>
+
+  <p style="
+    color: #666666;
+    margin-top: -6px;
+  ">
+    ${analysis.googleBusinessPost.length}/1500 characters.
+    Copy and paste this directly into your Google Business Profile post.
+  </p>
+
+  ${createCopyBox(
+    analysis.googleBusinessPost,
+  )}
+
+  <hr style="
+    border: 0;
+    border-top: 1px solid #dddddd;
+    margin: 28px 0;
+  ">
 
   <h2>Instagram Story Blurb</h2>
 

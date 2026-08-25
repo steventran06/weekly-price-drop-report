@@ -29,6 +29,8 @@ export interface GeneratedMarketStatsContent {
 
   instagramCaption: string;
 
+  googleBusinessPost: string;
+
   youtubeShortsTitle: string;
   youtubeShortsDescription: string;
   youtubeKeywords: string[];
@@ -202,6 +204,29 @@ End with exactly these five hashtags:
 
 #PortlandRealEstate #PortlandHousingMarket #PortlandMetro #BeavertonRealEstate #OregonRealEstate
 
+GOOGLE BUSINESS PROFILE POST:
+
+Write a standalone summary of the weekly market update that Steven can
+copy and paste directly into a Google Business Profile post.
+
+Rules:
+- Maximum 1,500 characters INCLUDING spaces.
+- Aim for approximately 1,050 to 1,350 characters so there is a safe margin.
+- Use plain text only, with short readable paragraphs.
+- No Markdown.
+- No hashtags.
+- No emojis.
+- Summarize the most useful insights from the same market analysis used for
+  the blog rather than trying to include every market.
+- Include a useful mix of the broad Portland Metro picture and one or two
+  notable submarket observations when supported by the supplied data.
+- Make clear that conditions vary by area and property type.
+- Do not invent week-over-week or year-over-year movement.
+- Do not say that a market increased, decreased, rose or fell unless the
+  input explicitly provides comparison data.
+- End with this exact sentence:
+  "Read the full Portland Metro market update at PortlandHomeGuide.com."
+
 YOUTUBE:
 
 Create:
@@ -249,6 +274,7 @@ Return exactly this JSON structure:
   "closing": "string",
   "reelScript": "string",
   "instagramCaption": "string",
+  "googleBusinessPost": "string",
   "youtubeShortsTitle": "string",
   "youtubeShortsDescription": "string",
   "youtubeKeywords": ["string"]
@@ -278,6 +304,11 @@ Return exactly this JSON structure:
         )
         .trim(),
     ) as GeneratedMarketStatsContent;
+
+  parsed.googleBusinessPost =
+    enforceGoogleBusinessPostLimit(
+      parsed.googleBusinessPost,
+    );
 
   validateGeneratedContent(
     parsed,
@@ -345,6 +376,7 @@ function validateGeneratedContent(
     content.closing,
     content.reelScript,
     content.instagramCaption,
+    content.googleBusinessPost,
     content.youtubeShortsTitle,
     content.youtubeShortsDescription,
   ];
@@ -409,4 +441,100 @@ function validateGeneratedContent(
       `Generated Reel script has ${reelWordCount} words.`,
     );
   }
+}
+
+
+function enforceGoogleBusinessPostLimit(
+  value: unknown,
+): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  const cta =
+    "Read the full Portland Metro market update at PortlandHomeGuide.com.";
+
+  const normalized = value
+    .replace(/\r\n/g, "\n")
+    .replace(/[ \t]+/g, " ")
+    .replace(/ *\n */g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  const body = normalized
+    .replace(
+      new RegExp(
+        `${escapeRegExp(cta)}\\s*$`,
+        "i",
+      ),
+      "",
+    )
+    .trim();
+
+  const separator = "\n\n";
+  const maxCharacters = 1_500;
+  const maxBodyCharacters =
+    maxCharacters -
+    separator.length -
+    cta.length;
+
+  const trimmedBody =
+    truncateTextAtBoundary(
+      body,
+      maxBodyCharacters,
+    );
+
+  return [
+    trimmedBody,
+    cta,
+  ]
+    .filter(Boolean)
+    .join(separator)
+    .slice(0, maxCharacters);
+}
+
+function truncateTextAtBoundary(
+  value: string,
+  maxCharacters: number,
+): string {
+  if (value.length <= maxCharacters) {
+    return value;
+  }
+
+  const candidate =
+    value.slice(0, maxCharacters);
+
+  const sentenceBreak = Math.max(
+    candidate.lastIndexOf(". "),
+    candidate.lastIndexOf("! "),
+    candidate.lastIndexOf("? "),
+    candidate.lastIndexOf("\n"),
+  );
+
+  if (sentenceBreak >= 700) {
+    return candidate
+      .slice(0, sentenceBreak + 1)
+      .trimEnd();
+  }
+
+  const lastSpace =
+    candidate.lastIndexOf(" ");
+
+  return candidate
+    .slice(
+      0,
+      lastSpace > 0
+        ? lastSpace
+        : maxCharacters,
+    )
+    .trimEnd();
+}
+
+function escapeRegExp(
+  value: string,
+): string {
+  return value.replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&",
+  );
 }

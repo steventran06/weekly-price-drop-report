@@ -13,6 +13,7 @@ export interface MarketStatsOutputPaths {
   blogPath: string;
   reelPath: string;
   instagramPath: string;
+  googleBusinessPostPath: string;
   youtubePath: string;
   contentJsonPath: string;
 }
@@ -53,6 +54,12 @@ export async function writeMarketStatsContent(
       "instagram-caption.txt",
     );
 
+  const googleBusinessPostPath =
+    path.join(
+      outputDirectory,
+      "google-business-post.txt",
+    );
+
   const youtubePath =
     path.join(
       outputDirectory,
@@ -81,6 +88,12 @@ export async function writeMarketStatsContent(
     fs.writeFile(
       instagramPath,
       content.instagramCaption,
+      "utf8",
+    ),
+
+    fs.writeFile(
+      googleBusinessPostPath,
+      content.googleBusinessPost + "\n",
       "utf8",
     ),
 
@@ -121,6 +134,7 @@ export async function writeMarketStatsContent(
     blogPath,
     reelPath,
     instagramPath,
+    googleBusinessPostPath,
     youtubePath,
     contentJsonPath,
   };

@@ -7,6 +7,7 @@ export interface AnalysisOutputPaths {
   reportPath: string;
   scriptPath: string;
   instagramPath: string;
+  googleBusinessPostPath: string;
   youtubePath: string;
 }
 
@@ -26,6 +27,12 @@ export async function writeAnalysisFiles(
     outputDirectory,
     "instagram-caption.txt",
   );
+
+  const googleBusinessPostPath =
+    path.join(
+      outputDirectory,
+      "google-business-post.txt",
+    );
 
   const youtubePath = path.join(
     outputDirectory,
@@ -69,6 +76,11 @@ export async function writeAnalysisFiles(
       "utf8",
     ),
     fs.writeFile(
+      googleBusinessPostPath,
+      `${analysis.googleBusinessPost.trim()}\n`,
+      "utf8",
+    ),
+    fs.writeFile(
       youtubePath,
       createYoutubeFile(analysis),
       "utf8",
@@ -80,6 +92,7 @@ export async function writeAnalysisFiles(
     reportPath,
     scriptPath,
     instagramPath,
+    googleBusinessPostPath,
     youtubePath,
   };
 }
@@ -125,6 +138,10 @@ ${factChecks}
 # Instagram Caption
 
 ${analysis.instagramCaption}
+
+# Google Business Profile Post
+
+${analysis.googleBusinessPost}
 
 # YouTube Shorts Title
 

@@ -312,6 +312,12 @@ function createTextEmailBody(
     "",
     content.instagramCaption,
     "",
+    "GOOGLE BUSINESS PROFILE POST",
+    "============================",
+    `${content.googleBusinessPost.length}/1500 characters`,
+    "",
+    content.googleBusinessPost,
+    "",
     "YOUTUBE SHORTS TITLE",
     "====================",
     "",
@@ -628,6 +634,23 @@ function createHtmlEmailBody(
 
   ${createCopyBox(
     content.instagramCaption,
+  )}
+
+  <hr style="${dividerStyle()}">
+
+  <h2>
+    Google Business Profile Post
+  </h2>
+
+  <p style="
+    color: #666666;
+    margin-top: -6px;
+  ">
+    ${content.googleBusinessPost.length}/1500 characters. Copy and paste this directly into your Google Business Profile post.
+  </p>
+
+  ${createCopyBox(
+    content.googleBusinessPost,
   )}
 
   <hr style="${dividerStyle()}">

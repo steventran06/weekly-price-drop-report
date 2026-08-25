@@ -10,6 +10,7 @@ interface GeneratedCopy {
   reelListingLines: Record<string, string>;
   instagramIntro: string;
   instagramClosing: string;
+  googleBusinessPost: string;
   youtubeIntro: string;
   youtubeClosing: string;
   youtubeKeywords: string;
@@ -19,6 +20,7 @@ interface GeneratedCopy {
 export interface GeneratedContent {
   reelScript: string;
   instagramCaption: string;
+  googleBusinessPost: string;
   youtubeShortsDescription: string;
   youtubeKeywords: string;
   factCheckNotes: string[];
@@ -180,6 +182,26 @@ Instagram:
 - The application adds the website reference itself.
 - Keep it casual, useful and easy to scan.
 
+Google Business Profile:
+- Write one complete standalone post summarizing this week's selected price-drop homes.
+- This is for copy/paste into a Google Business Profile post.
+- Keep the entire post under 1,500 characters INCLUDING spaces.
+- Aim for roughly 1,050 to 1,350 characters so there is a safety margin.
+- Use plain text only. No Markdown headings, bullets made from special characters,
+  hashtags, or contact blocks.
+- Mention that these are selected Portland Metro homes with notable reductions
+  from their original list prices, not necessarily the five largest drops in
+  the entire market.
+- Briefly cover each selected home in ranked order using its locationLabel,
+  current price, roundedReductionText when available, and one useful standout
+  detail supported by the input.
+- Do not include street addresses or MLS numbers.
+- Do not claim a home is underpriced or a guaranteed deal.
+- Keep it conversational and useful rather than promotional.
+- End naturally. Do not invent a URL.
+- The application will append the exact dated weekly blog URL from
+  blog.steventranrealestate.com.
+
 YouTube Shorts:
 - Write only a short introduction before the property list.
 - Write only a short closing CTA after the property list.
@@ -219,6 +241,7 @@ Return JSON matching this exact structure:
   },
   "instagramIntro": "string",
   "instagramClosing": "string",
+  "googleBusinessPost": "string",
   "youtubeIntro": "string",
   "youtubeClosing": "string",
   "youtubeKeywords": "string",
@@ -243,6 +266,12 @@ Requirements:
 - Avoid repeating the same sentence structure across the listings.
 - Do not include the final Reel CTA.
 - Do not include property lists in Instagram or YouTube intro/closing fields.
+- googleBusinessPost must summarize every supplied listing in ranked order.
+- googleBusinessPost must not contain a street address, MLS number, hashtags,
+  or Markdown.
+- Do not include a URL in googleBusinessPost. The application appends the exact
+  dated weekly blog URL itself.
+- googleBusinessPost must be no more than 1,500 characters including spaces.
 - Keep factCheckNotes internal and concise.
 - Do not include fields outside this structure.
 `,
@@ -252,6 +281,11 @@ Requirements:
     parseOpenAIJson<GeneratedCopy>(
       response.output_text,
       "content",
+    );
+
+  generatedCopy.googleBusinessPost =
+    enforceGoogleBusinessPostLimit(
+      generatedCopy.googleBusinessPost,
     );
 
   validateGeneratedCopy(
@@ -285,6 +319,8 @@ Requirements:
   const content: GeneratedContent = {
     reelScript,
     instagramCaption,
+    googleBusinessPost:
+      generatedCopy.googleBusinessPost,
     youtubeShortsDescription,
     youtubeKeywords,
 
@@ -496,6 +532,101 @@ function createPriceDropBlogUrl(): string {
   );
 }
 
+function enforceGoogleBusinessPostLimit(
+  value: unknown,
+): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  const blogUrl =
+    createPriceDropBlogUrl();
+
+  const cta =
+    `See all of this week's featured price drops and full details:\n${blogUrl}`;
+
+  const normalized = value
+    .replace(/\r\n/g, "\n")
+    .replace(/[ \t]+/g, " ")
+    .replace(/ *\n */g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  /*
+   * Strip any generic CTA the model may have returned so the application owns
+   * the final destination and always inserts the exact dated blog URL.
+   */
+  const body = normalized
+    .replace(
+      /Want details on any of these homes\?\s*Visit PortlandHomeGuide\.com\.?\s*$/i,
+      "",
+    )
+    .replace(
+      /See all of this week's featured price drops and full details:?\s*https?:\/\/\S+\s*$/i,
+      "",
+    )
+    .trim();
+
+  const separator = "\n\n";
+  const maxCharacters = 1_500;
+  const maxBodyCharacters =
+    maxCharacters -
+    separator.length -
+    cta.length;
+
+  const trimmedBody =
+    truncateTextAtBoundary(
+      body,
+      maxBodyCharacters,
+    );
+
+  return [
+    trimmedBody,
+    cta,
+  ]
+    .filter(Boolean)
+    .join(separator)
+    .slice(0, maxCharacters);
+}
+
+function truncateTextAtBoundary(
+  value: string,
+  maxCharacters: number,
+): string {
+  if (value.length <= maxCharacters) {
+    return value;
+  }
+
+  const candidate =
+    value.slice(0, maxCharacters);
+
+  const sentenceBreak = Math.max(
+    candidate.lastIndexOf(". "),
+    candidate.lastIndexOf("! "),
+    candidate.lastIndexOf("? "),
+    candidate.lastIndexOf("\n"),
+  );
+
+  if (sentenceBreak >= 700) {
+    return candidate
+      .slice(0, sentenceBreak + 1)
+      .trimEnd();
+  }
+
+  const lastSpace =
+    candidate.lastIndexOf(" ");
+
+  return candidate
+    .slice(
+      0,
+      lastSpace > 0
+        ? lastSpace
+        : maxCharacters,
+    )
+    .trimEnd();
+}
+
+
 function validateGeneratedCopy(
   copy: GeneratedCopy,
   listings: SelectedListing[],
@@ -508,6 +639,8 @@ function validateGeneratedCopy(
     typeof copy.instagramIntro !==
       "string" ||
     typeof copy.instagramClosing !==
+      "string" ||
+    typeof copy.googleBusinessPost !==
       "string" ||
     typeof copy.youtubeIntro !==
       "string" ||
@@ -718,6 +851,54 @@ function validateFinalContent(
     ) {
       throw new Error(
         `Reel script contains the street address for MLS ${listing.mlsNumber}.`,
+      );
+    }
+  }
+
+  if (
+    content.googleBusinessPost.length >
+    1_500
+  ) {
+    throw new Error(
+      `Google Business Profile post contains ${content.googleBusinessPost.length} characters. Expected no more than 1500.`,
+    );
+  }
+
+  if (
+    /#[A-Za-z0-9_]+/.test(
+      content.googleBusinessPost,
+    )
+  ) {
+    throw new Error(
+      "Google Business Profile post contains hashtags.",
+    );
+  }
+
+  const expectedGoogleBusinessBlogUrl =
+    createPriceDropBlogUrl();
+
+  if (
+    !content.googleBusinessPost.includes(
+      expectedGoogleBusinessBlogUrl,
+    )
+  ) {
+    throw new Error(
+      "Google Business Profile post is missing the direct weekly blog URL.",
+    );
+  }
+
+  for (
+    const listing
+    of listings
+  ) {
+    if (
+      containsStreetNumber(
+        content.googleBusinessPost,
+        listing.address,
+      )
+    ) {
+      throw new Error(
+        `Google Business Profile post contains the street address for MLS ${listing.mlsNumber}.`,
       );
     }
   }

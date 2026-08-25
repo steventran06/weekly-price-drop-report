@@ -508,6 +508,10 @@ async function main(): Promise<void> {
   );
 
   console.log(
+    `- ${analysisPaths.googleBusinessPostPath}`,
+  );
+
+  console.log(
     `- ${analysisPaths.youtubePath}`,
   );
 
