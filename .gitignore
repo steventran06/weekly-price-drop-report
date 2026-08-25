@@ -20,3 +20,4 @@ output/market-stats/*.txt
 output/market-stats/
 # Generated weekly price-drop carousel output
 output/price-drops/
+output/mortgage-rates/

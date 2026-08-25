@@ -24,7 +24,9 @@
     "reddit-alerts:filter-test": "tsx src/redditAlerts/testFilters.ts",
     "instagram:preview": "tsx src/social/instagram/preview.ts",
     "instagram:publish": "tsx src/social/instagram/publishExisting.ts",
-    "price-drops:carousel-preview": "tsx src/social/instagram/priceDropPreview.ts"
+    "price-drops:carousel-preview": "tsx src/social/instagram/priceDropPreview.ts",
+    "mortgage-rates": "tsx src/mortgageRates/index.ts",
+    "mortgage-rates:preview": "MORTGAGE_RATES_DRY_RUN=true tsx src/mortgageRates/index.ts"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.0",
