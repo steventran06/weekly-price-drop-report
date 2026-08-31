@@ -11,7 +11,7 @@ const FRED_API_BASE =
 
 const FETCH_CONCURRENCY = 4;
 const OBSERVATION_LIMIT = 10;
-const REQUEST_TIMEOUT_MS = 30_000;
+const REQUEST_TIMEOUT_MS = 15_000;
 
 export async function fetchFredMortgageRates(): Promise<
   Record<keyof typeof MORTGAGE_RATE_SERIES, MortgageRatePoint>
@@ -65,75 +65,7 @@ export async function fetchFredMortgageRates(): Promise<
   >;
 }
 
-
-// FRED_FETCH_RETRY_PATCH_V1
-const FRED_FETCH_MAX_ATTEMPTS = 3;
-
 async function fetchSeriesPoint(
-  ...args: Parameters<typeof fetchSeriesPointOnce>
-): Promise<Awaited<ReturnType<typeof fetchSeriesPointOnce>>> {
-  let lastError: unknown;
-
-  const firstArg = args[0] as unknown;
-  const seriesLabel =
-    typeof firstArg === "string"
-      ? firstArg
-      : firstArg &&
-          typeof firstArg === "object" &&
-          ("seriesId" in firstArg ||
-            "fredSeriesId" in firstArg ||
-            "id" in firstArg)
-        ? String(
-            (firstArg as {
-              seriesId?: unknown;
-              fredSeriesId?: unknown;
-              id?: unknown;
-            }).seriesId ??
-              (firstArg as { fredSeriesId?: unknown }).fredSeriesId ??
-              (firstArg as { id?: unknown }).id ??
-              "FRED series",
-          )
-        : "FRED series";
-
-  for (
-    let attempt = 1;
-    attempt <= FRED_FETCH_MAX_ATTEMPTS;
-    attempt += 1
-  ) {
-    try {
-      return await fetchSeriesPointOnce(...args);
-    } catch (error) {
-      lastError = error;
-
-      if (attempt >= FRED_FETCH_MAX_ATTEMPTS) {
-        break;
-      }
-
-      const delayMs = 1_000 * 2 ** (attempt - 1);
-      const message =
-        error instanceof Error ? error.message : String(error);
-
-      console.warn(
-        `${seriesLabel}: attempt ${attempt}/${FRED_FETCH_MAX_ATTEMPTS} failed (${message}). Retrying in ${delayMs / 1_000}s...`,
-      );
-
-      await new Promise<void>((resolve) =>
-        setTimeout(resolve, delayMs),
-      );
-    }
-  }
-
-  const message =
-    lastError instanceof Error
-      ? lastError.message
-      : String(lastError);
-
-  throw new Error(
-    `${seriesLabel} failed after ${FRED_FETCH_MAX_ATTEMPTS} attempts: ${message}`,
-  );
-}
-
-async function fetchSeriesPointOnce(
   seriesId: string,
   name: string,
   apiKey: string,
