@@ -77,13 +77,13 @@ export async function findPriceDropEmails(
           );
 
         /*
-         * PRICE DROP auto-emails use the second unique
-         * RMLS public-report link for the full report.
+         * Prioritize the first unique RMLS link (newest matches).
+         * The workflow can supplement from the second link when needed.
          */
         const reportUrl =
           selectRmlsReportLink(
             body,
-            "second",
+            "first",
           );
 
         return {

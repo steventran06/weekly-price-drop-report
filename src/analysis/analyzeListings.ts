@@ -18,6 +18,7 @@ interface SelectionResponse {
 
 export async function analyzeListings(
   listings: RmlsListing[],
+  requiredMlsNumbers: string[] = [],
 ): Promise<WeeklyAnalysis> {
   if (listings.length === 0) {
     throw new Error(
@@ -36,7 +37,9 @@ export async function analyzeListings(
     model,
     store: false,
     instructions: SELECTION_INSTRUCTIONS,
-    input: createSelectionInput(listings),
+    input: createSelectionInput(listings) + (requiredMlsNumbers.length
+      ? `\nMANDATORY newest-match priority: include ALL these MLS numbers before selecting any supplemental homes: ${requiredMlsNumbers.join(", ")}. Rank these newest matches before supplemental homes. Fill remaining slots from the other listings.`
+      : ""),
   });
 
   const selection =
@@ -48,6 +51,7 @@ export async function analyzeListings(
   const validated = validateSelection(
     selection,
     listings,
+    requiredMlsNumbers,
   );
 
   console.log(
@@ -175,6 +179,7 @@ Requirements:
 function validateSelection(
   value: SelectionResponse,
   sourceListings: RmlsListing[],
+  requiredMlsNumbers: string[] = [],
 ): SelectionResponse {
   if (
     typeof value.title !== "string" ||
@@ -280,6 +285,16 @@ function validateSelection(
         };
       },
     );
+
+  if (requiredMlsNumbers.some(mls => !usedMlsNumbers.has(mls))) {
+    throw new Error("Selection omitted a required newest-match listing.");
+  }
+  if (requiredMlsNumbers.length && selectedListings.length !== Math.min(5, sourceListings.length)) {
+    throw new Error("Selection did not fill the available report slots.");
+  }
+  const required = new Set(requiredMlsNumbers);
+  selectedListings.sort((a, b) => Number(required.has(b.mlsNumber)) - Number(required.has(a.mlsNumber)));
+  selectedListings.forEach((listing, index) => { listing.rank = index + 1; });
 
   return {
     title: value.title.trim(),

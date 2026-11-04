@@ -41,6 +41,10 @@ export async function parseSavedRmlsReport(): Promise<RmlsListing[]> {
   );
 
   const html = await fs.readFile(reportPath, "utf8");
+  return parseRmlsReportHtml(html);
+}
+
+export function parseRmlsReportHtml(html: string): RmlsListing[] {
   const chunks = splitReportIntoListingChunks(html);
 
   console.log(

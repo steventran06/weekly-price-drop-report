@@ -1,3 +1,4 @@
+import { prioritizeListings, usableUniqueListings } from "./prioritizeListings.js";
 import dotenv from "dotenv";
 import { google } from "googleapis";
 
@@ -47,7 +48,7 @@ import {
 } from "../rmls/fetchReport.js";
 
 import {
-  parseSavedRmlsReport,
+  parseRmlsReportHtml,
 } from "../rmls/parseListings.js";
 
 import {
@@ -153,62 +154,31 @@ async function main(): Promise<void> {
     `Found ${selectedEmail.rmlsLinks.length} unique RMLS report link(s) in the selected email.`,
   );
 
-  if (
-    selectedEmail.rmlsLinks.length >=
-    2
-  ) {
-    console.log(
-      "Using the second RMLS report link.",
-    );
-  } else {
-    console.warn(
-      "The selected PRICE DROP email only contained one unique RMLS report link; using that link as a fallback.",
-    );
+  console.log("Using the first RMLS report link (newest matches).");
+  const report = await fetchRmlsReport(reportLink);
+  await saveRawReportHtml(report.html);
+  const newestListings = usableUniqueListings(parseRmlsReportHtml(report.html));
+  let completeListings: typeof newestListings = [];
+  let fallbackReportUrl: string | null = null;
+  const secondLink = selectedEmail.rmlsLinks[1];
+  if (newestListings.length < 5 && secondLink && secondLink !== reportLink) {
+    console.log(`Found ${newestListings.length} usable newest matches; supplementing from the second link.`);
+    const fallback = await fetchRmlsReport(secondLink);
+    completeListings = parseRmlsReportHtml(fallback.html);
+    fallbackReportUrl = secondLink;
   }
-
-  /*
-   * Step 3:
-   * Download RMLS report.
-   */
-  const report =
-    await fetchRmlsReport(
-      reportLink,
-    );
-
-  console.log(
-    `HTTP status: ${report.status}`,
-  );
-
-  console.log(
-    `Downloaded ${report.html.length} characters.`,
-  );
-
-  const rawReportPath =
-    await saveRawReportHtml(
-      report.html,
-    );
-
-  console.log(
-    `Saved raw report to: ${rawReportPath}`,
-  );
-
-  /*
-   * Step 4:
-   * Parse all listings.
-   */
-  const listings =
-    await parseSavedRmlsReport();
+  const { listings, requiredMlsNumbers } = prioritizeListings(newestListings, completeListings);
 
   console.log(
     `Parsed ${listings.length} unique listing(s).`,
   );
 
   if (
-    listings.length ===
-    0
+    listings.length <
+    4
   ) {
     console.log(
-      "No listings were parsed.",
+      "Fewer than four usable homes were found across the available reports; skipping the four-to-five-home report.",
     );
 
     console.log(
@@ -241,6 +211,8 @@ async function main(): Promise<void> {
     source: {
       reportUrl:
         reportLink,
+      fallbackReportUrl,
+      newestMatchCount: newestListings.length,
 
       capturedAt:
         new Date()
@@ -363,6 +335,7 @@ async function main(): Promise<void> {
   const analysis =
     await analyzeListings(
       listings,
+      requiredMlsNumbers,
     );
 
   console.log(
